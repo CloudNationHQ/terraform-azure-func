@@ -5,7 +5,7 @@ This example details a function app setup with a private endpoint, enhancing sec
 ```hcl
 module "privatelink" {
   source  = "cloudnationhq/pe/azure"
-  version = "~> 0.1"
+  version = "~> 0.2"
 
   resourcegroup = module.rg.groups.demo.name
   location      = module.rg.groups.demo.location
