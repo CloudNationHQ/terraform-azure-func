@@ -5,7 +5,7 @@ This example showcases application slots using different configurations.
 ```hcl
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 0.1"
+  version = "~> 0.2"
 
   instance = {
     type          = "linux"
