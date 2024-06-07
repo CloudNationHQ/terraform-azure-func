@@ -19,7 +19,7 @@ This submodule demonstates how to manage service plans
 
 | Name | Type |
 |------|------|
-| [azurerm_service_plan.plans](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
+| [azurerm_service_plan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
 
 ## Inputs
 
