@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.2.0...v0.3.0) (2024-06-08)
+
+
+### Features
+
+* create pull request template ([#9](https://github.com/CloudNationHQ/terraform-azure-func/issues/9)) ([6489964](https://github.com/CloudNationHQ/terraform-azure-func/commit/64899641380a68082b77c987df06d6480dcaec66))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#8](https://github.com/CloudNationHQ/terraform-azure-func/issues/8)) ([e3fef9f](https://github.com/CloudNationHQ/terraform-azure-func/commit/e3fef9f84607f18157d02ebf73fe181e2d4aa1c3))
+
 ## [0.2.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.1.0...v0.2.0) (2024-05-15)
 
 
