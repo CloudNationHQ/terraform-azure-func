@@ -3,12 +3,6 @@ variable "instance" {
   type        = any
 }
 
-variable "naming" {
-  description = "used for naming purposes"
-  type        = map(string)
-  default     = {}
-}
-
 variable "location" {
   description = "default azure region yo be used"
   type        = string
