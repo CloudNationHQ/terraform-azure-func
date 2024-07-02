@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.2.0...v0.3.0) (2024-07-02)
+
+
+### Features
+
+* add issue template ([#12](https://github.com/CloudNationHQ/terraform-azure-func/issues/12)) ([2b2d221](https://github.com/CloudNationHQ/terraform-azure-func/commit/2b2d221f0a4f2cf6154f46f72931015b1da0ed6a))
+* create pull request template ([#9](https://github.com/CloudNationHQ/terraform-azure-func/issues/9)) ([6489964](https://github.com/CloudNationHQ/terraform-azure-func/commit/64899641380a68082b77c987df06d6480dcaec66))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#13](https://github.com/CloudNationHQ/terraform-azure-func/issues/13)) ([bc49487](https://github.com/CloudNationHQ/terraform-azure-func/commit/bc4948782fad23e7d1c0d93018246941afaeb788))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#8](https://github.com/CloudNationHQ/terraform-azure-func/issues/8)) ([e3fef9f](https://github.com/CloudNationHQ/terraform-azure-func/commit/e3fef9f84607f18157d02ebf73fe181e2d4aa1c3))
+* **deps:** bump github.com/hashicorp/go-getter in /tests ([#11](https://github.com/CloudNationHQ/terraform-azure-func/issues/11)) ([6f638d0](https://github.com/CloudNationHQ/terraform-azure-func/commit/6f638d0240ce93cdec4a6baf30b58158bf06fec9))
+
 ## [0.2.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.1.0...v0.2.0) (2024-05-15)
 
 
