@@ -48,7 +48,7 @@ End-to-end testing is not conducted on these modules, as they are individual com
 | Name | Type |
 | :-- | :-- |
 | [azurerm_linux_function_app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) | resource |
-| [azurerm_linux_function_app_slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) | resource
+| [azurerm_linux_function_app_slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) | resource |
 | [azurerm_windows_function_app](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) | resource |
 | [azurerm_windows_function_app_slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app_slot) | resource |
 | [azurerm_service_plan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
@@ -58,7 +58,6 @@ End-to-end testing is not conducted on these modules, as they are individual com
 | Name | Description | Type | Required |
 | :-- | :-- | :-- | :-- |
 | `instance` | contains all function app config | object | yes |
-| `naming` | contains naming convention | string | no |
 | `location` | default azure region to be used | string | no |
 | `resourcegroup` | default resource group to be used | string | no |
 | `tags` | tags to be added to the resources | map(string) | no |
