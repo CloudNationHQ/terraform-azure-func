@@ -5,7 +5,7 @@ This example highlights a windows function app.
 ```hcl
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 0.3"
+  version = "~> 0.4"
 
   instance = {
     type          = "windows"
