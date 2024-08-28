@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.4.0...v0.5.0) (2024-08-28)
+
+
+### Features
+
+* update documentation ([#17](https://github.com/CloudNationHQ/terraform-azure-func/issues/17)) ([d093c1b](https://github.com/CloudNationHQ/terraform-azure-func/commit/d093c1bf1c786fc4f55cb80d4be1206ab069a42a))
+
 ## [0.4.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.3.0...v0.4.0) (2024-08-28)
 
 
