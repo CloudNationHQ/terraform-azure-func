@@ -5,7 +5,7 @@ This example highlights function app vnet integration
 ```hcl
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 0.3"
+  version = "~> 0.4"
 
   resourcegroup = module.rg.groups.demo.name
   location      = module.rg.groups.demo.location
