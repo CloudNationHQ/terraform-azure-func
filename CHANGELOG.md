@@ -9,7 +9,7 @@
 
 ### Features
 
-* upgrade azurerm provder to v4 ([#20](https://github.com/CloudNationHQ/terraform-azure-func/issues/20)) ([e79bc5d](https://github.com/CloudNationHQ/terraform-azure-func/commit/e79bc5de0e5e07cab986c81174bc11b90a353f0a))
+* upgrade azurerm provider to v4 ([#20](https://github.com/CloudNationHQ/terraform-azure-func/issues/20)) ([e79bc5d](https://github.com/CloudNationHQ/terraform-azure-func/commit/e79bc5de0e5e07cab986c81174bc11b90a353f0a))
 
 ### Upgrade from v0.5.0 to v1.0.0:
 
