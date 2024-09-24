@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "plans" {
   for_each = var.plans
 
   name                         = each.value.name
-  resource_group_name          = var.resourcegroup
+  resource_group_name          = var.resource_group
   location                     = var.location
   os_type                      = each.value.os_type
   sku_name                     = each.value.sku_name

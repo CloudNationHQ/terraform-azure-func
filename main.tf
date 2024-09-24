@@ -5,7 +5,7 @@ resource "azurerm_linux_function_app" "func" {
   } : {}
 
   name                          = var.instance.name
-  resource_group_name           = coalesce(lookup(var.instance, "resourcegroup", null), var.resourcegroup)
+  resource_group_name           = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
   location                      = coalesce(lookup(var.instance, "location", null), var.location)
   service_plan_id               = var.instance.service_plan_id
   storage_account_name          = var.instance.storage_account_name
@@ -237,7 +237,7 @@ resource "azurerm_windows_function_app" "func" {
   } : {}
 
   name                          = var.instance.name
-  resource_group_name           = coalesce(lookup(var.instance, "resourcegroup", null), var.resourcegroup)
+  resource_group_name           = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
   location                      = coalesce(lookup(var.instance, "location", null), var.location)
   service_plan_id               = var.instance.service_plan_id
   storage_account_name          = var.instance.storage_account_name
