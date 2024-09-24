@@ -28,7 +28,7 @@ This submodule demonstates how to manage service plans
 | <a name="input_location"></a> [location](#input\_location) | default azure region yo be used | `string` | `null` | no |
 | <a name="input_naming"></a> [naming](#input\_naming) | used for naming purposes | `map(string)` | `{}` | no |
 | <a name="input_plans"></a> [plans](#input\_plans) | contains all service plan config | `any` | n/a | yes |
-| <a name="input_resourcegroup"></a> [resourcegroup](#input\_resourcegroup) | default resource group to be used | `string` | `null` | no |
+| <a name="input_resource_group"></a> [resource_group](#input\_resource_group) | default resource group to be used | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | tags to be added to the resources | `map(string)` | `{}` | no |
 
 ## Outputs
