@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.0.0...v1.1.0) (2024-10-11)
+
+
+### Features
+
+* auto generated docs and refine makefile ([#23](https://github.com/CloudNationHQ/terraform-azure-func/issues/23)) ([8ff836b](https://github.com/CloudNationHQ/terraform-azure-func/commit/8ff836b724b86db44623ca95338de03ed46607c4))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#22](https://github.com/CloudNationHQ/terraform-azure-func/issues/22)) ([d5d0ba2](https://github.com/CloudNationHQ/terraform-azure-func/commit/d5d0ba225c828358d7a7dd83d5aaf2857076328b))
+
 ## [1.0.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v0.5.0...v1.0.0) (2024-09-24)
 
 
