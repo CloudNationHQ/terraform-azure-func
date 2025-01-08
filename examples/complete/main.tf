@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.22"
 
   suffix = ["demo", "dev"]
 }
@@ -19,7 +19,7 @@ module "rg" {
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   storage = {
     name           = module.naming.storage_account.name_unique
@@ -30,7 +30,7 @@ module "storage" {
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 4.0"
+  version = "~> 8.0"
 
   naming = local.naming
 
@@ -38,12 +38,12 @@ module "network" {
     name           = module.naming.virtual_network.name
     location       = module.rg.groups.demo.location
     resource_group = module.rg.groups.demo.name
-    cidr           = ["10.18.0.0/16"]
+    address_space  = ["10.18.0.0/16"]
 
     subnets = {
       sn1 = {
-        cidr = ["10.18.1.0/24"]
-        nsg  = {}
+        address_prefixes       = ["10.18.1.0/24"]
+        network_security_group = {}
         delegations = {
           web = {
             name = "Microsoft.Web/serverFarms"
@@ -54,8 +54,8 @@ module "network" {
         }
       }
       sn2 = {
-        nsg  = {}
-        cidr = ["10.18.2.0/24"]
+        address_prefixes       = ["10.18.2.0/24"]
+        network_security_group = {}
       }
     }
   }
@@ -68,12 +68,14 @@ module "private_dns" {
   resource_group = module.rg.groups.demo.name
 
   zones = {
-    web = {
-      name = "privatelink.azurewebsites.net"
-      virtual_network_links = {
-        link1 = {
-          virtual_network_id   = module.network.vnet.id
-          registration_enabled = true
+    private = {
+      web = {
+        name = "privatelink.azurewebsites.net"
+        virtual_network_links = {
+          link1 = {
+            virtual_network_id   = module.network.vnet.id
+            registration_enabled = true
+          }
         }
       }
     }
@@ -92,7 +94,7 @@ module "privatelink" {
       name                           = module.naming.private_endpoint.name
       subnet_id                      = module.network.subnets.sn2.id
       private_connection_resource_id = module.function_app.instance.id
-      private_dns_zone_ids           = [module.private_dns.zones.web.id]
+      private_dns_zone_ids           = [module.private_dns.private_zones.web.id]
       subresource_names              = ["sites"]
     }
   }
@@ -123,7 +125,7 @@ module "function_app" {
 
   instance = {
     type                          = "linux"
-    name                          = "func-demo-dev-xaeso"
+    name                          = "func-demo-dev-xaespq"
     storage_account_name          = module.storage.account.name
     storage_account_access_key    = module.storage.account.primary_access_key
     service_plan_id               = module.service_plan.plans.plan1.id
