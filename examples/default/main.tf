@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.22"
 
   suffix = ["demo", "dev"]
 }
@@ -19,7 +19,7 @@ module "rg" {
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   storage = {
     name           = module.naming.storage_account.name_unique
@@ -52,7 +52,7 @@ module "function_app" {
 
   instance = {
     type                       = "linux"
-    name                       = "func-demo-dev-xaen"
+    name                       = "func-demo-dev-xaenw"
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key
     service_plan_id            = module.service_plan.plans.plan1.id

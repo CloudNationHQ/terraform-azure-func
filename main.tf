@@ -4,27 +4,38 @@ resource "azurerm_linux_function_app" "func" {
     (var.instance.name) = var.instance
   } : {}
 
-  name                          = var.instance.name
-  resource_group_name           = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
-  location                      = coalesce(lookup(var.instance, "location", null), var.location)
-  service_plan_id               = var.instance.service_plan_id
-  storage_account_name          = var.instance.storage_account_name
-  storage_account_access_key    = var.instance.storage_account_access_key
-  https_only                    = try(var.instance.https_only, true)
-  zip_deploy_file               = try(var.instance.zip_deploy_file, null)
-  enabled                       = try(var.instance.enabled, true)
-  builtin_logging_enabled       = try(var.instance.builtin_logging_enabled, true)
-  client_certificate_mode       = try(var.instance.client_certificate_mode, null)
-  daily_memory_time_quota       = try(var.instance.daily_memory_time_quota, null)
-  virtual_network_subnet_id     = try(var.instance.virtual_network_subnet_id, null)
-  client_certificate_enabled    = try(var.instance.client_certificate_enabled, false)
-  functions_extension_version   = try(var.instance.functions_extension_version, null)
-  storage_key_vault_secret_id   = try(var.instance.storage_key_vault_secret_id, null)
-  content_share_force_disabled  = try(var.instance.content_share_force_disabled, false)
-  public_network_access_enabled = try(var.instance.public_network_access_enabled, true)
-  storage_uses_managed_identity = try(var.instance.storage_uses_managed_identity, null)
-  app_settings                  = try(var.instance.app_settings, null)
-  tags                          = try(var.instance.tags, var.tags, null)
+  name                                           = var.instance.name
+  resource_group_name                            = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
+  location                                       = coalesce(lookup(var.instance, "location", null), var.location)
+  service_plan_id                                = var.instance.service_plan_id
+  storage_account_name                           = var.instance.storage_account_name
+  storage_account_access_key                     = var.instance.storage_account_access_key
+  https_only                                     = try(var.instance.https_only, true)
+  zip_deploy_file                                = try(var.instance.zip_deploy_file, null)
+  enabled                                        = try(var.instance.enabled, true)
+  builtin_logging_enabled                        = try(var.instance.builtin_logging_enabled, true)
+  client_certificate_mode                        = try(var.instance.client_certificate_mode, null)
+  daily_memory_time_quota                        = try(var.instance.daily_memory_time_quota, null)
+  virtual_network_subnet_id                      = try(var.instance.virtual_network_subnet_id, null)
+  client_certificate_enabled                     = try(var.instance.client_certificate_enabled, false)
+  functions_extension_version                    = try(var.instance.functions_extension_version, null)
+  storage_key_vault_secret_id                    = try(var.instance.storage_key_vault_secret_id, null)
+  content_share_force_disabled                   = try(var.instance.content_share_force_disabled, false)
+  public_network_access_enabled                  = try(var.instance.public_network_access_enabled, true)
+  storage_uses_managed_identity                  = try(var.instance.storage_uses_managed_identity, null)
+  vnet_image_pull_enabled                        = try(var.instance.vnet_image_pull_enabled, false)
+  key_vault_reference_identity_id                = try(var.instance.key_vault_reference_identity_id, null)
+  client_certificate_exclusion_paths             = try(var.instance.client_certificate_exclusion_paths, null)
+  ftp_publish_basic_authentication_enabled       = try(var.instance.ftp_publish_basic_authentication_enabled, true)
+  webdeploy_publish_basic_authentication_enabled = try(var.instance.webdeploy_publish_basic_authentication_enabled, true)
+
+  app_settings = try(
+    var.instance.app_settings, null
+  )
+
+  tags = try(
+    var.instance.tags, var.tags, null
+  )
 
   site_config {
     always_on                                     = try(var.instance.site_config.always_on, false)
@@ -55,6 +66,7 @@ resource "azurerm_linux_function_app" "func" {
     api_definition_url                            = try(var.instance.site_config.api_definition_url, null)
     websockets_enabled                            = try(var.instance.site_config.websockets_enabled, true)
     load_balancing_mode                           = try(var.instance.site_config.load_balancing_mode, null)
+    ip_restriction_default_action                 = try(var.instance.site_config.ip_restriction_default_action, "Allow")
 
     dynamic "application_stack" {
       for_each = lookup(each.value.site_config, "application_stack", null) != null ? [lookup(each.value.site_config, "application_stack")] : []
@@ -150,9 +162,33 @@ resource "azurerm_linux_function_app_slot" "slot" {
   name            = each.value.name
   function_app_id = var.instance.type == "linux" ? azurerm_linux_function_app.func[var.instance.name].id : azurerm_windows_function_app.func[var.instance.name].id
 
-  storage_account_name       = var.instance.storage_account_name
-  storage_account_access_key = var.instance.storage_account_access_key
-  app_settings               = try(each.value.app_settings, null)
+  storage_account_name                           = var.instance.storage_account_name
+  storage_account_access_key                     = var.instance.storage_account_access_key
+  webdeploy_publish_basic_authentication_enabled = try(var.instance.webdeploy_publish_basic_authentication_enabled, true)
+  ftp_publish_basic_authentication_enabled       = try(var.instance.ftp_publish_basic_authentication_enabled, true)
+  client_certificate_exclusion_paths             = try(var.instance.client_certificate_exclusion_paths, null)
+  key_vault_reference_identity_id                = try(var.instance.key_vault_reference_identity_id, null)
+  vnet_image_pull_enabled                        = try(var.instance.vnet_image_pull_enabled, false)
+  content_share_force_disabled                   = try(var.instance.content_share_force_disabled, false)
+  storage_uses_managed_identity                  = try(var.instance.storage_uses_managed_identity, null)
+  enabled                                        = try(var.instance.enabled, true)
+  public_network_access_enabled                  = try(var.instance.public_network_access_enabled, true)
+  storage_key_vault_secret_id                    = try(var.instance.storage_key_vault_secret_id, null)
+  functions_extension_version                    = try(var.instance.functions_extension_version, "~4")
+  client_certificate_enabled                     = try(var.instance.client_certificate_enabled, false)
+  virtual_network_subnet_id                      = try(var.instance.virtual_network_subnet_id, null)
+  daily_memory_time_quota                        = try(var.instance.daily_memory_time_quota, 0)
+  client_certificate_mode                        = try(var.instance.client_certificate_mode, "Optional")
+  builtin_logging_enabled                        = try(var.instance.builtin_logging_enabled, true)
+  https_only                                     = try(var.instance.https_only, false)
+
+  tags = try(
+    var.instance.tags, var.tags, null
+  )
+
+  app_settings = try(
+    each.value.app_settings, null
+  )
 
   site_config {
     always_on                                     = try(each.value.site_config.always_on, false)
@@ -236,27 +272,38 @@ resource "azurerm_windows_function_app" "func" {
     (var.instance.name) = var.instance
   } : {}
 
-  name                          = var.instance.name
-  resource_group_name           = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
-  location                      = coalesce(lookup(var.instance, "location", null), var.location)
-  service_plan_id               = var.instance.service_plan_id
-  storage_account_name          = var.instance.storage_account_name
-  storage_account_access_key    = var.instance.storage_account_access_key
-  https_only                    = try(var.instance.https_only, true)
-  zip_deploy_file               = try(var.instance.zip_deploy_file, null)
-  enabled                       = try(var.instance.enabled, true)
-  builtin_logging_enabled       = try(var.instance.builtin_logging_enabled, true)
-  client_certificate_mode       = try(var.instance.client_certificate_mode, null)
-  daily_memory_time_quota       = try(var.instance.daily_memory_time_quota, null)
-  virtual_network_subnet_id     = try(var.instance.virtual_network_subnet_id, null)
-  client_certificate_enabled    = try(var.instance.client_certificate_enabled, false)
-  functions_extension_version   = try(var.instance.functions_extension_version, null)
-  storage_key_vault_secret_id   = try(var.instance.storage_key_vault_secret_id, null)
-  content_share_force_disabled  = try(var.instance.content_share_force_disabled, false)
-  public_network_access_enabled = try(var.instance.public_network_access_enabled, true)
-  storage_uses_managed_identity = try(var.instance.storage_uses_managed_identity, null)
-  app_settings                  = try(var.instance.app_settings, null)
-  tags                          = try(var.instance.tags, var.tags, null)
+  name                                           = var.instance.name
+  resource_group_name                            = coalesce(lookup(var.instance, "resource_group", null), var.resource_group)
+  location                                       = coalesce(lookup(var.instance, "location", null), var.location)
+  service_plan_id                                = var.instance.service_plan_id
+  storage_account_name                           = var.instance.storage_account_name
+  storage_account_access_key                     = var.instance.storage_account_access_key
+  https_only                                     = try(var.instance.https_only, true)
+  zip_deploy_file                                = try(var.instance.zip_deploy_file, null)
+  enabled                                        = try(var.instance.enabled, true)
+  builtin_logging_enabled                        = try(var.instance.builtin_logging_enabled, true)
+  client_certificate_mode                        = try(var.instance.client_certificate_mode, null)
+  daily_memory_time_quota                        = try(var.instance.daily_memory_time_quota, null)
+  virtual_network_subnet_id                      = try(var.instance.virtual_network_subnet_id, null)
+  client_certificate_enabled                     = try(var.instance.client_certificate_enabled, false)
+  functions_extension_version                    = try(var.instance.functions_extension_version, null)
+  storage_key_vault_secret_id                    = try(var.instance.storage_key_vault_secret_id, null)
+  content_share_force_disabled                   = try(var.instance.content_share_force_disabled, false)
+  public_network_access_enabled                  = try(var.instance.public_network_access_enabled, true)
+  storage_uses_managed_identity                  = try(var.instance.storage_uses_managed_identity, null)
+  vnet_image_pull_enabled                        = try(var.instance.vnet_image_pull_enabled, false)
+  key_vault_reference_identity_id                = try(var.instance.key_vault_reference_identity_id, null)
+  client_certificate_exclusion_paths             = try(var.instance.client_certificate_exclusion_paths, null)
+  ftp_publish_basic_authentication_enabled       = try(var.instance.ftp_publish_basic_authentication_enabled, true)
+  webdeploy_publish_basic_authentication_enabled = try(var.instance.webdeploy_publish_basic_authentication_enabled, true)
+
+  app_settings = try(
+    var.instance.app_settings, null
+  )
+
+  tags = try(
+    var.instance.tags, var.tags, null
+  )
 
   site_config {
     always_on                              = try(var.instance.site_config.always_on, false)
@@ -368,9 +415,33 @@ resource "azurerm_windows_function_app_slot" "slot" {
   name            = each.value.name
   function_app_id = var.instance.type == "linux" ? azurerm_linux_function_app.func[var.instance.name].id : azurerm_windows_function_app.func[var.instance.name].id
 
-  storage_account_name       = var.instance.storage_account_name
-  storage_account_access_key = var.instance.storage_account_access_key
-  app_settings               = try(each.value.app_settings, null)
+  storage_account_name                           = var.instance.storage_account_name
+  storage_account_access_key                     = var.instance.storage_account_access_key
+  webdeploy_publish_basic_authentication_enabled = try(var.instance.webdeploy_publish_basic_authentication_enabled, true)
+  ftp_publish_basic_authentication_enabled       = try(var.instance.ftp_publish_basic_authentication_enabled, true)
+  storage_uses_managed_identity                  = try(var.instance.storage_uses_managed_identity, null)
+  public_network_access_enabled                  = try(var.instance.public_network_access_enabled, true)
+  content_share_force_disabled                   = try(var.instance.content_share_force_disabled, false)
+  storage_key_vault_secret_id                    = try(var.instance.storage_key_vault_secret_id, null)
+  functions_extension_version                    = try(var.instance.functions_extension_version, "~4")
+  client_certificate_enabled                     = try(var.instance.client_certificate_enabled, false)
+  virtual_network_subnet_id                      = try(var.instance.virtual_network_subnet_id, null)
+  client_certificate_exclusion_paths             = try(var.instance.client_certificate_exclusion_paths, null)
+  key_vault_reference_identity_id                = try(var.instance.key_vault_reference_identity_id, null)
+  vnet_image_pull_enabled                        = try(var.instance.vnet_image_pull_enabled, false)
+  daily_memory_time_quota                        = try(var.instance.daily_memory_time_quota, 0)
+  client_certificate_mode                        = try(var.instance.client_certificate_mode, "Optional")
+  builtin_logging_enabled                        = try(var.instance.builtin_logging_enabled, true)
+  https_only                                     = try(var.instance.https_only, false)
+  enabled                                        = try(var.instance.enabled, true)
+
+  app_settings = try(
+    each.value.app_settings, null
+  )
+
+  tags = try(
+    var.instance.tags, var.tags, null
+  )
 
   site_config {
     always_on                              = try(var.instance.site_config.always_on, false)
