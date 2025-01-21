@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.3.0...v1.4.0) (2025-01-21)
+
+
+### Features
+
+* **deps:** bump golang.org/x/net from 0.31.0 to 0.33.0 in /tests ([#34](https://github.com/CloudNationHQ/terraform-azure-func/issues/34)) ([9cc5778](https://github.com/CloudNationHQ/terraform-azure-func/commit/9cc5778e5615508ad2774c08531e3a39d96dac0c))
+
 ## [1.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.2.0...v1.3.0) (2025-01-08)
 
 
