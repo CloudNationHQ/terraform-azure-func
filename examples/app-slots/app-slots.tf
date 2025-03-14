@@ -14,7 +14,7 @@ locals {
         use_32_bit_worker                = true
         websockets_enabled               = true
         application_stack = {
-          node_version = "14"
+          node_version = "~14"
         }
         cors = {
           allowed_origins = ["https://localhost:3000"]
@@ -42,7 +42,7 @@ locals {
         use_32_bit_worker                = false
         websockets_enabled               = true
         application_stack = {
-          node_version = "14"
+          node_version = "~14"
         }
         cors = {
           allowed_origins = ["https://staging.example.com"]
