@@ -95,6 +95,6 @@ For more information, please see our contribution [guidelines](./CONTRIBUTING.md
 
 MIT Licensed. See [LICENSE](./LICENSE) for full details.
 
-## Reference
+## References
 
 - [Documentation](https://learn.microsoft.com/en-us/azure/azure-functions/)
