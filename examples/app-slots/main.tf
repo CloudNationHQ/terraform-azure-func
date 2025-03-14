@@ -49,7 +49,7 @@ module "function_app" {
   version = "~> 1.0"
 
   instance = {
-    type           = "linux"
+    type           = "windows"
     name           = "func-demo-dev-xaew"
     resource_group = module.rg.groups.demo.name
     location       = module.rg.groups.demo.location
@@ -64,9 +64,7 @@ module "function_app" {
       pre_warmed_instance_count        = 3
       runtime_scale_monitoring_enabled = true
       scm_use_main_ip_restriction      = true
-      application_stack = {
-        node_version = "14"
-      }
+
       app_service_logs = {
         disk_quota_mb         = 100
         retention_period_days = 30

@@ -37,6 +37,164 @@ resource "azurerm_linux_function_app" "func" {
     var.instance.tags, var.tags, null
   )
 
+  dynamic "auth_settings_v2" {
+    for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
+
+    content {
+      auth_enabled                            = try(auth_settings_v2.value.auth_enabled, false)
+      runtime_version                         = try(auth_settings_v2.value.runtime_version, "~1")
+      config_file_path                        = try(auth_settings_v2.value.config_file_path, null)
+      require_authentication                  = try(auth_settings_v2.value.require_authentication, null)
+      unauthenticated_action                  = try(auth_settings_v2.value.unauthenticated_action, "RedirectToLoginPage")
+      default_provider                        = try(auth_settings_v2.value.default_provider, null)
+      excluded_paths                          = try(auth_settings_v2.value.excluded_paths, null)
+      require_https                           = try(auth_settings_v2.value.require_https, true)
+      http_route_api_prefix                   = try(auth_settings_v2.value.http_route_api_prefix, "/.auth")
+      forward_proxy_convention                = try(auth_settings_v2.value.forward_proxy_convention, "NoProxy")
+      forward_proxy_custom_host_header_name   = try(auth_settings_v2.value.forward_proxy_custom_host_header_name, null)
+      forward_proxy_custom_scheme_header_name = try(auth_settings_v2.value.forward_proxy_custom_scheme_header_name, null)
+
+      login {
+        token_store_enabled               = try(auth_settings_v2.value.login.token_store_enabled, false)
+        token_refresh_extension_time      = try(auth_settings_v2.value.login.token_refresh_extension_time, null)
+        token_store_path                  = try(auth_settings_v2.value.login.token_store_path, null)
+        token_store_sas_setting_name      = try(auth_settings_v2.value.login.token_store_sas_setting_name, null)
+        preserve_url_fragments_for_logins = try(auth_settings_v2.value.login.preserve_url_fragments_for_logins, null)
+        allowed_external_redirect_urls    = try(auth_settings_v2.value.login.allowed_external_redirect_urls, null)
+        cookie_expiration_convention      = try(auth_settings_v2.value.login.cookie_expiration_convention, null)
+        cookie_expiration_time            = try(auth_settings_v2.value.login.cookie_expiration_time, null)
+        validate_nonce                    = try(auth_settings_v2.value.login.validate_nonce, null)
+        nonce_expiration_time             = try(auth_settings_v2.value.login.nonce_expiration_time, null)
+        logout_endpoint                   = try(auth_settings_v2.value.login.logout_endpoint, null)
+      }
+
+      dynamic "apple_v2" {
+        for_each = lookup(auth_settings_v2.value, "apple_v2", null) != null ? [lookup(auth_settings_v2.value, "apple_v2")] : []
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = try(apple_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = lookup(auth_settings_v2.value, "active_directory_v2", null) != null ? [lookup(auth_settings_v2.value, "active_directory_v2")] : []
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = try(active_directory_v2.value.client_secret_setting_name, null)
+          client_secret_certificate_thumbprint = try(active_directory_v2.value.client_secret_certificate_thumbprint, null)
+          jwt_allowed_groups                   = try(active_directory_v2.value.jwt_allowed_groups, null)
+          jwt_allowed_client_applications      = try(active_directory_v2.value.jwt_allowed_client_applications, null)
+          www_authentication_disabled          = try(active_directory_v2.value.www_authentication_disabled, null)
+          allowed_audiences                    = try(active_directory_v2.value.allowed_audiences, null)
+          allowed_groups                       = try(active_directory_v2.value.allowed_groups, null)
+          allowed_identities                   = try(active_directory_v2.value.allowed_identities, null)
+          login_parameters                     = try(active_directory_v2.value.login_parameters, null)
+          allowed_applications                 = try(active_directory_v2.value.allowed_applications, null)
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = lookup(auth_settings_v2.value, "azure_static_web_app_v2", null) != null ? [lookup(auth_settings_v2.value, "azure_static_web_app_v2")] : []
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = try(custom_oidc_v2.value.name_claim_type, null)
+          scopes                        = try(custom_oidc_v2.value.scopes, null)
+          client_credential_method      = try(custom_oidc_v2.value.client_credential_method, null)
+          client_secret_setting_name    = try(custom_oidc_v2.value.client_secret_setting_name, null)
+          authorisation_endpoint        = try(custom_oidc_v2.value.authorisation_endpoint, null)
+          token_endpoint                = try(custom_oidc_v2.value.token_endpoint, null)
+          issuer_endpoint               = try(custom_oidc_v2.value.issuer_endpoint, null)
+          certification_uri             = try(custom_oidc_v2.value.certification_uri, null)
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = lookup(auth_settings_v2.value, "facebook_v2", null) != null ? [lookup(auth_settings_v2.value, "facebook_v2")] : []
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = try(facebook_v2.value.graph_api_version, "v15.0")
+          login_scopes            = try(facebook_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = lookup(auth_settings_v2.value, "github_v2", null) != null ? [lookup(auth_settings_v2.value, "github_v2")] : []
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = try(github_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = lookup(auth_settings_v2.value, "google_v2", null) != null ? [lookup(auth_settings_v2.value, "google_v2")] : []
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = try(google_v2.value.allowed_audiences, null)
+          login_scopes               = try(google_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = lookup(auth_settings_v2.value, "microsoft_v2", null) != null ? [lookup(auth_settings_v2.value, "microsoft_v2")] : []
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = try(microsoft_v2.value.allowed_audiences, null)
+          login_scopes               = try(microsoft_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = lookup(auth_settings_v2.value, "twitter_v2", null) != null ? [lookup(auth_settings_v2.value, "twitter_v2")] : []
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = lookup(
+      each.value, "storage_accounts", {}
+    )
+
+    content {
+      name = lookup(
+        storage_account.value, "name", storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = try(storage_account.value.mount_path, null)
+    }
+  }
+
   site_config {
     always_on                                     = try(var.instance.site_config.always_on, false)
     ftps_state                                    = try(var.instance.site_config.ftps_state, "AllAllowed")
@@ -67,6 +225,41 @@ resource "azurerm_linux_function_app" "func" {
     websockets_enabled                            = try(var.instance.site_config.websockets_enabled, true)
     load_balancing_mode                           = try(var.instance.site_config.load_balancing_mode, null)
     ip_restriction_default_action                 = try(var.instance.site_config.ip_restriction_default_action, "Allow")
+    scm_ip_restriction_default_action             = try(var.instance.site_config.scm_ip_restriction_default_action, "Allow")
+
+    dynamic "ip_restriction" {
+      for_each = lookup(
+        each.value, "ip_restrictions", {}
+      )
+
+      content {
+        action                    = try(ip_restriction.value.action, "Allow")
+        ip_address                = try(ip_restriction.value.ip_address, null)
+        name                      = try(ip_restriction.value.name, null)
+        priority                  = try(ip_restriction.value.priority, 65000)
+        service_tag               = try(ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(ip_restriction.value.virtual_network_subnet_id, null)
+        description               = try(ip_restriction.value.description, null)
+        headers                   = try(ip_restriction.value.headers, [])
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = lookup(
+        each.value, "scm_ip_restrictions", {}
+      )
+
+      content {
+        action                    = try(scm_ip_restriction.value.action, "Allow")
+        ip_address                = try(scm_ip_restriction.value.ip_address, null)
+        name                      = try(scm_ip_restriction.value.name, null)
+        priority                  = try(scm_ip_restriction.value.priority, 65000)
+        service_tag               = try(scm_ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(scm_ip_restriction.value.virtual_network_subnet_id, null)
+        headers                   = try(scm_ip_restriction.value.headers, [])
+        description               = try(scm_ip_restriction.value.description, null)
+      }
+    }
 
     dynamic "application_stack" {
       for_each = lookup(each.value.site_config, "application_stack", null) != null ? [lookup(each.value.site_config, "application_stack")] : []
@@ -150,6 +343,13 @@ resource "azurerm_linux_function_app" "func" {
       value = connection_string.value.value
     }
   }
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+    ]
+  }
 }
 
 # linux function app slot
@@ -159,9 +359,8 @@ resource "azurerm_linux_function_app_slot" "slot" {
     if var.instance.type == "linux"
   }
 
-  name            = each.value.name
-  function_app_id = var.instance.type == "linux" ? azurerm_linux_function_app.func[var.instance.name].id : azurerm_windows_function_app.func[var.instance.name].id
-
+  name                                           = each.value.name
+  function_app_id                                = var.instance.type == "linux" ? azurerm_linux_function_app.func[var.instance.name].id : azurerm_windows_function_app.func[var.instance.name].id
   storage_account_name                           = var.instance.storage_account_name
   storage_account_access_key                     = var.instance.storage_account_access_key
   webdeploy_publish_basic_authentication_enabled = try(var.instance.webdeploy_publish_basic_authentication_enabled, true)
@@ -182,6 +381,10 @@ resource "azurerm_linux_function_app_slot" "slot" {
   builtin_logging_enabled                        = try(var.instance.builtin_logging_enabled, true)
   https_only                                     = try(var.instance.https_only, false)
 
+  service_plan_id = lookup(
+    each.value, "service_plan_id", null
+  )
+
   tags = try(
     var.instance.tags, var.tags, null
   )
@@ -189,6 +392,198 @@ resource "azurerm_linux_function_app_slot" "slot" {
   app_settings = try(
     each.value.app_settings, null
   )
+
+  dynamic "auth_settings_v2" {
+    for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
+
+    content {
+      auth_enabled                            = try(auth_settings_v2.value.auth_enabled, false)
+      runtime_version                         = try(auth_settings_v2.value.runtime_version, "~1")
+      config_file_path                        = try(auth_settings_v2.value.config_file_path, null)
+      require_authentication                  = try(auth_settings_v2.value.require_authentication, null)
+      unauthenticated_action                  = try(auth_settings_v2.value.unauthenticated_action, "RedirectToLoginPage")
+      default_provider                        = try(auth_settings_v2.value.default_provider, null)
+      excluded_paths                          = try(auth_settings_v2.value.excluded_paths, null)
+      require_https                           = try(auth_settings_v2.value.require_https, true)
+      http_route_api_prefix                   = try(auth_settings_v2.value.http_route_api_prefix, "/.auth")
+      forward_proxy_convention                = try(auth_settings_v2.value.forward_proxy_convention, "NoProxy")
+      forward_proxy_custom_host_header_name   = try(auth_settings_v2.value.forward_proxy_custom_host_header_name, null)
+      forward_proxy_custom_scheme_header_name = try(auth_settings_v2.value.forward_proxy_custom_scheme_header_name, null)
+
+      login {
+        token_store_enabled               = try(auth_settings_v2.value.login.token_store_enabled, false)
+        token_refresh_extension_time      = try(auth_settings_v2.value.login.token_refresh_extension_time, null)
+        token_store_path                  = try(auth_settings_v2.value.login.token_store_path, null)
+        token_store_sas_setting_name      = try(auth_settings_v2.value.login.token_store_sas_setting_name, null)
+        preserve_url_fragments_for_logins = try(auth_settings_v2.value.login.preserve_url_fragments_for_logins, null)
+        allowed_external_redirect_urls    = try(auth_settings_v2.value.login.allowed_external_redirect_urls, null)
+        cookie_expiration_convention      = try(auth_settings_v2.value.login.cookie_expiration_convention, null)
+        cookie_expiration_time            = try(auth_settings_v2.value.login.cookie_expiration_time, null)
+        validate_nonce                    = try(auth_settings_v2.value.login.validate_nonce, null)
+        nonce_expiration_time             = try(auth_settings_v2.value.login.nonce_expiration_time, null)
+        logout_endpoint                   = try(auth_settings_v2.value.login.logout_endpoint, null)
+      }
+
+      dynamic "apple_v2" {
+        for_each = lookup(auth_settings_v2.value, "apple_v2", null) != null ? [lookup(auth_settings_v2.value, "apple_v2")] : []
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = try(apple_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = lookup(auth_settings_v2.value, "active_directory_v2", null) != null ? [lookup(auth_settings_v2.value, "active_directory_v2")] : []
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = try(active_directory_v2.value.client_secret_setting_name, null)
+          client_secret_certificate_thumbprint = try(active_directory_v2.value.client_secret_certificate_thumbprint, null)
+          jwt_allowed_groups                   = try(active_directory_v2.value.jwt_allowed_groups, null)
+          jwt_allowed_client_applications      = try(active_directory_v2.value.jwt_allowed_client_applications, null)
+          www_authentication_disabled          = try(active_directory_v2.value.www_authentication_disabled, null)
+          allowed_audiences                    = try(active_directory_v2.value.allowed_audiences, null)
+          allowed_groups                       = try(active_directory_v2.value.allowed_groups, null)
+          allowed_identities                   = try(active_directory_v2.value.allowed_identities, null)
+          login_parameters                     = try(active_directory_v2.value.login_parameters, null)
+          allowed_applications                 = try(active_directory_v2.value.allowed_applications, null)
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = lookup(auth_settings_v2.value, "azure_static_web_app_v2", null) != null ? [lookup(auth_settings_v2.value, "azure_static_web_app_v2")] : []
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = try(custom_oidc_v2.value.name_claim_type, null)
+          scopes                        = try(custom_oidc_v2.value.scopes, null)
+          client_credential_method      = try(custom_oidc_v2.value.client_credential_method, null)
+          client_secret_setting_name    = try(custom_oidc_v2.value.client_secret_setting_name, null)
+          authorisation_endpoint        = try(custom_oidc_v2.value.authorisation_endpoint, null)
+          token_endpoint                = try(custom_oidc_v2.value.token_endpoint, null)
+          issuer_endpoint               = try(custom_oidc_v2.value.issuer_endpoint, null)
+          certification_uri             = try(custom_oidc_v2.value.certification_uri, null)
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = lookup(auth_settings_v2.value, "facebook_v2", null) != null ? [lookup(auth_settings_v2.value, "facebook_v2")] : []
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = try(facebook_v2.value.graph_api_version, "v15.0")
+          login_scopes            = try(facebook_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = lookup(auth_settings_v2.value, "github_v2", null) != null ? [lookup(auth_settings_v2.value, "github_v2")] : []
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = try(github_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = lookup(auth_settings_v2.value, "google_v2", null) != null ? [lookup(auth_settings_v2.value, "google_v2")] : []
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = try(google_v2.value.allowed_audiences, null)
+          login_scopes               = try(google_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = lookup(auth_settings_v2.value, "microsoft_v2", null) != null ? [lookup(auth_settings_v2.value, "microsoft_v2")] : []
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = try(microsoft_v2.value.allowed_audiences, null)
+          login_scopes               = try(microsoft_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = lookup(auth_settings_v2.value, "twitter_v2", null) != null ? [lookup(auth_settings_v2.value, "twitter_v2")] : []
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = lookup(
+      each.value, "storage_accounts", {}
+    )
+
+    content {
+      name = lookup(
+        storage_account.value, "name", storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = try(storage_account.value.mount_path, null)
+    }
+  }
+
+  dynamic "connection_string" {
+    for_each = lookup(
+      each.value, "connection_strings", {}
+    )
+
+    content {
+      name = lookup(
+        connection_string.value, "name", connection_string.key
+      )
+
+      value = connection_string.value
+      type  = connection_string.type
+    }
+  }
+
+  dynamic "backup" {
+    for_each = lookup(each.value, "backup", null) != null ? [lookup(each.value, "backup")] : []
+
+    content {
+      name                = backup.value.name
+      storage_account_url = backup.value.storage_account_url
+      enabled             = try(backup.value.enabled, true)
+
+      schedule {
+        frequency_interval       = backup.value.schedule.frequency_interval
+        frequency_unit           = backup.value.schedule.frequency_unit
+        keep_at_least_one_backup = try(backup.value.schedule.keep_at_least_one_backup, false)
+        retention_period_days    = try(backup.value.schedule.retention_period_days, 30)
+        start_time               = try(backup.value.schedule.start_time, null)
+        last_execution_time      = try(backup.value.schedule.last_execution_time, null)
+      }
+    }
+  }
 
   site_config {
     always_on                                     = try(each.value.site_config.always_on, false)
@@ -220,6 +615,40 @@ resource "azurerm_linux_function_app_slot" "slot" {
     auto_swap_slot_name                           = try(each.value.site_config.auto_swap_slot_name, null)
     websockets_enabled                            = try(each.value.site_config.websockets_enabled, false)
     load_balancing_mode                           = try(each.value.site_config.load_balancing_mode, null)
+    scm_ip_restriction_default_action             = try(each.value.site_config.scm_ip_restriction_default_action, "Allow")
+    ip_restriction_default_action                 = try(each.value.site_config.ip_restriction_default_action, "Allow")
+
+    dynamic "ip_restriction" {
+      for_each = try(
+        var.instance.site_config.ip_restrictions, {}
+      )
+
+      content {
+        action                    = try(ip_restriction.value.action, "Allow")
+        ip_address                = try(ip_restriction.value.ip_address, null)
+        name                      = try(ip_restriction.value.name, null)
+        priority                  = try(ip_restriction.value.priority, 65000)
+        service_tag               = try(ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(ip_restriction.value.virtual_network_subnet_id, null)
+        description               = try(ip_restriction.value.description, null)
+        headers                   = try(ip_restriction.value.headers, [])
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = try(var.instance.site_config.scm_ip_restriction, {})
+
+      content {
+        action                    = try(scm_ip_restriction.value.action, "Allow")
+        ip_address                = try(scm_ip_restriction.value.ip_address, null)
+        name                      = try(scm_ip_restriction.value.name, null)
+        priority                  = try(scm_ip_restriction.value.priority, 65000)
+        service_tag               = try(scm_ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(scm_ip_restriction.value.virtual_network_subnet_id, null)
+        headers                   = try(scm_ip_restriction.value.headers, [])
+        description               = try(scm_ip_restriction.value.description, null)
+      }
+    }
 
     dynamic "application_stack" {
       for_each = lookup(each.value.site_config, "application_stack", null) != null ? [lookup(each.value.site_config, "application_stack")] : []
@@ -264,6 +693,13 @@ resource "azurerm_linux_function_app_slot" "slot" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+    ]
+  }
 }
 
 # windows function app
@@ -305,6 +741,164 @@ resource "azurerm_windows_function_app" "func" {
     var.instance.tags, var.tags, null
   )
 
+  dynamic "auth_settings_v2" {
+    for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
+
+    content {
+      auth_enabled                            = try(auth_settings_v2.value.auth_enabled, false)
+      runtime_version                         = try(auth_settings_v2.value.runtime_version, "~1")
+      config_file_path                        = try(auth_settings_v2.value.config_file_path, null)
+      require_authentication                  = try(auth_settings_v2.value.require_authentication, null)
+      unauthenticated_action                  = try(auth_settings_v2.value.unauthenticated_action, "RedirectToLoginPage")
+      default_provider                        = try(auth_settings_v2.value.default_provider, null)
+      excluded_paths                          = try(auth_settings_v2.value.excluded_paths, null)
+      require_https                           = try(auth_settings_v2.value.require_https, true)
+      http_route_api_prefix                   = try(auth_settings_v2.value.http_route_api_prefix, "/.auth")
+      forward_proxy_convention                = try(auth_settings_v2.value.forward_proxy_convention, "NoProxy")
+      forward_proxy_custom_host_header_name   = try(auth_settings_v2.value.forward_proxy_custom_host_header_name, null)
+      forward_proxy_custom_scheme_header_name = try(auth_settings_v2.value.forward_proxy_custom_scheme_header_name, null)
+
+      login {
+        token_store_enabled               = try(auth_settings_v2.value.login.token_store_enabled, false)
+        token_refresh_extension_time      = try(auth_settings_v2.value.login.token_refresh_extension_time, null)
+        token_store_path                  = try(auth_settings_v2.value.login.token_store_path, null)
+        token_store_sas_setting_name      = try(auth_settings_v2.value.login.token_store_sas_setting_name, null)
+        preserve_url_fragments_for_logins = try(auth_settings_v2.value.login.preserve_url_fragments_for_logins, null)
+        allowed_external_redirect_urls    = try(auth_settings_v2.value.login.allowed_external_redirect_urls, null)
+        cookie_expiration_convention      = try(auth_settings_v2.value.login.cookie_expiration_convention, null)
+        cookie_expiration_time            = try(auth_settings_v2.value.login.cookie_expiration_time, null)
+        validate_nonce                    = try(auth_settings_v2.value.login.validate_nonce, null)
+        nonce_expiration_time             = try(auth_settings_v2.value.login.nonce_expiration_time, null)
+        logout_endpoint                   = try(auth_settings_v2.value.login.logout_endpoint, null)
+      }
+
+      dynamic "apple_v2" {
+        for_each = lookup(auth_settings_v2.value, "apple_v2", null) != null ? [lookup(auth_settings_v2.value, "apple_v2")] : []
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = try(apple_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = lookup(auth_settings_v2.value, "active_directory_v2", null) != null ? [lookup(auth_settings_v2.value, "active_directory_v2")] : []
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = try(active_directory_v2.value.client_secret_setting_name, null)
+          client_secret_certificate_thumbprint = try(active_directory_v2.value.client_secret_certificate_thumbprint, null)
+          jwt_allowed_groups                   = try(active_directory_v2.value.jwt_allowed_groups, null)
+          jwt_allowed_client_applications      = try(active_directory_v2.value.jwt_allowed_client_applications, null)
+          www_authentication_disabled          = try(active_directory_v2.value.www_authentication_disabled, null)
+          allowed_audiences                    = try(active_directory_v2.value.allowed_audiences, null)
+          allowed_groups                       = try(active_directory_v2.value.allowed_groups, null)
+          allowed_identities                   = try(active_directory_v2.value.allowed_identities, null)
+          login_parameters                     = try(active_directory_v2.value.login_parameters, null)
+          allowed_applications                 = try(active_directory_v2.value.allowed_applications, null)
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = lookup(auth_settings_v2.value, "azure_static_web_app_v2", null) != null ? [lookup(auth_settings_v2.value, "azure_static_web_app_v2")] : []
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = try(custom_oidc_v2.value.name_claim_type, null)
+          scopes                        = try(custom_oidc_v2.value.scopes, null)
+          client_credential_method      = try(custom_oidc_v2.value.client_credential_method, null)
+          client_secret_setting_name    = try(custom_oidc_v2.value.client_secret_setting_name, null)
+          authorisation_endpoint        = try(custom_oidc_v2.value.authorisation_endpoint, null)
+          token_endpoint                = try(custom_oidc_v2.value.token_endpoint, null)
+          issuer_endpoint               = try(custom_oidc_v2.value.issuer_endpoint, null)
+          certification_uri             = try(custom_oidc_v2.value.certification_uri, null)
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = lookup(auth_settings_v2.value, "facebook_v2", null) != null ? [lookup(auth_settings_v2.value, "facebook_v2")] : []
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = try(facebook_v2.value.graph_api_version, "v15.0")
+          login_scopes            = try(facebook_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = lookup(auth_settings_v2.value, "github_v2", null) != null ? [lookup(auth_settings_v2.value, "github_v2")] : []
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = try(github_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = lookup(auth_settings_v2.value, "google_v2", null) != null ? [lookup(auth_settings_v2.value, "google_v2")] : []
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = try(google_v2.value.allowed_audiences, null)
+          login_scopes               = try(google_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = lookup(auth_settings_v2.value, "microsoft_v2", null) != null ? [lookup(auth_settings_v2.value, "microsoft_v2")] : []
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = try(microsoft_v2.value.allowed_audiences, null)
+          login_scopes               = try(microsoft_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = lookup(auth_settings_v2.value, "twitter_v2", null) != null ? [lookup(auth_settings_v2.value, "twitter_v2")] : []
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = lookup(
+      each.value, "storage_accounts", {}
+    )
+
+    content {
+      name = lookup(
+        storage_account.value, "name", storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = try(storage_account.value.mount_path, null)
+    }
+  }
+
   site_config {
     always_on                              = try(var.instance.site_config.always_on, false)
     ftps_state                             = try(var.instance.site_config.ftps_state, "AllAllowed")
@@ -332,6 +926,42 @@ resource "azurerm_windows_function_app" "func" {
     api_definition_url                     = try(var.instance.site_config.api_definition_url, null)
     websockets_enabled                     = try(var.instance.site_config.websockets_enabled, false)
     load_balancing_mode                    = try(var.instance.site_config.load_balancing_mode, null)
+    ip_restriction_default_action          = try(var.instance.site_config.ip_restriction_default_action, "Allow")
+    scm_ip_restriction_default_action      = try(var.instance.site_config.scm_ip_restriction_default_action, "Allow")
+
+    dynamic "ip_restriction" {
+      for_each = lookup(
+        each.value, "ip_restrictions", {}
+      )
+
+      content {
+        action                    = try(ip_restriction.value.action, "Allow")
+        ip_address                = try(ip_restriction.value.ip_address, null)
+        name                      = try(ip_restriction.value.name, null)
+        priority                  = try(ip_restriction.value.priority, 65000)
+        service_tag               = try(ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(ip_restriction.value.virtual_network_subnet_id, null)
+        description               = try(ip_restriction.value.description, null)
+        headers                   = try(ip_restriction.value.headers, [])
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = lookup(
+        each.value, "scm_ip_restrictions", {}
+      )
+
+      content {
+        action                    = try(scm_ip_restriction.value.action, "Allow")
+        ip_address                = try(scm_ip_restriction.value.ip_address, null)
+        name                      = try(scm_ip_restriction.value.name, null)
+        priority                  = try(scm_ip_restriction.value.priority, 65000)
+        service_tag               = try(scm_ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(scm_ip_restriction.value.virtual_network_subnet_id, null)
+        headers                   = try(scm_ip_restriction.value.headers, [])
+        description               = try(scm_ip_restriction.value.description, null)
+      }
+    }
 
     dynamic "application_stack" {
       for_each = try(var.instance.site_config.application_stack, null) != null ? [1] : []
@@ -403,6 +1033,13 @@ resource "azurerm_windows_function_app" "func" {
       value = connection_string.value.value
     }
   }
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+    ]
+  }
 }
 
 # windows function app slot
@@ -435,6 +1072,10 @@ resource "azurerm_windows_function_app_slot" "slot" {
   https_only                                     = try(var.instance.https_only, false)
   enabled                                        = try(var.instance.enabled, true)
 
+  service_plan_id = lookup(
+    each.value, "service_plan_id", null
+  )
+
   app_settings = try(
     each.value.app_settings, null
   )
@@ -442,6 +1083,198 @@ resource "azurerm_windows_function_app_slot" "slot" {
   tags = try(
     var.instance.tags, var.tags, null
   )
+
+  dynamic "auth_settings_v2" {
+    for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
+
+    content {
+      auth_enabled                            = try(auth_settings_v2.value.auth_enabled, false)
+      runtime_version                         = try(auth_settings_v2.value.runtime_version, "~1")
+      config_file_path                        = try(auth_settings_v2.value.config_file_path, null)
+      require_authentication                  = try(auth_settings_v2.value.require_authentication, null)
+      unauthenticated_action                  = try(auth_settings_v2.value.unauthenticated_action, "RedirectToLoginPage")
+      default_provider                        = try(auth_settings_v2.value.default_provider, null)
+      excluded_paths                          = try(auth_settings_v2.value.excluded_paths, null)
+      require_https                           = try(auth_settings_v2.value.require_https, true)
+      http_route_api_prefix                   = try(auth_settings_v2.value.http_route_api_prefix, "/.auth")
+      forward_proxy_convention                = try(auth_settings_v2.value.forward_proxy_convention, "NoProxy")
+      forward_proxy_custom_host_header_name   = try(auth_settings_v2.value.forward_proxy_custom_host_header_name, null)
+      forward_proxy_custom_scheme_header_name = try(auth_settings_v2.value.forward_proxy_custom_scheme_header_name, null)
+
+      login {
+        token_store_enabled               = try(auth_settings_v2.value.login.token_store_enabled, false)
+        token_refresh_extension_time      = try(auth_settings_v2.value.login.token_refresh_extension_time, null)
+        token_store_path                  = try(auth_settings_v2.value.login.token_store_path, null)
+        token_store_sas_setting_name      = try(auth_settings_v2.value.login.token_store_sas_setting_name, null)
+        preserve_url_fragments_for_logins = try(auth_settings_v2.value.login.preserve_url_fragments_for_logins, null)
+        allowed_external_redirect_urls    = try(auth_settings_v2.value.login.allowed_external_redirect_urls, null)
+        cookie_expiration_convention      = try(auth_settings_v2.value.login.cookie_expiration_convention, null)
+        cookie_expiration_time            = try(auth_settings_v2.value.login.cookie_expiration_time, null)
+        validate_nonce                    = try(auth_settings_v2.value.login.validate_nonce, null)
+        nonce_expiration_time             = try(auth_settings_v2.value.login.nonce_expiration_time, null)
+        logout_endpoint                   = try(auth_settings_v2.value.login.logout_endpoint, null)
+      }
+
+      dynamic "apple_v2" {
+        for_each = lookup(auth_settings_v2.value, "apple_v2", null) != null ? [lookup(auth_settings_v2.value, "apple_v2")] : []
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = try(apple_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = lookup(auth_settings_v2.value, "active_directory_v2", null) != null ? [lookup(auth_settings_v2.value, "active_directory_v2")] : []
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = try(active_directory_v2.value.client_secret_setting_name, null)
+          client_secret_certificate_thumbprint = try(active_directory_v2.value.client_secret_certificate_thumbprint, null)
+          jwt_allowed_groups                   = try(active_directory_v2.value.jwt_allowed_groups, null)
+          jwt_allowed_client_applications      = try(active_directory_v2.value.jwt_allowed_client_applications, null)
+          www_authentication_disabled          = try(active_directory_v2.value.www_authentication_disabled, null)
+          allowed_audiences                    = try(active_directory_v2.value.allowed_audiences, null)
+          allowed_groups                       = try(active_directory_v2.value.allowed_groups, null)
+          allowed_identities                   = try(active_directory_v2.value.allowed_identities, null)
+          login_parameters                     = try(active_directory_v2.value.login_parameters, null)
+          allowed_applications                 = try(active_directory_v2.value.allowed_applications, null)
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = lookup(auth_settings_v2.value, "azure_static_web_app_v2", null) != null ? [lookup(auth_settings_v2.value, "azure_static_web_app_v2")] : []
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = try(custom_oidc_v2.value.name_claim_type, null)
+          scopes                        = try(custom_oidc_v2.value.scopes, null)
+          client_credential_method      = try(custom_oidc_v2.value.client_credential_method, null)
+          client_secret_setting_name    = try(custom_oidc_v2.value.client_secret_setting_name, null)
+          authorisation_endpoint        = try(custom_oidc_v2.value.authorisation_endpoint, null)
+          token_endpoint                = try(custom_oidc_v2.value.token_endpoint, null)
+          issuer_endpoint               = try(custom_oidc_v2.value.issuer_endpoint, null)
+          certification_uri             = try(custom_oidc_v2.value.certification_uri, null)
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = lookup(auth_settings_v2.value, "facebook_v2", null) != null ? [lookup(auth_settings_v2.value, "facebook_v2")] : []
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = try(facebook_v2.value.graph_api_version, "v15.0")
+          login_scopes            = try(facebook_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = lookup(auth_settings_v2.value, "github_v2", null) != null ? [lookup(auth_settings_v2.value, "github_v2")] : []
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = try(github_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = lookup(auth_settings_v2.value, "google_v2", null) != null ? [lookup(auth_settings_v2.value, "google_v2")] : []
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = try(google_v2.value.allowed_audiences, null)
+          login_scopes               = try(google_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = lookup(auth_settings_v2.value, "microsoft_v2", null) != null ? [lookup(auth_settings_v2.value, "microsoft_v2")] : []
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = try(microsoft_v2.value.allowed_audiences, null)
+          login_scopes               = try(microsoft_v2.value.login_scopes, null)
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = lookup(auth_settings_v2.value, "twitter_v2", null) != null ? [lookup(auth_settings_v2.value, "twitter_v2")] : []
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = lookup(
+      each.value, "storage_accounts", {}
+    )
+
+    content {
+      name = lookup(
+        storage_account.value, "name", storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = try(storage_account.value.mount_path, null)
+    }
+  }
+
+  dynamic "connection_string" {
+    for_each = lookup(
+      each.value, "connection_strings", {}
+    )
+
+    content {
+      name = lookup(
+        connection_string.value, "name", connection_string.key
+      )
+
+      value = connection_string.value
+      type  = connection_string.type
+    }
+  }
+
+  dynamic "backup" {
+    for_each = lookup(each.value, "backup", null) != null ? [lookup(each.value, "backup")] : []
+
+    content {
+      name                = backup.value.name
+      storage_account_url = backup.value.storage_account_url
+      enabled             = try(backup.value.enabled, true)
+
+      schedule {
+        frequency_interval       = backup.value.schedule.frequency_interval
+        frequency_unit           = backup.value.schedule.frequency_unit
+        keep_at_least_one_backup = try(backup.value.schedule.keep_at_least_one_backup, false)
+        retention_period_days    = try(backup.value.schedule.retention_period_days, 30)
+        start_time               = try(backup.value.schedule.start_time, null)
+        last_execution_time      = try(backup.value.schedule.last_execution_time, null)
+      }
+    }
+  }
 
   site_config {
     always_on                              = try(var.instance.site_config.always_on, false)
@@ -471,6 +1304,40 @@ resource "azurerm_windows_function_app_slot" "slot" {
     auto_swap_slot_name                    = try(var.instance.site_config.auto_swap_slot_name, null)
     websockets_enabled                     = try(var.instance.site_config.websockets_enabled, false)
     load_balancing_mode                    = try(var.instance.site_config.load_balancing_mode, null)
+    ip_restriction_default_action          = try(var.instance.site_config.ip_restriction_default_action, "Allow")
+    scm_ip_restriction_default_action      = try(var.instance.site_config.scm_ip_restriction_default_action, "Allow")
+
+    dynamic "ip_restriction" {
+      for_each = try(
+        var.instance.site_config.ip_restrictions, {}
+      )
+
+      content {
+        action                    = try(ip_restriction.value.action, "Allow")
+        ip_address                = try(ip_restriction.value.ip_address, null)
+        name                      = try(ip_restriction.value.name, null)
+        priority                  = try(ip_restriction.value.priority, 65000)
+        service_tag               = try(ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(ip_restriction.value.virtual_network_subnet_id, null)
+        description               = try(ip_restriction.value.description, null)
+        headers                   = try(ip_restriction.value.headers, [])
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = try(var.instance.site_config.scm_ip_restriction, {})
+
+      content {
+        action                    = try(scm_ip_restriction.value.action, "Allow")
+        ip_address                = try(scm_ip_restriction.value.ip_address, null)
+        name                      = try(scm_ip_restriction.value.name, null)
+        priority                  = try(scm_ip_restriction.value.priority, 65000)
+        service_tag               = try(scm_ip_restriction.value.service_tag, null)
+        virtual_network_subnet_id = try(scm_ip_restriction.value.virtual_network_subnet_id, null)
+        headers                   = try(scm_ip_restriction.value.headers, [])
+        description               = try(scm_ip_restriction.value.description, null)
+      }
+    }
 
     dynamic "application_stack" {
       for_each = lookup(each.value.site_config, "application_stack", null) != null ? [lookup(each.value.site_config, "application_stack")] : []
@@ -502,5 +1369,12 @@ resource "azurerm_windows_function_app_slot" "slot" {
         retention_period_days = try(app_service_logs.value.retention_period_days, null)
       }
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+    ]
   }
 }

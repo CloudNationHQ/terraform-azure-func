@@ -60,9 +60,7 @@ module "function_app" {
     site_config = {
       pre_warmed_instance_count        = 3
       runtime_scale_monitoring_enabled = true
-      application_stack = {
-        node_version = "~20"
-      }
+
       app_service_logs = {
         disk_quota_mb         = 100
         retention_period_days = 30
