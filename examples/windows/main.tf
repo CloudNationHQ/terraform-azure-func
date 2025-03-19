@@ -49,7 +49,7 @@ module "function_app" {
 
   instance = {
     type           = "windows"
-    name           = "func-demo-dev-xaesdwc"
+    name           = "func-demo-dev-xaesxqw"
     resource_group = module.rg.groups.demo.name
     location       = module.rg.groups.demo.location
 
