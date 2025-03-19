@@ -406,7 +406,7 @@ variable "instance" {
   }
 
   validation {
-    condition     = var.instance.resource_group_name != null || var.resource_group_name != null
+    condition     = var.instance.resource_group != null || var.resource_group != null
     error_message = "resource group name must be provided either in the config object or as a separate variable."
   }
 
