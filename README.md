@@ -76,7 +76,7 @@ object({
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
     app_settings                                   = optional(map(string), null)
-    tags                                           = optional(map(string), null)
+    tags                                           = optional(map(string))
     auth_settings_v2 = optional(object({
       auth_enabled                            = optional(bool, false)
       runtime_version                         = optional(string, "~1")
@@ -451,11 +451,17 @@ object({
   })
 ```
 
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
 ### <a name="input_location"></a> [location](#input\_location)
 
 Description: Default location
 
 Type: `string`
+
+Default: `null`
 
 ### <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group)
 
@@ -463,9 +469,7 @@ Description: Default resource group name
 
 Type: `string`
 
-## Optional Inputs
-
-The following input variables are optional (have default values):
+Default: `null`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 

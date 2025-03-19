@@ -27,7 +27,7 @@ variable "instance" {
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
     app_settings                                   = optional(map(string), null)
-    tags                                           = optional(map(string), null)
+    tags                                           = optional(map(string))
     auth_settings_v2 = optional(object({
       auth_enabled                            = optional(bool, false)
       runtime_version                         = optional(string, "~1")
@@ -400,16 +400,32 @@ variable "instance" {
       }), null)
     })), {})
   })
+  validation {
+    condition     = var.instance.location != null || var.location != null
+    error_message = "location must be provided either in the config object or as a separate variable."
+  }
+
+  validation {
+    condition     = var.instance.resource_group_name != null || var.resource_group_name != null
+    error_message = "resource group name must be provided either in the config object or as a separate variable."
+  }
+
+  validation {
+    condition     = contains(["windows", "linux"], lookup(var.instance, "type", ""))
+    error_message = "The vm type must be either 'windows' or 'linux'."
+  }
 }
 
 variable "resource_group" {
   description = "Default resource group name"
   type        = string
+  default     = null
 }
 
 variable "location" {
   description = "Default location"
   type        = string
+  default     = null
 }
 
 variable "tags" {
