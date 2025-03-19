@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.5.0...v1.6.0) (2025-03-19)
+
+
+### Features
+
+* format documentation to include type definitions ([#42](https://github.com/CloudNationHQ/terraform-azure-func/issues/42)) ([b09582e](https://github.com/CloudNationHQ/terraform-azure-func/commit/b09582e2f8ba10b38b15e82c4c8ef5007355da47))
+
 ## [1.5.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.4.0...v1.5.0) (2025-03-14)
 
 
