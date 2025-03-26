@@ -68,9 +68,9 @@ module "function_app" {
     location       = module.rg.groups.demo.location
     resource_group = module.rg.groups.demo.name
 
-    storage_account_name        = module.storage.account.name
-    storage_account_access_key  = module.storage.account.primary_access_key
-    service_plan_id             = module.service_plan.plans.plan1.id
+    storage_account_name       = module.storage.account.name
+    storage_account_access_key = module.storage.account.primary_access_key
+    service_plan_id            = module.service_plan.plans.plan1.id
 
     app_settings = {
       "WEBSITE_RUN_FROM_PACKAGE"         = "1"
