@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.6.0...v1.7.0) (2025-03-26)
+
+
+### Features
+
+* add tags hidden link properties to lifecycle ignore for function apps and corrected the default usage ([#44](https://github.com/CloudNationHQ/terraform-azure-func/issues/44)) ([f5d5e4d](https://github.com/CloudNationHQ/terraform-azure-func/commit/f5d5e4d2fd17b49ae0b91a6da2b43f017938956d))
+
 ## [1.6.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.5.0...v1.6.0) (2025-03-19)
 
 
