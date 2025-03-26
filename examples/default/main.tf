@@ -73,10 +73,9 @@ module "function_app" {
     service_plan_id            = module.service_plan.plans.plan1.id
 
     app_settings = {
-      "WEBSITE_RUN_FROM_PACKAGE"         = "1"
-      "WEBSITE_ENABLE_SYNC_UPDATE_SITE"  = "true"
-      "FUNCTIONS_WORKER_RUNTIME"         = "dotnet-isolated"
-      "AppConfigurationConnectionString" = module.app_configuration.configs.alv.primary_write_key[0].connection_string
+      "WEBSITE_RUN_FROM_PACKAGE"        = "1"
+      "WEBSITE_ENABLE_SYNC_UPDATE_SITE" = "true"
+      "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
     }
 
     site_config = {
