@@ -193,7 +193,7 @@ object({
       health_check_path                             = optional(string, null)
       use_32_bit_worker                             = optional(bool, false)
       api_definition_url                            = optional(string, null)
-      websockets_enabled                            = optional(bool, true)
+      websockets_enabled                            = optional(bool, false)
       load_balancing_mode                           = optional(string, null)
       ip_restriction_default_action                 = optional(string, "Allow")
       scm_ip_restriction_default_action             = optional(string, "Allow")

@@ -354,6 +354,9 @@ resource "azurerm_linux_function_app" "func" {
       auth_settings,
       app_settings["WEBSITE_RUN_FROM_PACKAGE"],
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
     ]
   }
 }
@@ -704,6 +707,9 @@ resource "azurerm_linux_function_app_slot" "slot" {
       auth_settings,
       app_settings["WEBSITE_RUN_FROM_PACKAGE"],
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
     ]
   }
 }
@@ -1050,6 +1056,9 @@ resource "azurerm_windows_function_app" "func" {
       auth_settings,
       app_settings["WEBSITE_RUN_FROM_PACKAGE"],
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
     ]
   }
 }
@@ -1384,6 +1393,9 @@ resource "azurerm_windows_function_app_slot" "slot" {
       auth_settings,
       app_settings["WEBSITE_RUN_FROM_PACKAGE"],
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
     ]
   }
 }

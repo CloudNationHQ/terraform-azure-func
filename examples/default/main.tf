@@ -37,9 +37,21 @@ module "service_plan" {
       name           = module.naming.app_service_plan.name
       resource_group = module.rg.groups.demo.name
       location       = module.rg.groups.demo.location
-      os_type        = "Linux"
-      sku_name       = "Y1"
+      os_type        = "Windows"
+      sku_name       = "B1"
     }
+  }
+}
+
+module "appi" {
+  source  = "cloudnationhq/appi/azure"
+  version = "~> 2.0"
+
+  config = {
+    name             = "${module.naming.application_insights.name}-global-01"
+    location         = module.rg.groups.demo.location
+    resource_group   = module.rg.groups.demo.name
+    application_type = "web"
   }
 }
 
@@ -51,12 +63,33 @@ module "function_app" {
   location       = module.rg.groups.demo.location
 
   instance = {
-    type                       = "linux"
-    name                       = "func-demo-dev-xaenwypc"
+    type           = "windows"
+    name           = "${module.naming.function_app.name}-brp-01"
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
+
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key
     service_plan_id            = module.service_plan.plans.plan1.id
 
-    site_config = {}
+    app_settings = {
+      "WEBSITE_RUN_FROM_PACKAGE"         = "1"
+      "WEBSITE_ENABLE_SYNC_UPDATE_SITE"  = "true"
+      "FUNCTIONS_WORKER_RUNTIME"         = "dotnet-isolated"
+      "AppConfigurationConnectionString" = module.app_configuration.configs.alv.primary_write_key[0].connection_string
+    }
+
+    site_config = {
+      always_on          = true
+      http2_enabled      = false
+      vnet_route_enabled = true
+
+      application_insights_key               = module.appi.config.instrumentation_key
+      application_insights_connection_string = module.appi.config.connection_string
+
+      application_stack = {
+        use_dotnet_isolation_runtime = true
+      }
+    }
   }
 }
