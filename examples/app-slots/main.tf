@@ -49,10 +49,10 @@ module "function_app" {
   version = "~> 1.0"
 
   instance = {
-    type           = "linux"
-    name           = "func-demo-dev-xaeweeq"
-    resource_group = module.rg.groups.demo.name
-    location       = module.rg.groups.demo.location
+    type                       = "linux"
+    name                       = "func-demo-dev-xaeweeq"
+    resource_group             = module.rg.groups.demo.name
+    location                   = module.rg.groups.demo.location
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key
     service_plan_id            = module.service_plan.plans.plan1.id
