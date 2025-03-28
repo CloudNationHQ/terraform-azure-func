@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.7.0...v1.8.0) (2025-03-28)
+
+
+### Features
+
+* add support for identity blocks and updated all properties ([#46](https://github.com/CloudNationHQ/terraform-azure-func/issues/46)) ([b808573](https://github.com/CloudNationHQ/terraform-azure-func/commit/b808573d8bc1e4cb5c2351a93a9d124c5de3a8fc))
+
 ## [1.7.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.6.0...v1.7.0) (2025-03-26)
 
 
