@@ -12,7 +12,7 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "westeurope"
+      location = "germanywestcentral"
     }
   }
 }
@@ -49,7 +49,7 @@ module "function_app" {
 
   instance = {
     type           = "windows"
-    name           = "func-demo-dev-xaesxqw"
+    name           = "func-demo-dev-xaesxqt"
     resource_group = module.rg.groups.demo.name
     location       = module.rg.groups.demo.location
 

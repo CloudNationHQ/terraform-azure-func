@@ -12,14 +12,14 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "westeurope"
+      location = "germanywestcentral"
     }
   }
 }
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   storage = {
     name           = module.naming.storage_account.name_unique
@@ -113,7 +113,7 @@ module "function_app" {
 
   instance = {
     type                          = "linux"
-    name                          = "func-demo-dev-xaehqwa"
+    name                          = "func-demo-dev-xaehqwe"
     storage_account_name          = module.storage.account.name
     storage_account_access_key    = module.storage.account.primary_access_key
     service_plan_id               = module.service_plan.plans.plan1.id
