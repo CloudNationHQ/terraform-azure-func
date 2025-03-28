@@ -37,11 +37,21 @@ resource "azurerm_linux_function_app" "func" {
   client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
   ftp_publish_basic_authentication_enabled       = var.instance.ftp_publish_basic_authentication_enabled
   webdeploy_publish_basic_authentication_enabled = var.instance.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
   app_settings                                   = var.instance.app_settings
 
   tags = try(
     var.instance.tags, var.tags, null
   )
+
+  dynamic "identity" {
+    for_each = lookup(var.instance, "identity", null) != null ? [var.instance.identity] : []
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
 
   dynamic "auth_settings_v2" {
     for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
@@ -389,6 +399,7 @@ resource "azurerm_linux_function_app_slot" "slot" {
   client_certificate_mode                        = var.instance.client_certificate_mode
   builtin_logging_enabled                        = var.instance.builtin_logging_enabled
   https_only                                     = var.instance.https_only
+  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
   service_plan_id = lookup(
@@ -398,6 +409,16 @@ resource "azurerm_linux_function_app_slot" "slot" {
   tags = try(
     var.instance.tags, var.tags, null
   )
+
+
+  dynamic "identity" {
+    for_each = lookup(var.instance, "identity", null) != null ? [var.instance.identity] : []
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
 
   dynamic "auth_settings_v2" {
     for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
@@ -753,11 +774,21 @@ resource "azurerm_windows_function_app" "func" {
   client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
   ftp_publish_basic_authentication_enabled       = var.instance.ftp_publish_basic_authentication_enabled
   webdeploy_publish_basic_authentication_enabled = var.instance.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
   app_settings                                   = var.instance.app_settings
 
   tags = try(
     var.instance.tags, var.tags, null
   )
+
+  dynamic "identity" {
+    for_each = lookup(var.instance, "identity", null) != null ? [var.instance.identity] : []
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
 
   dynamic "auth_settings_v2" {
     for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []
@@ -1092,6 +1123,7 @@ resource "azurerm_windows_function_app_slot" "slot" {
   builtin_logging_enabled                        = var.instance.builtin_logging_enabled
   https_only                                     = var.instance.https_only
   enabled                                        = var.instance.enabled
+  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
   service_plan_id = lookup(
@@ -1101,6 +1133,15 @@ resource "azurerm_windows_function_app_slot" "slot" {
   tags = try(
     var.instance.tags, var.tags, null
   )
+
+  dynamic "identity" {
+    for_each = lookup(var.instance, "identity", null) != null ? [var.instance.identity] : []
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
 
   dynamic "auth_settings_v2" {
     for_each = lookup(each.value, "auth_settings_v2", null) != null ? [lookup(each.value, "auth_settings_v2")] : []

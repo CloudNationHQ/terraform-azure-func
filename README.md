@@ -75,8 +75,13 @@ object({
     client_certificate_exclusion_paths             = optional(string, null)
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
+    virtual_network_backup_restore_enabled         = optional(bool, false)
     app_settings                                   = optional(map(string), null)
     tags                                           = optional(map(string))
+    identity = optional(object({
+      type         = string
+      identity_ids = optional(list(string), null)
+    }), null)
     auth_settings_v2 = optional(object({
       auth_enabled                            = optional(bool, false)
       runtime_version                         = optional(string, "~1")
@@ -272,9 +277,14 @@ object({
       value = string
     })), {})
     slots = optional(map(object({
-      name            = string
-      service_plan_id = optional(string, null)
-      app_settings    = optional(map(string), null)
+      name                                   = string
+      service_plan_id                        = optional(string, null)
+      virtual_network_backup_restore_enabled = optional(bool, false)
+      app_settings                           = optional(map(string), null)
+      identity = optional(object({
+        type         = string
+        identity_ids = optional(list(string), null)
+      }), null)
       site_config = object({
         always_on                                     = optional(bool, false)
         ftps_state                                    = optional(string, "Disabled")
@@ -504,15 +514,15 @@ Full examples detailing all usages, along with integrations with dependency modu
 
 To update the module's documentation run `make doc`
 
-## Authors
-
-Module is maintained by [these awesome contributors](https://github.com/cloudnationhq/terraform-azure-func/graphs/contributors).
-
-## Contributing
+## Contributors
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
+
+<a href="https://github.com/cloudnationhq/terraform-azure-sa/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=cloudnationhq/terraform-azure-func" />
+</a>
 
 ## License
 

@@ -12,7 +12,7 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "westeurope"
+      location = "germanywestcentral"
     }
   }
 }
@@ -49,21 +49,21 @@ module "function_app" {
   version = "~> 1.0"
 
   instance = {
-    type           = "windows"
-    name           = "func-demo-dev-xaeweee"
-    resource_group = module.rg.groups.demo.name
-    location       = module.rg.groups.demo.location
-
+    type                       = "linux"
+    name                       = "func-demo-dev-xaeweeq"
+    resource_group             = module.rg.groups.demo.name
+    location                   = module.rg.groups.demo.location
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key
     service_plan_id            = module.service_plan.plans.plan1.id
     slots                      = local.slots
-
     site_config = {
       always_on                        = false
       pre_warmed_instance_count        = 3
       runtime_scale_monitoring_enabled = true
       scm_use_main_ip_restriction      = true
+      application_stack = {
+      }
 
       app_service_logs = {
         disk_quota_mb         = 100
