@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.8.0...v1.8.1) (2025-04-14)
+
+
+### Bug Fixes
+
+* fix submodule generation from makefile ([#48](https://github.com/CloudNationHQ/terraform-azure-func/issues/48)) ([23999f9](https://github.com/CloudNationHQ/terraform-azure-func/commit/23999f972ae49e93093150e03eab9a5d9764e654))
+
 ## [1.8.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.7.0...v1.8.0) (2025-03-28)
 
 
