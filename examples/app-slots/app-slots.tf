@@ -1,7 +1,9 @@
 locals {
   slots = {
     dev = {
-      name = "development"
+      name                       = "development"
+      storage_account_name       = module.storage.account.name
+      storage_account_access_key = module.storage.account.primary_access_key
       site_config = {
         always_on                        = false
         http2_enabled                    = true
@@ -29,7 +31,9 @@ locals {
       }
     }
     staging = {
-      name = "staging"
+      name                       = "staging"
+      storage_account_name       = module.storage.account.name
+      storage_account_access_key = module.storage.account.primary_access_key
       site_config = {
         always_on                        = false
         http2_enabled                    = true

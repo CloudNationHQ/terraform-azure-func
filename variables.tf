@@ -2,12 +2,12 @@ variable "instance" {
   description = "Contains all function app configuration"
   type = object({
     name                                           = string
-    type                                           = string # "linux" or "windows"
-    resource_group                                 = optional(string, null)
+    type                                           = string
+    resource_group_name                            = optional(string, null)
     location                                       = optional(string, null)
     service_plan_id                                = string
-    storage_account_name                           = string
-    storage_account_access_key                     = string
+    storage_account_name                           = optional(string, null)
+    storage_account_access_key                     = optional(string, null)
     https_only                                     = optional(bool, true)
     zip_deploy_file                                = optional(string, null)
     enabled                                        = optional(bool, true)
@@ -228,71 +228,33 @@ variable "instance" {
       value = string
     })), {})
     slots = optional(map(object({
-      name                                   = string
-      service_plan_id                        = optional(string, null)
-      virtual_network_backup_restore_enabled = optional(bool, false)
-      app_settings                           = optional(map(string), null)
+      name                                           = optional(string, null)
+      service_plan_id                                = optional(string, null)
+      virtual_network_backup_restore_enabled         = optional(bool, false)
+      storage_account_name                           = optional(string, null)
+      storage_account_access_key                     = optional(string, null)
+      webdeploy_publish_basic_authentication_enabled = optional(bool, true)
+      ftp_publish_basic_authentication_enabled       = optional(bool, true)
+      client_certificate_exclusion_paths             = optional(string, null)
+      vnet_image_pull_enabled                        = optional(bool, false)
+      content_share_force_disabled                   = optional(bool, false)
+      storage_uses_managed_identity                  = optional(bool, null)
+      public_network_access_enabled                  = optional(bool, true)
+      storage_key_vault_secret_id                    = optional(string, null)
+      functions_extension_version                    = optional(string, null)
+      client_certificate_enabled                     = optional(bool, false)
+      virtual_network_subnet_id                      = optional(string, null)
+      daily_memory_time_quota                        = optional(number, null)
+      client_certificate_mode                        = optional(string, null)
+      builtin_logging_enabled                        = optional(bool, true)
+      https_only                                     = optional(bool, true)
+      enabled                                        = optional(bool, true)
+      key_vault_reference_identity_id                = optional(string, null)
+      app_settings                                   = optional(map(string), null)
       identity = optional(object({
         type         = string
         identity_ids = optional(list(string), null)
       }), null)
-      site_config = object({
-        always_on                                     = optional(bool, false)
-        ftps_state                                    = optional(string, "Disabled")
-        worker_count                                  = optional(number, null)
-        http2_enabled                                 = optional(bool, false)
-        app_scale_limit                               = optional(number, null)
-        app_command_line                              = optional(string, null)
-        remote_debugging_version                      = optional(string, null)
-        pre_warmed_instance_count                     = optional(number, null)
-        runtime_scale_monitoring_enabled              = optional(bool, false)
-        scm_use_main_ip_restriction                   = optional(bool, false)
-        health_check_eviction_time_in_min             = optional(number, null)
-        application_insights_connection_string        = optional(string, null)
-        container_registry_use_managed_identity       = optional(bool, false)
-        container_registry_managed_identity_client_id = optional(string, null)
-        minimum_tls_version                           = optional(string, "1.2")
-        api_management_api_id                         = optional(string, null)
-        managed_pipeline_mode                         = optional(string, null)
-        vnet_route_all_enabled                        = optional(bool, false)
-        scm_minimum_tls_version                       = optional(string, "1.2")
-        application_insights_key                      = optional(string, null)
-        elastic_instance_minimum                      = optional(number, null)
-        remote_debugging_enabled                      = optional(bool, false)
-        default_documents                             = optional(list(string), null)
-        health_check_path                             = optional(string, null)
-        use_32_bit_worker                             = optional(bool, false)
-        api_definition_url                            = optional(string, null)
-        auto_swap_slot_name                           = optional(string, null)
-        websockets_enabled                            = optional(bool, false)
-        load_balancing_mode                           = optional(string, null)
-        scm_ip_restriction_default_action             = optional(string, "Allow")
-        ip_restriction_default_action                 = optional(string, "Allow")
-        application_stack = optional(object({
-          dotnet_version              = optional(string, null)
-          use_dotnet_isolated_runtime = optional(bool, null)
-          java_version                = optional(string, null)
-          node_version                = optional(string, null)
-          python_version              = optional(string, null)
-          powershell_core_version     = optional(string, null)
-          use_custom_runtime          = optional(bool, null)
-          docker = optional(object({
-            image_name        = string
-            image_tag         = string
-            registry_url      = string
-            registry_username = string
-            registry_password = string
-          }), null)
-        }), null)
-        cors = optional(object({
-          allowed_origins     = optional(list(string), [])
-          support_credentials = optional(bool, false)
-        }), null)
-        app_service_logs = optional(object({
-          disk_quota_mb         = optional(number, null)
-          retention_period_days = optional(number, null)
-        }), null)
-      })
       auth_settings_v2 = optional(object({
         auth_enabled                            = optional(bool, false)
         runtime_version                         = optional(string, "~1")
@@ -382,6 +344,83 @@ variable "instance" {
           consumer_secret_setting_name = string
         }), null)
       }), null)
+      site_config = object({
+        always_on                                     = optional(bool, false)
+        ftps_state                                    = optional(string, "Disabled")
+        worker_count                                  = optional(number, null)
+        http2_enabled                                 = optional(bool, false)
+        app_scale_limit                               = optional(number, null)
+        app_command_line                              = optional(string, null)
+        remote_debugging_version                      = optional(string, null)
+        pre_warmed_instance_count                     = optional(number, null)
+        runtime_scale_monitoring_enabled              = optional(bool, false)
+        scm_use_main_ip_restriction                   = optional(bool, false)
+        health_check_eviction_time_in_min             = optional(number, null)
+        application_insights_connection_string        = optional(string, null)
+        container_registry_use_managed_identity       = optional(bool, false)
+        container_registry_managed_identity_client_id = optional(string, null)
+        minimum_tls_version                           = optional(string, "1.2")
+        api_management_api_id                         = optional(string, null)
+        managed_pipeline_mode                         = optional(string, null)
+        vnet_route_all_enabled                        = optional(bool, false)
+        scm_minimum_tls_version                       = optional(string, "1.2")
+        application_insights_key                      = optional(string, null)
+        elastic_instance_minimum                      = optional(number, null)
+        remote_debugging_enabled                      = optional(bool, false)
+        default_documents                             = optional(list(string), null)
+        health_check_path                             = optional(string, null)
+        use_32_bit_worker                             = optional(bool, false)
+        api_definition_url                            = optional(string, null)
+        auto_swap_slot_name                           = optional(string, null)
+        websockets_enabled                            = optional(bool, false)
+        load_balancing_mode                           = optional(string, null)
+        scm_ip_restriction_default_action             = optional(string, "Allow")
+        ip_restriction_default_action                 = optional(string, "Allow")
+        ip_restrictions = optional(map(object({
+          action                    = optional(string, "Allow")
+          ip_address                = optional(string, null)
+          name                      = optional(string, null)
+          priority                  = optional(number, 65000)
+          service_tag               = optional(string, null)
+          virtual_network_subnet_id = optional(string, null)
+          description               = optional(string, null)
+          headers                   = optional(list(string), [])
+        })), {})
+        scm_ip_restrictions = optional(map(object({
+          action                    = optional(string, "Allow")
+          ip_address                = optional(string, null)
+          name                      = optional(string, null)
+          priority                  = optional(number, 65000)
+          service_tag               = optional(string, null)
+          virtual_network_subnet_id = optional(string, null)
+          description               = optional(string, null)
+          headers                   = optional(list(string), [])
+        })), {})
+        application_stack = optional(object({
+          dotnet_version              = optional(string, null)
+          use_dotnet_isolated_runtime = optional(bool, null)
+          java_version                = optional(string, null)
+          node_version                = optional(string, null)
+          python_version              = optional(string, null)
+          powershell_core_version     = optional(string, null)
+          use_custom_runtime          = optional(bool, null)
+          docker = optional(object({
+            image_name        = string
+            image_tag         = string
+            registry_url      = string
+            registry_username = string
+            registry_password = string
+          }), null)
+        }), null)
+        cors = optional(object({
+          allowed_origins     = optional(list(string), [])
+          support_credentials = optional(bool, false)
+        }), null)
+        app_service_logs = optional(object({
+          disk_quota_mb         = optional(number, null)
+          retention_period_days = optional(number, null)
+        }), null)
+      })
       storage_accounts = optional(map(object({
         name         = optional(string, null)
         type         = string
@@ -412,12 +451,12 @@ variable "instance" {
   })
   validation {
     condition     = var.instance.location != null || var.location != null
-    error_message = "location must be provided either in the config object or as a separate variable."
+    error_message = "location must be provided either in the instance object or as a separate variable."
   }
 
   validation {
-    condition     = var.instance.resource_group != null || var.resource_group != null
-    error_message = "resource group name must be provided either in the config object or as a separate variable."
+    condition     = var.instance.resource_group_name != null || var.resource_group_name != null
+    error_message = "resource group name must be provided either in the instance object or as a separate variable."
   }
 
   validation {
@@ -426,7 +465,13 @@ variable "instance" {
   }
 }
 
-variable "resource_group" {
+variable "naming" {
+  description = "contains naming convention"
+  type        = map(string)
+  default     = {}
+}
+
+variable "resource_group_name" {
   description = "Default resource group name"
   type        = string
   default     = null

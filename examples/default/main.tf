@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.22"
+  version = "~> 0.24"
 
   suffix = ["demo", "dev"]
 }
@@ -12,19 +12,19 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "germanywestcentral"
+      location = "westeurope"
     }
   }
 }
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   storage = {
-    name           = module.naming.storage_account.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.storage_account.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
   }
 }
 
@@ -43,42 +43,27 @@ module "service_plan" {
   }
 }
 
-module "appi" {
-  source  = "cloudnationhq/appi/azure"
+module "identity" {
+  source  = "cloudnationhq/uai/azure"
   version = "~> 2.0"
 
   config = {
-    name             = "${module.naming.application_insights.name}-global-01"
-    location         = module.rg.groups.demo.location
-    resource_group   = module.rg.groups.demo.name
-    application_type = "web"
-  }
-}
-
-module "identity" {
-  source  = "cloudnationhq/uai/azure"
-  version = "~> 1.0"
-
-  config = {
-    name           = module.naming.user_assigned_identity.name
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.user_assigned_identity.name
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
   }
 }
 
 module "function_app" {
-  # source  = "cloudnationhq/func/azure"
-  # version = "~> 1.0"
   source  = "cloudnationhq/func/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
-  resource_group = module.rg.groups.demo.name
-  location       = module.rg.groups.demo.location
+  resource_group_name = module.rg.groups.demo.name
+  location            = module.rg.groups.demo.location
   instance = {
     type                       = "windows"
     name                       = "func-demo-dev-xaehqwgw"
     location                   = module.rg.groups.demo.location
-    resource_group             = module.rg.groups.demo.name
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key
     service_plan_id            = module.service_plan.plans.plan1.id
@@ -88,11 +73,9 @@ module "function_app" {
       "FUNCTIONS_WORKER_RUNTIME"        = "dotnet-isolated"
     }
     site_config = {
-      always_on                              = true
-      http2_enabled                          = false
-      vnet_route_all_enabled                 = true
-      application_insights_key               = module.appi.config.instrumentation_key
-      application_insights_connection_string = module.appi.config.connection_string
+      always_on              = true
+      http2_enabled          = false
+      vnet_route_all_enabled = true
       application_stack = {
         use_dotnet_isolated_runtime = true
       }
