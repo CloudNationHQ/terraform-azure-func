@@ -10,6 +10,15 @@
 ### Features
 
 * small refactor ([#52](https://github.com/CloudNationHQ/terraform-azure-func/issues/52)) ([4a5f61e](https://github.com/CloudNationHQ/terraform-azure-func/commit/4a5f61e121e048520d849e119a2438ac65cf5e9a))
+- updated documentation
+- added missing properties in type definition
+- corrected some mistakes in the usages
+- added 3 tier strategy naming
+
+### Upgrade from v1.8.1 to v2.0.0:
+
+- Update module reference to: `version = "~> 2.0"`
+- The property and variable resource_group is renamed to resource_group_name
 
 ## [1.8.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.8.0...v1.8.1) (2025-04-14)
 
