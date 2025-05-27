@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.22"
+  version = "~> 0.24"
 
   suffix = ["demo", "dev"]
 }
@@ -19,12 +19,12 @@ module "rg" {
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   storage = {
-    name           = module.naming.storage_account.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.storage_account.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
   }
 }
 
@@ -45,13 +45,13 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   instance = {
-    type           = "windows"
-    name           = "func-demo-dev-xaesxqt"
-    resource_group = module.rg.groups.demo.name
-    location       = module.rg.groups.demo.location
+    type                = "windows"
+    name                = "func-demo-dev-xaesxqt"
+    resource_group_name = module.rg.groups.demo.name
+    location            = module.rg.groups.demo.location
 
     storage_account_name       = module.storage.account.name
     storage_account_access_key = module.storage.account.primary_access_key

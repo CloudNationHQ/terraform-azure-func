@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.22"
+  version = "~> 0.24"
 
   suffix = ["demo", "dev"]
 }
@@ -12,19 +12,19 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "germanywestcentral"
+      location = "westeurope"
     }
   }
 }
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   storage = {
-    name           = module.naming.storage_account.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.storage_account.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
   }
 }
 
@@ -59,7 +59,7 @@ module "privatelink" {
   endpoints = {
     func = {
       name                           = module.naming.private_endpoint.name
-      subnet_id                      = module.network.subnets.sn1.id
+      subnet_id                      = module.network.subnets.private_endpoint.id
       private_connection_resource_id = module.function_app.instance.id
       private_dns_zone_ids           = [module.private_dns.private_zones.web.id]
       subresource_names              = ["sites"]
@@ -78,11 +78,22 @@ module "network" {
     location       = module.rg.groups.demo.location
     resource_group = module.rg.groups.demo.name
     address_space  = ["10.18.0.0/16"]
-
     subnets = {
-      sn1 = {
+      integration = {
         network_security_group = {}
         address_prefixes       = ["10.18.1.0/24"]
+        delegations = {
+          delegation = {
+            name = "Microsoft.Web/serverFarms"
+            actions = [
+              "Microsoft.Network/virtualNetworks/subnets/action",
+            ]
+          }
+        }
+      }
+      private_endpoint = {
+        network_security_group = {}
+        address_prefixes       = ["10.18.2.0/24"]
       }
     }
   }
@@ -106,17 +117,18 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
-  resource_group = module.rg.groups.demo.name
-  location       = module.rg.groups.demo.location
+  resource_group_name = module.rg.groups.demo.name
+  location            = module.rg.groups.demo.location
 
   instance = {
     type                          = "linux"
-    name                          = "func-demo-dev-xaehqwe"
+    name                          = "func-demo-dev-xaehqwqqq"
     storage_account_name          = module.storage.account.name
     storage_account_access_key    = module.storage.account.primary_access_key
     service_plan_id               = module.service_plan.plans.plan1.id
+    virtual_network_subnet_id     = module.network.subnets.integration.id
     public_network_access_enabled = false
 
     site_config = {
