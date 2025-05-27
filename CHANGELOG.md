@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.0.0...v2.1.0) (2025-05-27)
+
+
+### Features
+
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#51](https://github.com/CloudNationHQ/terraform-azure-func/issues/51)) ([6c0e1a9](https://github.com/CloudNationHQ/terraform-azure-func/commit/6c0e1a9b208e4497ac47aecae029bf15ef375beb))
+
 ## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v1.8.1...v2.0.0) (2025-05-27)
 
 
