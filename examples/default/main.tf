@@ -78,7 +78,7 @@ module "function_app" {
       vnet_route_all_enabled = true
       application_stack = {
         use_dotnet_isolated_runtime = true
-        dotnet_version     = "v8.0"
+        dotnet_version              = "v8.0"
       }
     }
 
