@@ -46,7 +46,7 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   instance = {
     type                       = "linux"
@@ -65,8 +65,6 @@ module "function_app" {
       pre_warmed_instance_count        = 3
       runtime_scale_monitoring_enabled = true
       scm_use_main_ip_restriction      = true
-      application_stack = {
-      }
 
       app_service_logs = {
         disk_quota_mb         = 100

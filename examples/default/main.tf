@@ -56,7 +56,7 @@ module "identity" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   resource_group_name = module.rg.groups.demo.name
   location            = module.rg.groups.demo.location
@@ -78,6 +78,7 @@ module "function_app" {
       vnet_route_all_enabled = true
       application_stack = {
         use_dotnet_isolated_runtime = true
+        dotnet_version     = "v8.0"
       }
     }
 

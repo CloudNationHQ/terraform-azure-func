@@ -117,7 +117,7 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   resource_group_name = module.rg.groups.demo.name
   location            = module.rg.groups.demo.location
