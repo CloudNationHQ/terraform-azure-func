@@ -45,7 +45,7 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 3.0"
+  version = "~> 2.0"
 
   instance = {
     type                = "windows"
