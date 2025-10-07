@@ -4,17 +4,12 @@ This Terraform module streamlines function apps deployment and management, provi
 
 ## Features
 
-Utilization of Terratest for robust validation
-
-Enables vnet integration
-
-Ability to use multiple app slots
-
-Enables deployment for both linux and windows instances
-
-Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
-
-Offers three-tier naming hierarchy (explicit, convention-based, or key-based) for flexible resource management.
+* Utilization of Terratest for robust validation
+* Enables vnet integration
+* Ability to use multiple app slots
+* Enables deployment for linux, windows and flex consumption apps
+* Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
+* Offers three-tier naming hierarchy (explicit, convention-based, or key-based) for flexible resource management.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -35,6 +30,7 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
+- [azurerm_function_app_flex_consumption.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
 - [azurerm_linux_function_app.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
 - [azurerm_linux_function_app_slot.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) (resource)
 - [azurerm_windows_function_app.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
@@ -52,16 +48,22 @@ Type:
 
 ```hcl
 object({
-    name                                           = string
-    type                                           = string
-    resource_group_name                            = optional(string, null)
-    location                                       = optional(string, null)
-    service_plan_id                                = string
+    name                = string
+    type                = string
+    resource_group_name = optional(string, null)
+    location            = optional(string, null)
+    service_plan_id     = string
+
+    # shared settings
+    https_only   = optional(bool, true)
+    enabled      = optional(bool, true)
+    app_settings = optional(map(string), null)
+    tags         = optional(map(string))
+
+    # classic windows/linux settings
     storage_account_name                           = optional(string, null)
     storage_account_access_key                     = optional(string, null)
-    https_only                                     = optional(bool, true)
     zip_deploy_file                                = optional(string, null)
-    enabled                                        = optional(bool, true)
     builtin_logging_enabled                        = optional(bool, true)
     client_certificate_mode                        = optional(string, null)
     daily_memory_time_quota                        = optional(number, null)
@@ -78,8 +80,19 @@ object({
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
     virtual_network_backup_restore_enabled         = optional(bool, false)
-    app_settings                                   = optional(map(string), null)
-    tags                                           = optional(map(string))
+
+    # flex-specific settings
+    storage_container_type            = optional(string, null)
+    storage_container_endpoint        = optional(string, null)
+    storage_authentication_type       = optional(string, null)
+    storage_access_key                = optional(string, null)
+    storage_user_assigned_identity_id = optional(string, null)
+    runtime_name                      = optional(string, null)
+    runtime_version                   = optional(string, null)
+    maximum_instance_count            = optional(number, null)
+    instance_memory_in_mb             = optional(number, 512)
+    http_concurrency                  = optional(number, null)
+
     identity = optional(object({
       type         = string
       identity_ids = optional(list(string), null)
@@ -544,7 +557,7 @@ The following outputs are exported:
 
 ### <a name="output_instance"></a> [instance](#output\_instance)
 
-Description: contains all function app config
+Description: Contains all function app config
 <!-- END_TF_DOCS -->
 
 ## Goals
