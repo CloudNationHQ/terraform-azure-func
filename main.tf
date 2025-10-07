@@ -1448,3 +1448,126 @@ resource "azurerm_windows_function_app_slot" "slot" {
     ]
   }
 }
+
+resource "azurerm_function_app_flex_consumption" "func" {
+  for_each = var.instance.type == "flex" ? { (var.instance.name) = var.instance } : {}
+
+  name                = each.value.name
+  resource_group_name = coalesce(each.value.resource_group_name, var.resource_group_name)
+  location            = coalesce(each.value.location, var.location)
+  service_plan_id     = each.value.service_plan_id
+
+  # Flex-specific
+  storage_container_type            = each.value.storage_container_type
+  storage_container_endpoint        = each.value.storage_container_endpoint
+  storage_authentication_type       = each.value.storage_authentication_type
+  storage_access_key                = each.value.storage_access_key
+  storage_user_assigned_identity_id = each.value.storage_user_assigned_identity_id
+
+  runtime_name           = each.value.runtime_name
+  runtime_version        = each.value.runtime_version
+  maximum_instance_count = each.value.maximum_instance_count
+  instance_memory_in_mb  = each.value.instance_memory_in_mb
+  http_concurrency       = each.value.http_concurrency
+
+  # Shared
+  https_only                         = each.value.https_only
+  enabled                            = each.value.enabled
+  public_network_access_enabled      = each.value.public_network_access_enabled
+  client_certificate_enabled         = each.value.client_certificate_enabled
+  client_certificate_mode            = each.value.client_certificate_mode
+  client_certificate_exclusion_paths = each.value.client_certificate_exclusion_paths
+
+  # Settings
+  app_settings = coalesce(each.value.app_settings, {})
+  tags         = coalesce(each.value.tags, var.tags)
+
+  # Identity
+  dynamic "identity" {
+    for_each = each.value.identity != null ? [each.value.identity] : []
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
+
+  # Auth v2
+  dynamic "auth_settings_v2" {
+    for_each = each.value.auth_settings_v2 != null ? [each.value.auth_settings_v2] : []
+    content {
+      auth_enabled                            = auth_settings_v2.value.auth_enabled
+      runtime_version                         = auth_settings_v2.value.runtime_version
+      config_file_path                        = auth_settings_v2.value.config_file_path
+      require_authentication                  = auth_settings_v2.value.require_authentication
+      unauthenticated_action                  = auth_settings_v2.value.unauthenticated_action
+      default_provider                        = auth_settings_v2.value.default_provider
+      excluded_paths                          = auth_settings_v2.value.excluded_paths
+      require_https                           = auth_settings_v2.value.require_https
+      http_route_api_prefix                   = auth_settings_v2.value.http_route_api_prefix
+      forward_proxy_convention                = auth_settings_v2.value.forward_proxy_convention
+      forward_proxy_custom_host_header_name   = auth_settings_v2.value.forward_proxy_custom_host_header_name
+      forward_proxy_custom_scheme_header_name = auth_settings_v2.value.forward_proxy_custom_scheme_header_name
+
+      login {
+        token_store_enabled               = auth_settings_v2.value.login.token_store_enabled
+        token_refresh_extension_time      = auth_settings_v2.value.login.token_refresh_extension_time
+        token_store_path                  = auth_settings_v2.value.login.token_store_path
+        token_store_sas_setting_name      = auth_settings_v2.value.login.token_store_sas_setting_name
+        preserve_url_fragments_for_logins = auth_settings_v2.value.login.preserve_url_fragments_for_logins
+        allowed_external_redirect_urls    = auth_settings_v2.value.login.allowed_external_redirect_urls
+        cookie_expiration_convention      = auth_settings_v2.value.login.cookie_expiration_convention
+        cookie_expiration_time            = auth_settings_v2.value.login.cookie_expiration_time
+        validate_nonce                    = auth_settings_v2.value.login.validate_nonce
+        nonce_expiration_time             = auth_settings_v2.value.login.nonce_expiration_time
+        logout_endpoint                   = auth_settings_v2.value.login.logout_endpoint
+      }
+    }
+  }
+
+  # Connection strings
+  dynamic "connection_string" {
+    for_each = each.value.connection_string
+    content {
+      name  = connection_string.value.name
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  # Site config
+  site_config {
+    application_insights_connection_string = each.value.site_config.application_insights_connection_string
+    application_insights_key               = each.value.site_config.application_insights_key
+    health_check_path                      = each.value.site_config.health_check_path
+    health_check_eviction_time_in_min      = each.value.site_config.health_check_eviction_time_in_min
+    http2_enabled                          = each.value.site_config.http2_enabled
+    minimum_tls_version                    = each.value.site_config.minimum_tls_version
+    websockets_enabled                     = each.value.site_config.websockets_enabled
+    vnet_route_all_enabled                 = each.value.site_config.vnet_route_all_enabled
+
+    dynamic "ip_restriction" {
+      for_each = each.value.site_config.ip_restrictions
+      content {
+        action                    = ip_restriction.value.action
+        ip_address                = ip_restriction.value.ip_address
+        name                      = ip_restriction.value.name
+        priority                  = ip_restriction.value.priority
+        service_tag               = ip_restriction.value.service_tag
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+        description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
+    ]
+  }
+}

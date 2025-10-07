@@ -1,4 +1,9 @@
 output "instance" {
-  description = "contains all function app config"
-  value       = var.instance.type == "linux" ? try(azurerm_linux_function_app.func[var.instance.name], null) : try(azurerm_windows_function_app.func[var.instance.name], null)
+  description = "Contains all function app config"
+  value = (
+    var.instance.type == "linux" ? azurerm_linux_function_app.func[var.instance.name] :
+    var.instance.type == "windows" ? azurerm_windows_function_app.func[var.instance.name] :
+    var.instance.type == "flex" ? azurerm_function_app_flex_consumption.func[var.instance.name] :
+    null
+  )
 }
