@@ -1479,6 +1479,14 @@ resource "azurerm_function_app_flex_consumption" "func" {
   client_certificate_exclusion_paths             = each.value.client_certificate_exclusion_paths
   webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
 
+  dynamic "always_ready" {
+    for_each = each.value.always_ready != null ? [each.value.always_ready] : []
+    content {
+      name           = always_ready.value.name
+      instance_count = always_ready.value.instance_count
+    }
+  }
+
   # Settings
   app_settings = coalesce(each.value.app_settings, {})
   tags         = coalesce(each.value.tags, var.tags)
