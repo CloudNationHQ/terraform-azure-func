@@ -170,6 +170,10 @@ variable "instance" {
       load_balancing_mode                           = optional(string)
       ip_restriction_default_action                 = optional(string, "Allow")
       scm_ip_restriction_default_action             = optional(string, "Allow")
+      always_ready = optional(list(object({
+        instance_count    = number
+        snapshots_enabled = optional(bool, true)
+      })), [])
       ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
         ip_address                = optional(string)
@@ -393,6 +397,10 @@ variable "instance" {
         load_balancing_mode                           = optional(string)
         scm_ip_restriction_default_action             = optional(string, "Allow")
         ip_restriction_default_action                 = optional(string, "Allow")
+        always_ready = optional(list(object({
+          instance_count    = number
+          snapshots_enabled = optional(bool, true)
+        })), [])
         ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
           ip_address                = optional(string)
