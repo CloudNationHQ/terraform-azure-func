@@ -1480,7 +1480,8 @@ resource "azurerm_function_app_flex_consumption" "func" {
   webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
 
   dynamic "always_ready" {
-    for_each = each.value.always_ready != null ? [each.value.always_ready] : []
+    for_each = lookup(each.value, "always_ready", {})
+
     content {
       name           = always_ready.value.name
       instance_count = always_ready.value.instance_count

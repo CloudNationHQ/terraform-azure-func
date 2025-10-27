@@ -82,13 +82,14 @@ module "flex_function" {
     }
 
     always_ready = {
-      name           = "http"
-      instance_count = 1
-    }
-
-    always_ready = {
-      name           = "blob"
-      instance_count = 1
+      http = {
+        name           = "http"
+        instance_count = 1
+      }
+      blob = {
+        name           = "blob"
+        instance_count = 1
+      }
     }
 
     site_config = {
