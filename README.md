@@ -92,6 +92,10 @@ object({
     maximum_instance_count            = optional(number)
     instance_memory_in_mb             = optional(number, 512)
     http_concurrency                  = optional(number)
+    always_ready = optional(object({
+      name           = string
+      instance_count = number
+    }))
 
     identity = optional(object({
       type         = string
@@ -217,10 +221,6 @@ object({
       load_balancing_mode                           = optional(string)
       ip_restriction_default_action                 = optional(string, "Allow")
       scm_ip_restriction_default_action             = optional(string, "Allow")
-      always_ready = optional(list(object({
-        instance_count    = number
-        snapshots_enabled = optional(bool, true)
-      })), [])
       ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
         ip_address                = optional(string)
@@ -444,10 +444,6 @@ object({
         load_balancing_mode                           = optional(string)
         scm_ip_restriction_default_action             = optional(string, "Allow")
         ip_restriction_default_action                 = optional(string, "Allow")
-        always_ready = optional(list(object({
-          instance_count    = number
-          snapshots_enabled = optional(bool, true)
-        })), [])
         ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
           ip_address                = optional(string)
