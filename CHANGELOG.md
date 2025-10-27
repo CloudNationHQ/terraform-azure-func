@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.2.0...v2.3.0) (2025-10-27)
+
+
+### Features
+
+* update missing properties flex function app ([#66](https://github.com/CloudNationHQ/terraform-azure-func/issues/66)) ([f879daf](https://github.com/CloudNationHQ/terraform-azure-func/commit/f879daf63aee56b5415ae9efe8025d9beac90450))
+
 ## [2.2.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.1.0...v2.2.0) (2025-10-07)
 
 
