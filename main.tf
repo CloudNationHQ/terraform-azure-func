@@ -1554,14 +1554,6 @@ resource "azurerm_function_app_flex_consumption" "func" {
     websockets_enabled                     = each.value.site_config.websockets_enabled
     vnet_route_all_enabled                 = each.value.site_config.vnet_route_all_enabled
 
-    dynamic "always_ready" {
-      for_each = try(each.value.site_config.always_ready, [])
-      content {
-        instance_count    = always_ready.value.instance_count
-        snapshots_enabled = always_ready.value.snapshots_enabled
-      }
-    }
-
     dynamic "ip_restriction" {
       for_each = each.value.site_config.ip_restrictions
       content {

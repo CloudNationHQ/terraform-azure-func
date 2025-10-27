@@ -55,11 +55,12 @@ module "flex_function" {
   version = "~> 2.0"
 
   instance = {
-    name                = "func-demo-dev-xaehqwgwbm"
-    type                = "flex"
-    resource_group_name = module.rg.groups.demo.name
-    location            = module.rg.groups.demo.location
-    service_plan_id     = module.service_plan.plans.plan1.id
+    name                                           = "func-demo-dev-xaehqwgwbm"
+    type                                           = "flex"
+    resource_group_name                            = module.rg.groups.demo.name
+    location                                       = module.rg.groups.demo.location
+    service_plan_id                                = module.service_plan.plans.plan1.id
+    webdeploy_publish_basic_authentication_enabled = false
 
     storage_container_type      = "blobContainer"
     storage_container_endpoint  = "${module.storage.account.primary_blob_endpoint}${module.storage.containers.flexcontainer.name}"
@@ -78,6 +79,16 @@ module "flex_function" {
 
     app_settings = {
       "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    }
+
+    always_ready = {
+      name           = "http"
+      instance_count = 1
+    }
+
+    always_ready = {
+      name           = "blob"
+      instance_count = 1
     }
 
     site_config = {
