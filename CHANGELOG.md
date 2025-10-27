@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.0...v2.3.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* support multiple always_ready blocks ([#68](https://github.com/CloudNationHQ/terraform-azure-func/issues/68)) ([a07cb27](https://github.com/CloudNationHQ/terraform-azure-func/commit/a07cb27f3c84dc1538bfbfb67be87ed412c613c9))
+
 ## [2.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.2.0...v2.3.0) (2025-10-27)
 
 
