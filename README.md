@@ -92,10 +92,10 @@ object({
     maximum_instance_count            = optional(number)
     instance_memory_in_mb             = optional(number, 512)
     http_concurrency                  = optional(number)
-    always_ready = optional(object({
+    always_ready = optional(map(object({
       name           = string
       instance_count = number
-    }))
+    })))
 
     identity = optional(object({
       type         = string
