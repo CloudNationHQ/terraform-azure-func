@@ -1471,12 +1471,21 @@ resource "azurerm_function_app_flex_consumption" "func" {
   http_concurrency       = each.value.http_concurrency
 
   # Shared
-  https_only                         = each.value.https_only
-  enabled                            = each.value.enabled
-  public_network_access_enabled      = each.value.public_network_access_enabled
-  client_certificate_enabled         = each.value.client_certificate_enabled
-  client_certificate_mode            = each.value.client_certificate_mode
-  client_certificate_exclusion_paths = each.value.client_certificate_exclusion_paths
+  https_only                                     = each.value.https_only
+  enabled                                        = each.value.enabled
+  public_network_access_enabled                  = each.value.public_network_access_enabled
+  client_certificate_enabled                     = each.value.client_certificate_enabled
+  client_certificate_mode                        = each.value.client_certificate_mode
+  client_certificate_exclusion_paths             = each.value.client_certificate_exclusion_paths
+  webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
+
+  dynamic "always_ready" {
+    for_each = each.value.always_ready != null ? [each.value.always_ready] : []
+    content {
+      name           = always_ready.value.name
+      instance_count = always_ready.value.instance_count
+    }
+  }
 
   # Settings
   app_settings = coalesce(each.value.app_settings, {})
