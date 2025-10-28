@@ -1,3 +1,4 @@
+
 #linux function app
 resource "azurerm_linux_function_app" "func" {
   for_each = var.instance.type == "linux" ? {
