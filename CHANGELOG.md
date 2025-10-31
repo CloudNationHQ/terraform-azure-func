@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.1...v2.3.2) (2025-10-31)
+
+
+### Bug Fixes
+
+* add subnet id propery to flex function ([#70](https://github.com/CloudNationHQ/terraform-azure-func/issues/70)) ([30e13ac](https://github.com/CloudNationHQ/terraform-azure-func/commit/30e13ac594e2bd09d7c9079255092445301caac0))
+
 ## [2.3.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.0...v2.3.1) (2025-10-27)
 
 
