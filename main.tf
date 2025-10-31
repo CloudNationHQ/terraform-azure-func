@@ -1479,6 +1479,7 @@ resource "azurerm_function_app_flex_consumption" "func" {
   client_certificate_mode                        = each.value.client_certificate_mode
   client_certificate_exclusion_paths             = each.value.client_certificate_exclusion_paths
   webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
+  virtual_network_subnet_id                      = each.value.virtual_network_subnet_id
 
   dynamic "always_ready" {
     for_each = lookup(each.value, "always_ready", {})
