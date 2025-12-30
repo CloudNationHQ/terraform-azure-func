@@ -246,7 +246,7 @@ resource "azurerm_linux_function_app" "func" {
 
     dynamic "ip_restriction" {
       for_each = lookup(
-        each.value, "ip_restrictions", {}
+        each.value.site_config, "ip_restrictions", {}
       )
 
       content {
@@ -263,7 +263,7 @@ resource "azurerm_linux_function_app" "func" {
 
     dynamic "scm_ip_restriction" {
       for_each = lookup(
-        each.value, "scm_ip_restrictions", {}
+        each.value.site_config, "scm_ip_restrictions", {}
       )
 
       content {
@@ -651,8 +651,8 @@ resource "azurerm_linux_function_app_slot" "slot" {
     ip_restriction_default_action                 = each.value.site_config.ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = try(
-        each.value.site_config.ip_restrictions, {}
+      for_each = lookup(
+        each.value.site_config, "ip_restrictions", {}
       )
 
       content {
@@ -668,8 +668,8 @@ resource "azurerm_linux_function_app_slot" "slot" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = try(
-        var.instance.site_config.scm_ip_restrictions, {}
+      for_each = lookup(
+        each.value.site_config, "scm_ip_restrictions", {}
       )
 
       content {
@@ -985,7 +985,7 @@ resource "azurerm_windows_function_app" "func" {
 
     dynamic "ip_restriction" {
       for_each = lookup(
-        each.value, "ip_restrictions", {}
+        each.value.site_config, "ip_restrictions", {}
       )
 
       content {
@@ -1002,7 +1002,7 @@ resource "azurerm_windows_function_app" "func" {
 
     dynamic "scm_ip_restriction" {
       for_each = lookup(
-        each.value, "scm_ip_restrictions", {}
+        each.value.site_config, "scm_ip_restrictions", {}
       )
 
       content {
@@ -1376,8 +1376,8 @@ resource "azurerm_windows_function_app_slot" "slot" {
     scm_ip_restriction_default_action      = each.value.site_config.scm_ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = try(
-        each.value.site_config.ip_restrictions, {}
+      for_each = lookup(
+        each.value.site_config, "ip_restrictions", {}
       )
 
       content {
@@ -1393,7 +1393,9 @@ resource "azurerm_windows_function_app_slot" "slot" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = try(var.instance.site_config.scm_ip_restriction, {})
+      for_each = lookup(
+        each.value.site_config, "scm_ip_restrictions", {}
+      )
 
       content {
         action                    = scm_ip_restriction.value.action
