@@ -257,7 +257,16 @@ resource "azurerm_linux_function_app" "func" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
-        headers                   = ip_restriction.value.headers
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -273,8 +282,17 @@ resource "azurerm_linux_function_app" "func" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        headers                   = scm_ip_restriction.value.headers
-        description               = scm_ip_restriction.value.description
+        description               = ip_restriction.value.description
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -663,7 +681,16 @@ resource "azurerm_linux_function_app_slot" "slot" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
-        headers                   = ip_restriction.value.headers
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -679,8 +706,17 @@ resource "azurerm_linux_function_app_slot" "slot" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        headers                   = scm_ip_restriction.value.headers
-        description               = scm_ip_restriction.value.description
+        description               = ip_restriction.value.description
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -996,7 +1032,16 @@ resource "azurerm_windows_function_app" "func" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
-        headers                   = ip_restriction.value.headers
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -1012,8 +1057,17 @@ resource "azurerm_windows_function_app" "func" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        headers                   = scm_ip_restriction.value.headers
-        description               = scm_ip_restriction.value.description
+        description               = ip_restriction.value.description
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -1388,7 +1442,16 @@ resource "azurerm_windows_function_app_slot" "slot" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
-        headers                   = ip_restriction.value.headers
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
@@ -1404,8 +1467,17 @@ resource "azurerm_windows_function_app_slot" "slot" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        headers                   = scm_ip_restriction.value.headers
-        description               = scm_ip_restriction.value.description
+        description               = ip_restriction.value.description
+        dynamic "headers" {
+          for_each = ip_restriction.value.headers != null ? ip_restriction.value.headers : []
+
+          content {
+            x_azure_fdid      = headers.value.x_azure_fdid
+            x_fd_health_probe = headers.value.x_fd_health_probe
+            x_forwarded_for   = headers.value.x_forwarded_for
+            x_forwarded_host  = headers.value.x_forwarded_host
+          }
+        }
       }
     }
 
