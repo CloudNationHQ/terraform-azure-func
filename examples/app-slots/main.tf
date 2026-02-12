@@ -45,8 +45,7 @@ module "service_plan" {
 }
 
 module "function_app" {
-  source  = "cloudnationhq/func/azure"
-  version = "~> 2.0"
+  source = "../../"
 
   instance = {
     type                       = "linux"
