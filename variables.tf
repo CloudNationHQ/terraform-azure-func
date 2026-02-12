@@ -189,7 +189,6 @@ variable "instance" {
           x_forwarded_host  = optional(list(string))
         })), [])
       })), {})
-
       scm_ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
         ip_address                = optional(string)
