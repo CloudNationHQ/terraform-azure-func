@@ -257,6 +257,7 @@ resource "azurerm_linux_function_app" "func" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
       }
     }
 
@@ -272,7 +273,8 @@ resource "azurerm_linux_function_app" "func" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        description               = ip_restriction.value.description
+        description               = scm_ip_restriction.value.description
+        headers                   = scm_ip_restriction.value.headers
       }
     }
 
@@ -661,6 +663,7 @@ resource "azurerm_linux_function_app_slot" "slot" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
       }
     }
 
@@ -676,7 +679,8 @@ resource "azurerm_linux_function_app_slot" "slot" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        description               = ip_restriction.value.description
+        description               = scm_ip_restriction.value.description
+        headers                   = scm_ip_restriction.value.headers
       }
     }
 
@@ -992,6 +996,7 @@ resource "azurerm_windows_function_app" "func" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
       }
     }
 
@@ -1007,7 +1012,8 @@ resource "azurerm_windows_function_app" "func" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        description               = ip_restriction.value.description
+        description               = scm_ip_restriction.value.description
+        headers                   = scm_ip_restriction.value.headers
       }
     }
 
@@ -1382,6 +1388,7 @@ resource "azurerm_windows_function_app_slot" "slot" {
         service_tag               = ip_restriction.value.service_tag
         virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
         description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
       }
     }
 
@@ -1397,7 +1404,8 @@ resource "azurerm_windows_function_app_slot" "slot" {
         priority                  = scm_ip_restriction.value.priority
         service_tag               = scm_ip_restriction.value.service_tag
         virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
-        description               = ip_restriction.value.description
+        description               = scm_ip_restriction.value.description
+        headers                   = scm_ip_restriction.value.headers
       }
     }
 

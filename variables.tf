@@ -182,7 +182,7 @@ variable "instance" {
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers                   = optional(map(list(string)), {})
       })), {})
       scm_ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
@@ -192,7 +192,7 @@ variable "instance" {
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers                   = optional(map(list(string)), {})
       })), {})
       application_stack = optional(object({
         dotnet_version              = optional(string)
@@ -405,6 +405,7 @@ variable "instance" {
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
+          headers                   = optional(map(list(string)), {})
         })), {})
         scm_ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
@@ -414,6 +415,7 @@ variable "instance" {
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
+          headers                   = optional(map(list(string)), {})
         })), {})
         application_stack = optional(object({
           dotnet_version              = optional(string)
