@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.3](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.2...v2.3.3) (2026-02-12)
+
+
+### Bug Fixes
+
+* fix ip restrictions ([#77](https://github.com/CloudNationHQ/terraform-azure-func/issues/77)) ([f59af50](https://github.com/CloudNationHQ/terraform-azure-func/commit/f59af50a18e8d041566e09f2f9220dce89128661))
+
 ## [2.3.2](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.1...v2.3.2) (2025-10-31)
 
 
