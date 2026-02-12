@@ -51,7 +51,8 @@ module "service_plan" {
 }
 
 module "flex_function" {
-  source = "../../"
+  source  = "cloudnationhq/func/azure"
+  version = "~> 2.0"
 
   instance = {
     name                                           = "func-demo-dev-xaehqwgwbm"
