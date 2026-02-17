@@ -1,19 +1,15 @@
 variable "instance" {
   description = "Contains all function app configuration"
   type = object({
-    name                = string
-    type                = string
-    resource_group_name = optional(string)
-    location            = optional(string)
-    service_plan_id     = string
-
-    # shared settings
-    https_only   = optional(bool, true)
-    enabled      = optional(bool, true)
-    app_settings = optional(map(string))
-    tags         = optional(map(string))
-
-    # classic windows/linux settings
+    name                                           = string
+    type                                           = string
+    resource_group_name                            = optional(string)
+    location                                       = optional(string)
+    service_plan_id                                = string
+    https_only                                     = optional(bool, true)
+    enabled                                        = optional(bool, true)
+    app_settings                                   = optional(map(string))
+    tags                                           = optional(map(string))
     storage_account_name                           = optional(string)
     storage_account_access_key                     = optional(string)
     zip_deploy_file                                = optional(string)
@@ -33,19 +29,16 @@ variable "instance" {
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
     virtual_network_backup_restore_enabled         = optional(bool, false)
-
-    # flex-specific settings
-    storage_container_type            = optional(string)
-    storage_container_endpoint        = optional(string)
-    storage_authentication_type       = optional(string)
-    storage_access_key                = optional(string)
-    storage_user_assigned_identity_id = optional(string)
-    runtime_name                      = optional(string)
-    runtime_version                   = optional(string)
-    maximum_instance_count            = optional(number)
-    instance_memory_in_mb             = optional(number, 512)
-    http_concurrency                  = optional(number)
-
+    storage_container_type                         = optional(string)
+    storage_container_endpoint                     = optional(string)
+    storage_authentication_type                    = optional(string)
+    storage_access_key                             = optional(string)
+    storage_user_assigned_identity_id              = optional(string)
+    runtime_name                                   = optional(string)
+    runtime_version                                = optional(string)
+    maximum_instance_count                         = optional(number)
+    instance_memory_in_mb                          = optional(number, 512)
+    http_concurrency                               = optional(number)
     identity = optional(object({
       type         = string
       identity_ids = optional(list(string))
@@ -178,7 +171,12 @@ variable "instance" {
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
       })), {})
       scm_ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
@@ -188,7 +186,12 @@ variable "instance" {
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
       })), {})
       application_stack = optional(object({
         dotnet_version              = optional(string)
@@ -198,13 +201,13 @@ variable "instance" {
         python_version              = optional(string)
         powershell_core_version     = optional(string)
         use_custom_runtime          = optional(bool)
-        docker = optional(object({
+        docker = optional(map(object({
           image_name        = string
           image_tag         = string
           registry_url      = string
-          registry_username = string
-          registry_password = string
-        }))
+          registry_username = optional(string)
+          registry_password = optional(string)
+        })), {})
       }))
       cors = optional(object({
         allowed_origins     = optional(list(string), [])
@@ -227,6 +230,10 @@ variable "instance" {
       app_setting_names       = optional(list(string), [])
       connection_string_names = optional(list(string), [])
     }))
+    always_ready = optional(map(object({
+      name           = string
+      instance_count = number
+    })))
     backup = optional(object({
       name                = string
       enabled             = optional(bool, true)
@@ -239,7 +246,7 @@ variable "instance" {
         keep_at_least_one_backup = optional(bool, false)
       })
     }))
-    connection_string = optional(map(object({
+    connection_strings = optional(map(object({
       name  = string
       type  = string
       value = string
@@ -401,7 +408,12 @@ variable "instance" {
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
-          headers                   = optional(list(string), [])
+          headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
         })), {})
         scm_ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
@@ -411,7 +423,12 @@ variable "instance" {
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
-          headers                   = optional(list(string), [])
+          headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
         })), {})
         application_stack = optional(object({
           dotnet_version              = optional(string)
