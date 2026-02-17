@@ -10,5 +10,5 @@ output "instance" {
 
 output "slots" {
   description = "contains all function app slot configurations"
-  value       = var.instance.type == "linux" ? azurerm_linux_function_app_slot.slot : azurerm_windows_function_app_slot.slot
+  value       = var.instance.type == "linux" ? azurerm_linux_function_app_slot.this : azurerm_windows_function_app_slot.this
 }

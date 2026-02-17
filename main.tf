@@ -374,7 +374,7 @@ resource "azurerm_linux_function_app" "this" {
 }
 
 # linux function app slot
-resource "azurerm_linux_function_app_slot" "slot" {
+resource "azurerm_linux_function_app_slot" "this" {
   for_each = {
     for key, value in lookup(var.instance, "slots", {}) : key => value
     if var.instance.type == "linux"
@@ -1099,7 +1099,7 @@ resource "azurerm_windows_function_app" "this" {
 }
 
 # windows function app slot
-resource "azurerm_windows_function_app_slot" "slot" {
+resource "azurerm_windows_function_app_slot" "this" {
   for_each = {
     for key, value in lookup(var.instance, "slots", {}) : key => value
     if var.instance.type == "windows"
