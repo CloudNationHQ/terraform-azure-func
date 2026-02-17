@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.3.3](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.2...v2.3.3) (2026-02-12)
+
+
+### Bug Fixes
+
+* fix ip restrictions ([#77](https://github.com/CloudNationHQ/terraform-azure-func/issues/77)) ([f59af50](https://github.com/CloudNationHQ/terraform-azure-func/commit/f59af50a18e8d041566e09f2f9220dce89128661))
+
+## [2.3.2](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.1...v2.3.2) (2025-10-31)
+
+
+### Bug Fixes
+
+* add subnet id propery to flex function ([#70](https://github.com/CloudNationHQ/terraform-azure-func/issues/70)) ([30e13ac](https://github.com/CloudNationHQ/terraform-azure-func/commit/30e13ac594e2bd09d7c9079255092445301caac0))
+
+## [2.3.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.0...v2.3.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* support multiple always_ready blocks ([#68](https://github.com/CloudNationHQ/terraform-azure-func/issues/68)) ([a07cb27](https://github.com/CloudNationHQ/terraform-azure-func/commit/a07cb27f3c84dc1538bfbfb67be87ed412c613c9))
+
+## [2.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.2.0...v2.3.0) (2025-10-27)
+
+
+### Features
+
+* update missing properties flex function app ([#66](https://github.com/CloudNationHQ/terraform-azure-func/issues/66)) ([f879daf](https://github.com/CloudNationHQ/terraform-azure-func/commit/f879daf63aee56b5415ae9efe8025d9beac90450))
+
 ## [2.2.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.1.0...v2.2.0) (2025-10-07)
 
 
