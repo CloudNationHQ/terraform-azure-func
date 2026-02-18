@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.3...v3.0.0) (2026-02-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* this change causes recreates
+
+### Features
+
+* small refactor and data structure change ([#79](https://github.com/CloudNationHQ/terraform-azure-func/issues/79)) ([421c5cc](https://github.com/CloudNationHQ/terraform-azure-func/commit/421c5cc527c0e7da0034c5643f07538f1d33ee25))
+
 ## [2.3.3](https://github.com/CloudNationHQ/terraform-azure-func/compare/v2.3.2...v2.3.3) (2026-02-12)
 
 
