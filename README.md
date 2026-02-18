@@ -4,12 +4,17 @@ This Terraform module streamlines function apps deployment and management, provi
 
 ## Features
 
-* Utilization of Terratest for robust validation
-* Enables vnet integration
-* Ability to use multiple app slots
-* Enables deployment for linux, windows and flex consumption apps
-* Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
-* Offers three-tier naming hierarchy (explicit, convention-based, or key-based) for flexible resource management.
+Utilization of Terratest for robust validation
+
+Enables vnet integration
+
+Ability to use multiple app slots
+
+Enables deployment for linux, windows and flex consumption apps
+
+Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
+
+Offers three-tier naming hierarchy (explicit, convention-based, or key-based) for flexible resource management.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -30,11 +35,11 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
-- [azurerm_function_app_flex_consumption.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
-- [azurerm_linux_function_app.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
-- [azurerm_linux_function_app_slot.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) (resource)
-- [azurerm_windows_function_app.func](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
-- [azurerm_windows_function_app_slot.slot](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app_slot) (resource)
+- [azurerm_function_app_flex_consumption.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
+- [azurerm_linux_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
+- [azurerm_linux_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) (resource)
+- [azurerm_windows_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
+- [azurerm_windows_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app_slot) (resource)
 
 ## Required Inputs
 
@@ -48,19 +53,15 @@ Type:
 
 ```hcl
 object({
-    name                = string
-    type                = string
-    resource_group_name = optional(string)
-    location            = optional(string)
-    service_plan_id     = string
-
-    # shared settings
-    https_only   = optional(bool, true)
-    enabled      = optional(bool, true)
-    app_settings = optional(map(string))
-    tags         = optional(map(string))
-
-    # classic windows/linux settings
+    name                                           = string
+    type                                           = string
+    resource_group_name                            = optional(string)
+    location                                       = optional(string)
+    service_plan_id                                = string
+    https_only                                     = optional(bool, true)
+    enabled                                        = optional(bool, true)
+    app_settings                                   = optional(map(string))
+    tags                                           = optional(map(string))
     storage_account_name                           = optional(string)
     storage_account_access_key                     = optional(string)
     zip_deploy_file                                = optional(string)
@@ -80,23 +81,16 @@ object({
     ftp_publish_basic_authentication_enabled       = optional(bool, true)
     webdeploy_publish_basic_authentication_enabled = optional(bool, true)
     virtual_network_backup_restore_enabled         = optional(bool, false)
-
-    # flex-specific settings
-    storage_container_type            = optional(string)
-    storage_container_endpoint        = optional(string)
-    storage_authentication_type       = optional(string)
-    storage_access_key                = optional(string)
-    storage_user_assigned_identity_id = optional(string)
-    runtime_name                      = optional(string)
-    runtime_version                   = optional(string)
-    maximum_instance_count            = optional(number)
-    instance_memory_in_mb             = optional(number, 512)
-    http_concurrency                  = optional(number)
-    always_ready = optional(map(object({
-      name           = string
-      instance_count = number
-    })))
-
+    storage_container_type                         = optional(string)
+    storage_container_endpoint                     = optional(string)
+    storage_authentication_type                    = optional(string)
+    storage_access_key                             = optional(string)
+    storage_user_assigned_identity_id              = optional(string)
+    runtime_name                                   = optional(string)
+    runtime_version                                = optional(string)
+    maximum_instance_count                         = optional(number)
+    instance_memory_in_mb                          = optional(number, 512)
+    http_concurrency                               = optional(number)
     identity = optional(object({
       type         = string
       identity_ids = optional(list(string))
@@ -229,7 +223,12 @@ object({
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
       })), {})
       scm_ip_restrictions = optional(map(object({
         action                    = optional(string, "Allow")
@@ -239,7 +238,12 @@ object({
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
-        headers                   = optional(list(string), [])
+        headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
       })), {})
       application_stack = optional(object({
         dotnet_version              = optional(string)
@@ -249,13 +253,13 @@ object({
         python_version              = optional(string)
         powershell_core_version     = optional(string)
         use_custom_runtime          = optional(bool)
-        docker = optional(object({
+        docker = optional(map(object({
           image_name        = string
           image_tag         = string
           registry_url      = string
-          registry_username = string
-          registry_password = string
-        }))
+          registry_username = optional(string)
+          registry_password = optional(string)
+        })), {})
       }))
       cors = optional(object({
         allowed_origins     = optional(list(string), [])
@@ -278,6 +282,10 @@ object({
       app_setting_names       = optional(list(string), [])
       connection_string_names = optional(list(string), [])
     }))
+    always_ready = optional(map(object({
+      name           = string
+      instance_count = number
+    })))
     backup = optional(object({
       name                = string
       enabled             = optional(bool, true)
@@ -290,7 +298,7 @@ object({
         keep_at_least_one_backup = optional(bool, false)
       })
     }))
-    connection_string = optional(map(object({
+    connection_strings = optional(map(object({
       name  = string
       type  = string
       value = string
@@ -452,7 +460,12 @@ object({
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
-          headers                   = optional(list(string), [])
+          headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
         })), {})
         scm_ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
@@ -462,7 +475,12 @@ object({
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
-          headers                   = optional(list(string), [])
+          headers = optional(object({
+          x_azure_fdid      = optional(list(string), [])
+          x_fd_health_probe = optional(list(string), [])
+          x_forwarded_for   = optional(list(string), [])
+          x_forwarded_host  = optional(list(string), [])
+        }), null)
         })), {})
         application_stack = optional(object({
           dotnet_version              = optional(string)
@@ -562,6 +580,10 @@ The following outputs are exported:
 ### <a name="output_instance"></a> [instance](#output\_instance)
 
 Description: Contains all function app config
+
+### <a name="output_slots"></a> [slots](#output\_slots)
+
+Description: contains all function app slot configurations
 <!-- END_TF_DOCS -->
 
 ## Goals
