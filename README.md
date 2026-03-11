@@ -461,11 +461,11 @@ object({
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
           headers = optional(object({
-          x_azure_fdid      = optional(list(string), [])
-          x_fd_health_probe = optional(list(string), [])
-          x_forwarded_for   = optional(list(string), [])
-          x_forwarded_host  = optional(list(string), [])
-        }), null)
+            x_azure_fdid      = optional(list(string), [])
+            x_fd_health_probe = optional(list(string), [])
+            x_forwarded_for   = optional(list(string), [])
+            x_forwarded_host  = optional(list(string), [])
+          }), null)
         })), {})
         scm_ip_restrictions = optional(map(object({
           action                    = optional(string, "Allow")
@@ -476,11 +476,11 @@ object({
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
           headers = optional(object({
-          x_azure_fdid      = optional(list(string), [])
-          x_fd_health_probe = optional(list(string), [])
-          x_forwarded_for   = optional(list(string), [])
-          x_forwarded_host  = optional(list(string), [])
-        }), null)
+            x_azure_fdid      = optional(list(string), [])
+            x_fd_health_probe = optional(list(string), [])
+            x_forwarded_for   = optional(list(string), [])
+            x_forwarded_host  = optional(list(string), [])
+          }), null)
         })), {})
         application_stack = optional(object({
           dotnet_version              = optional(string)
