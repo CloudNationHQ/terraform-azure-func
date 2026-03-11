@@ -1475,6 +1475,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
   https_only                                     = var.instance.https_only
   enabled                                        = var.instance.enabled
   public_network_access_enabled                  = var.instance.public_network_access_enabled
+  virtual_network_subnet_id                      = var.instance.virtual_network_subnet_id
   client_certificate_enabled                     = var.instance.client_certificate_enabled
   client_certificate_mode                        = var.instance.client_certificate_mode
   client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
