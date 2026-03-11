@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.24"
+  version = "~> 0.26"
 
   suffix = ["demo", "dev"]
 }
@@ -12,7 +12,7 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "germanywestcentral"
+      location = "swedencentral"
     }
   }
 }
@@ -30,26 +30,26 @@ module "storage" {
 
 module "service_plan" {
   source  = "cloudnationhq/plan/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   plans = {
     plan1 = {
-      name           = module.naming.app_service_plan.name
-      resource_group = module.rg.groups.demo.name
-      location       = module.rg.groups.demo.location
-      os_type        = "Windows"
-      sku_name       = "EP1"
+      name                = module.naming.app_service_plan.name
+      resource_group_name = module.rg.groups.demo.name
+      location            = module.rg.groups.demo.location
+      os_type             = "Windows"
+      sku_name            = "EP1"
     }
   }
 }
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   instance = {
     type                = "windows"
-    name                = "func-demo-dev-xaesxqt"
+    name                = module.naming.function_app.name_unique
     resource_group_name = module.rg.groups.demo.name
     location            = module.rg.groups.demo.location
 
