@@ -251,6 +251,17 @@ variable "instance" {
       type  = string
       value = string
     })), {})
+    functions = optional(map(object({
+      name        = optional(string)
+      enabled     = optional(bool, true)
+      config_json = string
+      language    = optional(string)
+      test_data   = optional(string)
+      files = optional(map(object({
+        name    = optional(string)
+        content = string
+      })), {})
+    })), {})
     slots = optional(map(object({
       name                                           = optional(string)
       service_plan_id                                = optional(string)
@@ -496,6 +507,11 @@ variable "instance" {
   validation {
     condition     = contains(["windows", "linux", "flex"], lookup(var.instance, "type", ""))
     error_message = "The type must be either 'windows', 'linux' or 'flex'."
+  }
+
+  validation {
+    condition     = lookup(var.instance, "type", "") != "flex" || length(lookup(var.instance, "functions", {})) == 0
+    error_message = "The functions block is only supported for 'windows' and 'linux' function apps. Flex Consumption apps must use package-based deployment."
   }
 }
 
