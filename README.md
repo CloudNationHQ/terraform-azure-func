@@ -36,6 +36,7 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_function_app_flex_consumption.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
+- [azurerm_function_app_function.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_function) (resource)
 - [azurerm_linux_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
 - [azurerm_linux_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) (resource)
 - [azurerm_windows_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
@@ -302,6 +303,17 @@ object({
       name  = string
       type  = string
       value = string
+    })), {})
+    functions = optional(map(object({
+      name        = optional(string)
+      enabled     = optional(bool, true)
+      config_json = string
+      language    = optional(string)
+      test_data   = optional(string)
+      files = optional(map(object({
+        name    = optional(string)
+        content = string
+      })), {})
     })), {})
     slots = optional(map(object({
       name                                           = optional(string)
@@ -577,6 +589,10 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_functions"></a> [functions](#output\_functions)
+
+Description: contains all function app function configurations
+
 ### <a name="output_instance"></a> [instance](#output\_instance)
 
 Description: Contains all function app config
@@ -595,6 +611,8 @@ For more information, please see our [goals and non-goals](./GOALS.md).
 For more information, please see our testing [guidelines](./TESTING.md)
 
 ## Notes
+
+The `instance.functions` block is supported for Windows and Linux Function Apps. Flex Consumption apps use package-based deployment and don't support per-function creation through `azurerm_function_app_function`.
 
 Using a dedicated module, we've developed a naming convention for resources that's based on specific regular expressions for each type, ensuring correct abbreviations and offering flexibility with multiple prefixes and suffixes.
 

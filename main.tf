@@ -373,6 +373,33 @@ resource "azurerm_linux_function_app" "this" {
   }
 }
 
+resource "azurerm_function_app_function" "this" {
+  for_each = {
+    for key, value in lookup(var.instance, "functions", {}) : key => value
+    if contains(["linux", "windows"], var.instance.type)
+  }
+
+  name = coalesce(each.value.name, each.key)
+  function_app_id = (
+    var.instance.type == "linux" ? azurerm_linux_function_app.this["func"].id :
+    var.instance.type == "windows" ? azurerm_windows_function_app.this["func"].id :
+    null
+  )
+  config_json = each.value.config_json
+  enabled     = each.value.enabled
+  language    = each.value.language
+  test_data   = each.value.test_data
+
+  dynamic "file" {
+    for_each = each.value.files
+
+    content {
+      name    = coalesce(file.value.name, file.key)
+      content = file.value.content
+    }
+  }
+}
+
 # linux function app slot
 resource "azurerm_linux_function_app_slot" "this" {
   for_each = {
