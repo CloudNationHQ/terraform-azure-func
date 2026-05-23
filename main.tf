@@ -224,6 +224,7 @@ resource "azurerm_linux_function_app" "this" {
     container_registry_use_managed_identity       = var.instance.site_config.container_registry_use_managed_identity
     container_registry_managed_identity_client_id = var.instance.site_config.container_registry_managed_identity_client_id
     minimum_tls_version                           = var.instance.site_config.minimum_tls_version
+    minimum_tls_cipher_suite                      = var.instance.site_config.minimum_tls_cipher_suite
     api_management_api_id                         = var.instance.site_config.api_management_api_id
     managed_pipeline_mode                         = var.instance.site_config.managed_pipeline_mode
     vnet_route_all_enabled                        = var.instance.site_config.vnet_route_all_enabled
@@ -658,6 +659,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     container_registry_use_managed_identity       = each.value.site_config.container_registry_use_managed_identity
     container_registry_managed_identity_client_id = each.value.site_config.container_registry_managed_identity_client_id
     minimum_tls_version                           = each.value.site_config.minimum_tls_version
+    minimum_tls_cipher_suite                      = each.value.site_config.minimum_tls_cipher_suite
     api_management_api_id                         = each.value.site_config.api_management_api_id
     managed_pipeline_mode                         = each.value.site_config.managed_pipeline_mode
     vnet_route_all_enabled                        = each.value.site_config.vnet_route_all_enabled
@@ -992,6 +994,7 @@ resource "azurerm_windows_function_app" "this" {
     health_check_eviction_time_in_min      = var.instance.site_config.health_check_eviction_time_in_min
     application_insights_connection_string = var.instance.site_config.application_insights_connection_string
     minimum_tls_version                    = var.instance.site_config.minimum_tls_version
+    minimum_tls_cipher_suite               = var.instance.site_config.minimum_tls_cipher_suite
     api_management_api_id                  = var.instance.site_config.api_management_api_id
     managed_pipeline_mode                  = var.instance.site_config.managed_pipeline_mode
     vnet_route_all_enabled                 = var.instance.site_config.vnet_route_all_enabled
@@ -1382,6 +1385,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     health_check_eviction_time_in_min      = each.value.site_config.health_check_eviction_time_in_min
     application_insights_connection_string = each.value.site_config.application_insights_connection_string
     minimum_tls_version                    = each.value.site_config.minimum_tls_version
+    minimum_tls_cipher_suite               = each.value.site_config.minimum_tls_cipher_suite
     api_management_api_id                  = each.value.site_config.api_management_api_id
     managed_pipeline_mode                  = each.value.site_config.managed_pipeline_mode
     vnet_route_all_enabled                 = each.value.site_config.vnet_route_all_enabled
