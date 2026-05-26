@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.2.0...v3.3.0) (2026-05-26)
+
+
+### Features
+
+* add minimum_tls_cipher_suite to site_config for function app resources ([#97](https://github.com/CloudNationHQ/terraform-azure-func/issues/97)) ([87f5459](https://github.com/CloudNationHQ/terraform-azure-func/commit/87f5459f6f8ee6d66afdab543647bb074f876dfe))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#87](https://github.com/CloudNationHQ/terraform-azure-func/issues/87)) ([d6d75e9](https://github.com/CloudNationHQ/terraform-azure-func/commit/d6d75e9bd437dc1e703776819c5718eb3e3a29dd))
+
 ## [3.2.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.1.0...v3.2.0) (2026-03-20)
 
 
