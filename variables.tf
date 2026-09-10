@@ -1,4 +1,4 @@
-variable "instance" {
+variable "function_app" {
   description = "Contains all function app configuration"
   type = object({
     name                                           = string
@@ -6,29 +6,29 @@ variable "instance" {
     resource_group_name                            = optional(string)
     location                                       = optional(string)
     service_plan_id                                = string
-    https_only                                     = optional(bool, true)
-    enabled                                        = optional(bool, true)
-    app_settings                                   = optional(map(string))
+    https_only                                     = optional(bool)
+    enabled                                        = optional(bool)
+    app_settings                                   = optional(map(string), {})
     tags                                           = optional(map(string))
     storage_account_name                           = optional(string)
     storage_account_access_key                     = optional(string)
     zip_deploy_file                                = optional(string)
-    builtin_logging_enabled                        = optional(bool, true)
+    builtin_logging_enabled                        = optional(bool)
     client_certificate_mode                        = optional(string)
     daily_memory_time_quota                        = optional(number)
     virtual_network_subnet_id                      = optional(string)
     client_certificate_enabled                     = optional(bool, false)
     functions_extension_version                    = optional(string)
     storage_key_vault_secret_id                    = optional(string)
-    content_share_force_disabled                   = optional(bool, false)
-    public_network_access_enabled                  = optional(bool, true)
+    content_share_force_disabled                   = optional(bool)
+    public_network_access_enabled                  = optional(bool)
     storage_uses_managed_identity                  = optional(bool)
-    vnet_image_pull_enabled                        = optional(bool, false)
+    vnet_image_pull_enabled                        = optional(bool)
     key_vault_reference_identity_id                = optional(string)
     client_certificate_exclusion_paths             = optional(string)
-    ftp_publish_basic_authentication_enabled       = optional(bool, true)
-    webdeploy_publish_basic_authentication_enabled = optional(bool, true)
-    virtual_network_backup_restore_enabled         = optional(bool, false)
+    ftp_publish_basic_authentication_enabled       = optional(bool)
+    webdeploy_publish_basic_authentication_enabled = optional(bool)
+    virtual_network_backup_restore_enabled         = optional(bool)
     storage_container_type                         = optional(string)
     storage_container_endpoint                     = optional(string)
     storage_authentication_type                    = optional(string)
@@ -37,27 +37,27 @@ variable "instance" {
     runtime_name                                   = optional(string)
     runtime_version                                = optional(string)
     maximum_instance_count                         = optional(number)
-    instance_memory_in_mb                          = optional(number, 512)
+    instance_memory_in_mb                          = optional(number)
     http_concurrency                               = optional(number)
     identity = optional(object({
       type         = string
       identity_ids = optional(list(string))
     }))
     auth_settings_v2 = optional(object({
-      auth_enabled                            = optional(bool, false)
-      runtime_version                         = optional(string, "~1")
+      auth_enabled                            = optional(bool)
+      runtime_version                         = optional(string)
       config_file_path                        = optional(string)
       require_authentication                  = optional(bool)
-      unauthenticated_action                  = optional(string, "RedirectToLoginPage")
+      unauthenticated_action                  = optional(string)
       default_provider                        = optional(string)
       excluded_paths                          = optional(list(string))
-      require_https                           = optional(bool, true)
-      http_route_api_prefix                   = optional(string, "/.auth")
-      forward_proxy_convention                = optional(string, "NoProxy")
+      require_https                           = optional(bool)
+      http_route_api_prefix                   = optional(string)
+      forward_proxy_convention                = optional(string)
       forward_proxy_custom_host_header_name   = optional(string)
       forward_proxy_custom_scheme_header_name = optional(string)
       login = object({
-        token_store_enabled               = optional(bool, false)
+        token_store_enabled               = optional(bool)
         token_refresh_extension_time      = optional(number)
         token_store_path                  = optional(string)
         token_store_sas_setting_name      = optional(string)
@@ -107,7 +107,7 @@ variable "instance" {
       facebook_v2 = optional(object({
         app_id                  = string
         app_secret_setting_name = string
-        graph_api_version       = optional(string, "v15.0")
+        graph_api_version       = optional(string)
         login_scopes            = optional(list(string))
       }))
       github_v2 = optional(object({
@@ -133,10 +133,10 @@ variable "instance" {
       }))
     }))
     site_config = object({
-      always_on                                     = optional(bool, false)
-      ftps_state                                    = optional(string, "AllAllowed")
+      always_on                                     = optional(bool)
+      ftps_state                                    = optional(string)
       worker_count                                  = optional(number)
-      http2_enabled                                 = optional(bool, true)
+      http2_enabled                                 = optional(bool)
       app_scale_limit                               = optional(number)
       app_command_line                              = optional(string)
       remote_debugging_version                      = optional(string)
@@ -147,28 +147,28 @@ variable "instance" {
       application_insights_connection_string        = optional(string)
       container_registry_use_managed_identity       = optional(bool, false)
       container_registry_managed_identity_client_id = optional(string)
-      minimum_tls_version                           = optional(string, "1.2")
+      minimum_tls_version                           = optional(string)
       minimum_tls_cipher_suite                      = optional(string)
       api_management_api_id                         = optional(string)
       managed_pipeline_mode                         = optional(string)
-      vnet_route_all_enabled                        = optional(bool, false)
-      scm_minimum_tls_version                       = optional(string, "1.2")
+      vnet_route_all_enabled                        = optional(bool)
+      scm_minimum_tls_version                       = optional(string)
       application_insights_key                      = optional(string)
       elastic_instance_minimum                      = optional(number)
-      remote_debugging_enabled                      = optional(bool, false)
+      remote_debugging_enabled                      = optional(bool)
       default_documents                             = optional(list(string))
       health_check_path                             = optional(string)
-      use_32_bit_worker                             = optional(bool, false)
+      use_32_bit_worker                             = optional(bool)
       api_definition_url                            = optional(string)
-      websockets_enabled                            = optional(bool, false)
+      websockets_enabled                            = optional(bool)
       load_balancing_mode                           = optional(string)
-      ip_restriction_default_action                 = optional(string, "Allow")
-      scm_ip_restriction_default_action             = optional(string, "Allow")
+      ip_restriction_default_action                 = optional(string)
+      scm_ip_restriction_default_action             = optional(string)
       ip_restrictions = optional(map(object({
-        action                    = optional(string, "Allow")
+        action                    = optional(string)
         ip_address                = optional(string)
         name                      = optional(string)
-        priority                  = optional(number, 65000)
+        priority                  = optional(number)
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
@@ -180,10 +180,10 @@ variable "instance" {
         }), null)
       })), {})
       scm_ip_restrictions = optional(map(object({
-        action                    = optional(string, "Allow")
+        action                    = optional(string)
         ip_address                = optional(string)
         name                      = optional(string)
-        priority                  = optional(number, 65000)
+        priority                  = optional(number)
         service_tag               = optional(string)
         virtual_network_subnet_id = optional(string)
         description               = optional(string)
@@ -212,7 +212,7 @@ variable "instance" {
       }))
       cors = optional(object({
         allowed_origins     = optional(list(string), [])
-        support_credentials = optional(bool, false)
+        support_credentials = optional(bool)
       }))
       app_service_logs = optional(object({
         disk_quota_mb         = optional(number)
@@ -234,17 +234,17 @@ variable "instance" {
     always_ready = optional(map(object({
       name           = string
       instance_count = number
-    })))
+    })), {})
     backup = optional(object({
       name                = string
-      enabled             = optional(bool, true)
+      enabled             = optional(bool)
       storage_account_url = string
       schedule = object({
         frequency_unit           = string
         frequency_interval       = number
         retention_period_days    = optional(number)
         start_time               = optional(string)
-        keep_at_least_one_backup = optional(bool, false)
+        keep_at_least_one_backup = optional(bool)
       })
     }))
     connection_strings = optional(map(object({
@@ -254,7 +254,7 @@ variable "instance" {
     })), {})
     functions = optional(map(object({
       name        = optional(string)
-      enabled     = optional(bool, true)
+      enabled     = optional(bool)
       config_json = string
       language    = optional(string)
       test_data   = optional(string)
@@ -266,46 +266,46 @@ variable "instance" {
     slots = optional(map(object({
       name                                           = optional(string)
       service_plan_id                                = optional(string)
-      virtual_network_backup_restore_enabled         = optional(bool, false)
+      virtual_network_backup_restore_enabled         = optional(bool)
       storage_account_name                           = optional(string)
       storage_account_access_key                     = optional(string)
-      webdeploy_publish_basic_authentication_enabled = optional(bool, true)
-      ftp_publish_basic_authentication_enabled       = optional(bool, true)
+      webdeploy_publish_basic_authentication_enabled = optional(bool)
+      ftp_publish_basic_authentication_enabled       = optional(bool)
       client_certificate_exclusion_paths             = optional(string)
-      vnet_image_pull_enabled                        = optional(bool, false)
-      content_share_force_disabled                   = optional(bool, false)
+      vnet_image_pull_enabled                        = optional(bool)
+      content_share_force_disabled                   = optional(bool)
       storage_uses_managed_identity                  = optional(bool)
-      public_network_access_enabled                  = optional(bool, true)
+      public_network_access_enabled                  = optional(bool)
       storage_key_vault_secret_id                    = optional(string)
       functions_extension_version                    = optional(string)
       client_certificate_enabled                     = optional(bool, false)
       virtual_network_subnet_id                      = optional(string)
       daily_memory_time_quota                        = optional(number)
       client_certificate_mode                        = optional(string)
-      builtin_logging_enabled                        = optional(bool, true)
-      https_only                                     = optional(bool, true)
-      enabled                                        = optional(bool, true)
+      builtin_logging_enabled                        = optional(bool)
+      https_only                                     = optional(bool)
+      enabled                                        = optional(bool)
       key_vault_reference_identity_id                = optional(string)
-      app_settings                                   = optional(map(string))
+      app_settings                                   = optional(map(string), {})
       identity = optional(object({
         type         = string
         identity_ids = optional(list(string))
       }))
       auth_settings_v2 = optional(object({
-        auth_enabled                            = optional(bool, false)
-        runtime_version                         = optional(string, "~1")
+        auth_enabled                            = optional(bool)
+        runtime_version                         = optional(string)
         config_file_path                        = optional(string)
         require_authentication                  = optional(bool)
-        unauthenticated_action                  = optional(string, "RedirectToLoginPage")
+        unauthenticated_action                  = optional(string)
         default_provider                        = optional(string)
         excluded_paths                          = optional(list(string))
-        require_https                           = optional(bool, true)
-        http_route_api_prefix                   = optional(string, "/.auth")
-        forward_proxy_convention                = optional(string, "NoProxy")
+        require_https                           = optional(bool)
+        http_route_api_prefix                   = optional(string)
+        forward_proxy_convention                = optional(string)
         forward_proxy_custom_host_header_name   = optional(string)
         forward_proxy_custom_scheme_header_name = optional(string)
         login = object({
-          token_store_enabled               = optional(bool, false)
+          token_store_enabled               = optional(bool)
           token_refresh_extension_time      = optional(number)
           token_store_path                  = optional(string)
           token_store_sas_setting_name      = optional(string)
@@ -355,7 +355,7 @@ variable "instance" {
         facebook_v2 = optional(object({
           app_id                  = string
           app_secret_setting_name = string
-          graph_api_version       = optional(string, "v15.0")
+          graph_api_version       = optional(string)
           login_scopes            = optional(list(string))
         }))
         github_v2 = optional(object({
@@ -381,10 +381,10 @@ variable "instance" {
         }))
       }))
       site_config = object({
-        always_on                                     = optional(bool, false)
-        ftps_state                                    = optional(string, "Disabled")
+        always_on                                     = optional(bool)
+        ftps_state                                    = optional(string)
         worker_count                                  = optional(number)
-        http2_enabled                                 = optional(bool, false)
+        http2_enabled                                 = optional(bool)
         app_scale_limit                               = optional(number)
         app_command_line                              = optional(string)
         remote_debugging_version                      = optional(string)
@@ -395,29 +395,29 @@ variable "instance" {
         application_insights_connection_string        = optional(string)
         container_registry_use_managed_identity       = optional(bool, false)
         container_registry_managed_identity_client_id = optional(string)
-        minimum_tls_version                           = optional(string, "1.2")
+        minimum_tls_version                           = optional(string)
         minimum_tls_cipher_suite                      = optional(string)
         api_management_api_id                         = optional(string)
         managed_pipeline_mode                         = optional(string)
-        vnet_route_all_enabled                        = optional(bool, false)
-        scm_minimum_tls_version                       = optional(string, "1.2")
+        vnet_route_all_enabled                        = optional(bool)
+        scm_minimum_tls_version                       = optional(string)
         application_insights_key                      = optional(string)
         elastic_instance_minimum                      = optional(number)
-        remote_debugging_enabled                      = optional(bool, false)
+        remote_debugging_enabled                      = optional(bool)
         default_documents                             = optional(list(string))
         health_check_path                             = optional(string)
-        use_32_bit_worker                             = optional(bool, false)
+        use_32_bit_worker                             = optional(bool)
         api_definition_url                            = optional(string)
         auto_swap_slot_name                           = optional(string)
-        websockets_enabled                            = optional(bool, false)
+        websockets_enabled                            = optional(bool)
         load_balancing_mode                           = optional(string)
-        scm_ip_restriction_default_action             = optional(string, "Allow")
-        ip_restriction_default_action                 = optional(string, "Allow")
+        scm_ip_restriction_default_action             = optional(string)
+        ip_restriction_default_action                 = optional(string)
         ip_restrictions = optional(map(object({
-          action                    = optional(string, "Allow")
+          action                    = optional(string)
           ip_address                = optional(string)
           name                      = optional(string)
-          priority                  = optional(number, 65000)
+          priority                  = optional(number)
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
@@ -429,10 +429,10 @@ variable "instance" {
           }), null)
         })), {})
         scm_ip_restrictions = optional(map(object({
-          action                    = optional(string, "Allow")
+          action                    = optional(string)
           ip_address                = optional(string)
           name                      = optional(string)
-          priority                  = optional(number, 65000)
+          priority                  = optional(number)
           service_tag               = optional(string)
           virtual_network_subnet_id = optional(string)
           description               = optional(string)
@@ -451,17 +451,17 @@ variable "instance" {
           python_version              = optional(string)
           powershell_core_version     = optional(string)
           use_custom_runtime          = optional(bool)
-          docker = optional(object({
+          docker = optional(map(object({
             image_name        = string
             image_tag         = string
             registry_url      = string
-            registry_username = string
-            registry_password = string
-          }))
+            registry_username = optional(string)
+            registry_password = optional(string)
+          })), {})
         }))
         cors = optional(object({
           allowed_origins     = optional(list(string), [])
-          support_credentials = optional(bool, false)
+          support_credentials = optional(bool)
         }))
         app_service_logs = optional(object({
           disk_quota_mb         = optional(number)
@@ -484,12 +484,12 @@ variable "instance" {
       backup = optional(object({
         name                = string
         storage_account_url = string
-        enabled             = optional(bool, true)
+        enabled             = optional(bool)
         schedule = object({
           frequency_interval       = number
           frequency_unit           = string
-          keep_at_least_one_backup = optional(bool, false)
-          retention_period_days    = optional(number, 30)
+          keep_at_least_one_backup = optional(bool)
+          retention_period_days    = optional(number)
           start_time               = optional(string)
           last_execution_time      = optional(string)
         })
@@ -497,30 +497,24 @@ variable "instance" {
     })), {})
   })
   validation {
-    condition     = var.instance.location != null || var.location != null
+    condition     = var.function_app.location != null || var.location != null
     error_message = "location must be provided either in the instance object or as a separate variable."
   }
 
   validation {
-    condition     = var.instance.resource_group_name != null || var.resource_group_name != null
+    condition     = var.function_app.resource_group_name != null || var.resource_group_name != null
     error_message = "resource group name must be provided either in the instance object or as a separate variable."
   }
 
   validation {
-    condition     = contains(["windows", "linux", "flex"], lookup(var.instance, "type", ""))
+    condition     = contains(["windows", "linux", "flex"], lookup(var.function_app, "type", ""))
     error_message = "The type must be either 'windows', 'linux' or 'flex'."
   }
 
   validation {
-    condition     = lookup(var.instance, "type", "") != "flex" || length(lookup(var.instance, "functions", {})) == 0
+    condition     = lookup(var.function_app, "type", "") != "flex" || length(lookup(var.function_app, "functions", {})) == 0
     error_message = "The functions block is only supported for 'windows' and 'linux' function apps. Flex Consumption apps must use package-based deployment."
   }
-}
-
-variable "naming" {
-  description = "contains naming convention"
-  type        = map(string)
-  default     = {}
 }
 
 variable "resource_group_name" {

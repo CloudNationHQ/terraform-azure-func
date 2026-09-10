@@ -1,13 +1,13 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.26"
+  version = "~> 0.32"
 
   suffix = ["demo", "dev"]
 }
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   groups = {
     demo = {
@@ -19,7 +19,7 @@ module "rg" {
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   storage = {
     name                = module.naming.storage_account.name_unique
@@ -30,9 +30,8 @@ module "storage" {
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
-  naming = local.naming
 
   vnet = {
     name                = module.naming.virtual_network.name
@@ -59,7 +58,7 @@ module "network" {
 
 module "service_plan" {
   source  = "cloudnationhq/plan/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   plans = {
     plan1 = {
@@ -75,12 +74,12 @@ module "service_plan" {
 
 module "function_app" {
   source  = "cloudnationhq/func/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   resource_group_name = module.rg.groups.demo.name
   location            = module.rg.groups.demo.location
 
-  instance = {
+  function_app = {
     type                          = "linux"
     name                          = module.naming.function_app.name_unique
     storage_account_name          = module.storage.account.name
