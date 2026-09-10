@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.0.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.3.0...v4.0.0) (2026-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* this change causes recreates
+
+### Features
+
+* azurerm provider 5 upgrade ([#101](https://github.com/CloudNationHQ/terraform-azure-func/issues/101)) ([9ef34c6](https://github.com/CloudNationHQ/terraform-azure-func/commit/9ef34c660acc2c56aa1dee42d4f0d66ffee943d8))
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /tests ([#98](https://github.com/CloudNationHQ/terraform-azure-func/issues/98)) ([936cf0d](https://github.com/CloudNationHQ/terraform-azure-func/commit/936cf0d4e2adf7abd4a69fb35687c9eb63651577))
+
 ## [3.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.2.0...v3.3.0) (2026-05-26)
 
 
