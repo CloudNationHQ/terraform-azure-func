@@ -1,49 +1,46 @@
 #linux function app
 resource "azurerm_linux_function_app" "this" {
-  for_each = var.instance.type == "linux" ? { "func" = true } : {}
+  for_each = var.function_app.type == "linux" ? { "func" = true } : {}
 
   resource_group_name = coalesce(
-    lookup(
-      var.instance, "resource_group_name", null
-    ), var.resource_group_name
+    var.function_app.resource_group_name, var.resource_group_name
   )
 
   location = coalesce(
-    lookup(var.instance, "location", null
-    ), var.location
+    var.function_app.location, var.location
   )
 
-  name                                           = var.instance.name
-  service_plan_id                                = var.instance.service_plan_id
-  storage_account_name                           = var.instance.storage_account_name
-  storage_account_access_key                     = var.instance.storage_account_access_key
-  https_only                                     = var.instance.https_only
-  zip_deploy_file                                = var.instance.zip_deploy_file
-  enabled                                        = var.instance.enabled
-  builtin_logging_enabled                        = var.instance.builtin_logging_enabled
-  client_certificate_mode                        = var.instance.client_certificate_mode
-  daily_memory_time_quota                        = var.instance.daily_memory_time_quota
-  virtual_network_subnet_id                      = var.instance.virtual_network_subnet_id
-  client_certificate_enabled                     = var.instance.client_certificate_enabled
-  functions_extension_version                    = var.instance.functions_extension_version
-  storage_key_vault_secret_id                    = var.instance.storage_key_vault_secret_id
-  content_share_force_disabled                   = var.instance.content_share_force_disabled
-  public_network_access_enabled                  = var.instance.public_network_access_enabled
-  storage_uses_managed_identity                  = var.instance.storage_uses_managed_identity
-  vnet_image_pull_enabled                        = var.instance.vnet_image_pull_enabled
-  key_vault_reference_identity_id                = var.instance.key_vault_reference_identity_id
-  client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
-  ftp_publish_basic_authentication_enabled       = var.instance.ftp_publish_basic_authentication_enabled
-  webdeploy_publish_basic_authentication_enabled = var.instance.webdeploy_publish_basic_authentication_enabled
-  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
-  app_settings                                   = var.instance.app_settings
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_account_name                           = var.function_app.storage_account_name
+  storage_account_access_key                     = var.function_app.storage_account_access_key
+  https_only                                     = var.function_app.https_only
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  enabled                                        = var.function_app.enabled
+  builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  daily_memory_time_quota                        = var.function_app.daily_memory_time_quota
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  functions_extension_version                    = var.function_app.functions_extension_version
+  storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
+  content_share_force_disabled                   = var.function_app.content_share_force_disabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
+  vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
+  key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  ftp_publish_basic_authentication_enabled       = var.function_app.ftp_publish_basic_authentication_enabled
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.function_app.virtual_network_backup_restore_enabled
+  app_settings                                   = var.function_app.app_settings
 
   tags = coalesce(
-    var.instance.tags, var.tags
+    var.function_app.tags, var.tags
   )
 
   dynamic "identity" {
-    for_each = var.instance.identity != null ? [var.instance.identity] : []
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
 
     content {
       type         = identity.value.type
@@ -52,7 +49,7 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   dynamic "auth_settings_v2" {
-    for_each = var.instance.auth_settings_v2 != null ? [var.instance.auth_settings_v2] : []
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
 
     content {
       auth_enabled                            = auth_settings_v2.value.auth_enabled
@@ -83,7 +80,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "apple_v2" {
-        for_each = auth_settings_v2.value.apple_v2 != null ? [auth_settings_v2.value.apple_v2] : []
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
 
         content {
           client_id                  = apple_v2.value.client_id
@@ -92,7 +89,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "active_directory_v2" {
-        for_each = auth_settings_v2.value.active_directory_v2 != null ? [auth_settings_v2.value.active_directory_v2] : []
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
 
         content {
           client_id                            = active_directory_v2.value.client_id
@@ -111,7 +108,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "azure_static_web_app_v2" {
-        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? [auth_settings_v2.value.azure_static_web_app_v2] : []
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
 
         content {
           client_id = azure_static_web_app_v2.value.client_id
@@ -119,7 +116,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "custom_oidc_v2" {
-        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+        for_each = auth_settings_v2.value.custom_oidc_v2
 
         content {
           name                          = custom_oidc_v2.value.name
@@ -137,7 +134,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "facebook_v2" {
-        for_each = auth_settings_v2.value.facebook_v2 != null ? [auth_settings_v2.value.facebook_v2] : []
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
 
         content {
           app_id                  = facebook_v2.value.app_id
@@ -148,7 +145,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "github_v2" {
-        for_each = auth_settings_v2.value.github_v2 != null ? [auth_settings_v2.value.github_v2] : []
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
 
         content {
           client_id                  = github_v2.value.client_id
@@ -158,7 +155,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "google_v2" {
-        for_each = auth_settings_v2.value.google_v2 != null ? [auth_settings_v2.value.google_v2] : []
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
 
         content {
           client_id                  = google_v2.value.client_id
@@ -169,7 +166,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "microsoft_v2" {
-        for_each = auth_settings_v2.value.microsoft_v2 != null ? [auth_settings_v2.value.microsoft_v2] : []
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
 
         content {
           client_id                  = microsoft_v2.value.client_id
@@ -180,7 +177,7 @@ resource "azurerm_linux_function_app" "this" {
       }
 
       dynamic "twitter_v2" {
-        for_each = auth_settings_v2.value.twitter_v2 != null ? [auth_settings_v2.value.twitter_v2] : []
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
 
         content {
           consumer_key                 = twitter_v2.value.consumer_key
@@ -191,13 +188,11 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   dynamic "storage_account" {
-    for_each = lookup(
-      var.instance, "storage_accounts", {}
-    )
+    for_each = var.function_app.storage_accounts
 
     content {
-      name = lookup(
-        storage_account.value, "name", storage_account.key
+      name = coalesce(
+        storage_account.value.name, storage_account.key
       )
 
       type         = storage_account.value.type
@@ -209,42 +204,40 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   site_config {
-    always_on                                     = var.instance.site_config.always_on
-    ftps_state                                    = var.instance.site_config.ftps_state
-    worker_count                                  = var.instance.site_config.worker_count
-    http2_enabled                                 = var.instance.site_config.http2_enabled
-    app_scale_limit                               = var.instance.site_config.app_scale_limit
-    app_command_line                              = var.instance.site_config.app_command_line
-    remote_debugging_version                      = var.instance.site_config.remote_debugging_version
-    pre_warmed_instance_count                     = var.instance.site_config.pre_warmed_instance_count
-    runtime_scale_monitoring_enabled              = var.instance.site_config.runtime_scale_monitoring_enabled
-    scm_use_main_ip_restriction                   = var.instance.site_config.scm_use_main_ip_restriction
-    health_check_eviction_time_in_min             = var.instance.site_config.health_check_eviction_time_in_min
-    application_insights_connection_string        = var.instance.site_config.application_insights_connection_string
-    container_registry_use_managed_identity       = var.instance.site_config.container_registry_use_managed_identity
-    container_registry_managed_identity_client_id = var.instance.site_config.container_registry_managed_identity_client_id
-    minimum_tls_version                           = var.instance.site_config.minimum_tls_version
-    minimum_tls_cipher_suite                      = var.instance.site_config.minimum_tls_cipher_suite
-    api_management_api_id                         = var.instance.site_config.api_management_api_id
-    managed_pipeline_mode                         = var.instance.site_config.managed_pipeline_mode
-    vnet_route_all_enabled                        = var.instance.site_config.vnet_route_all_enabled
-    scm_minimum_tls_version                       = var.instance.site_config.scm_minimum_tls_version
-    application_insights_key                      = var.instance.site_config.application_insights_key
-    elastic_instance_minimum                      = var.instance.site_config.elastic_instance_minimum
-    remote_debugging_enabled                      = var.instance.site_config.remote_debugging_enabled
-    default_documents                             = var.instance.site_config.default_documents
-    health_check_path                             = var.instance.site_config.health_check_path
-    use_32_bit_worker                             = var.instance.site_config.use_32_bit_worker
-    api_definition_url                            = var.instance.site_config.api_definition_url
-    websockets_enabled                            = var.instance.site_config.websockets_enabled
-    load_balancing_mode                           = var.instance.site_config.load_balancing_mode
-    ip_restriction_default_action                 = var.instance.site_config.ip_restriction_default_action
-    scm_ip_restriction_default_action             = var.instance.site_config.scm_ip_restriction_default_action
+    always_on                                     = var.function_app.site_config.always_on
+    ftps_state                                    = var.function_app.site_config.ftps_state
+    worker_count                                  = var.function_app.site_config.worker_count
+    http2_enabled                                 = var.function_app.site_config.http2_enabled
+    app_scale_limit                               = var.function_app.site_config.app_scale_limit
+    app_command_line                              = var.function_app.site_config.app_command_line
+    remote_debugging_version                      = var.function_app.site_config.remote_debugging_version
+    pre_warmed_instance_count                     = var.function_app.site_config.pre_warmed_instance_count
+    runtime_scale_monitoring_enabled              = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_use_main_ip_restriction                   = var.function_app.site_config.scm_use_main_ip_restriction
+    health_check_eviction_time_in_min             = var.function_app.site_config.health_check_eviction_time_in_min
+    application_insights_connection_string        = var.function_app.site_config.application_insights_connection_string
+    container_registry_use_managed_identity       = var.function_app.site_config.container_registry_use_managed_identity
+    container_registry_managed_identity_client_id = var.function_app.site_config.container_registry_managed_identity_client_id
+    minimum_tls_version                           = var.function_app.site_config.minimum_tls_version
+    minimum_tls_cipher_suite                      = var.function_app.site_config.minimum_tls_cipher_suite
+    api_management_api_id                         = var.function_app.site_config.api_management_api_id
+    managed_pipeline_mode                         = var.function_app.site_config.managed_pipeline_mode
+    vnet_route_all_enabled                        = var.function_app.site_config.vnet_route_all_enabled
+    scm_minimum_tls_version                       = var.function_app.site_config.scm_minimum_tls_version
+    application_insights_key                      = var.function_app.site_config.application_insights_key
+    elastic_instance_minimum                      = var.function_app.site_config.elastic_instance_minimum
+    remote_debugging_enabled                      = var.function_app.site_config.remote_debugging_enabled
+    default_documents                             = var.function_app.site_config.default_documents
+    health_check_path                             = var.function_app.site_config.health_check_path
+    use_32_bit_worker                             = var.function_app.site_config.use_32_bit_worker
+    api_definition_url                            = var.function_app.site_config.api_definition_url
+    websockets_enabled                            = var.function_app.site_config.websockets_enabled
+    load_balancing_mode                           = var.function_app.site_config.load_balancing_mode
+    ip_restriction_default_action                 = var.function_app.site_config.ip_restriction_default_action
+    scm_ip_restriction_default_action             = var.function_app.site_config.scm_ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.ip_restrictions
 
       content {
         action                    = ip_restriction.value.action
@@ -259,9 +252,7 @@ resource "azurerm_linux_function_app" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "scm_ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.scm_ip_restrictions
 
       content {
         action                    = scm_ip_restriction.value.action
@@ -276,7 +267,7 @@ resource "azurerm_linux_function_app" "this" {
     }
 
     dynamic "application_stack" {
-      for_each = var.instance.site_config.application_stack != null ? [var.instance.site_config.application_stack] : []
+      for_each = var.function_app.site_config.application_stack != null ? { "this" = var.function_app.site_config.application_stack } : {}
 
       content {
         dotnet_version              = application_stack.value.dotnet_version
@@ -288,9 +279,7 @@ resource "azurerm_linux_function_app" "this" {
         use_custom_runtime          = application_stack.value.use_custom_runtime
 
         dynamic "docker" {
-          for_each = coalesce(
-            application_stack.value.docker, {}
-          )
+          for_each = application_stack.value.docker
 
           content {
             image_name        = docker.value.image_name
@@ -304,7 +293,7 @@ resource "azurerm_linux_function_app" "this" {
     }
 
     dynamic "cors" {
-      for_each = var.instance.site_config.cors != null ? [var.instance.site_config.cors] : []
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
 
       content {
         allowed_origins     = cors.value.allowed_origins
@@ -313,7 +302,7 @@ resource "azurerm_linux_function_app" "this" {
     }
 
     dynamic "app_service_logs" {
-      for_each = var.instance.site_config.app_service_logs != null ? [var.instance.site_config.app_service_logs] : []
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
 
       content {
         disk_quota_mb         = app_service_logs.value.disk_quota_mb
@@ -323,7 +312,7 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   dynamic "sticky_settings" {
-    for_each = var.instance.sticky_settings != null ? [var.instance.sticky_settings] : []
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
 
 
     content {
@@ -333,7 +322,7 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   dynamic "backup" {
-    for_each = var.instance.backup != null ? [var.instance.backup] : []
+    for_each = var.function_app.backup != null ? { "this" = var.function_app.backup } : {}
 
     content {
       name                = backup.value.name
@@ -351,9 +340,7 @@ resource "azurerm_linux_function_app" "this" {
   }
 
   dynamic "connection_string" {
-    for_each = lookup(
-      var.instance, "connection_strings", {}
-    )
+    for_each = var.function_app.connection_strings
 
     content {
       name  = connection_string.value.name
@@ -375,27 +362,30 @@ resource "azurerm_linux_function_app" "this" {
 }
 
 resource "azurerm_function_app_function" "this" {
-  for_each = {
-    for key, value in lookup(var.instance, "functions", {}) : key => value
-    if contains(["linux", "windows"], var.instance.type)
-  }
+  for_each = var.function_app.functions
 
-  name = coalesce(each.value.name, each.key)
-  function_app_id = (
-    var.instance.type == "linux" ? azurerm_linux_function_app.this["func"].id :
-    var.instance.type == "windows" ? azurerm_windows_function_app.this["func"].id :
-    null
-  )
+  name        = coalesce(each.value.name, each.key)
   config_json = each.value.config_json
   enabled     = each.value.enabled
   language    = each.value.language
   test_data   = each.value.test_data
 
+  function_app_id = one(
+    values(
+      merge(azurerm_linux_function_app.this, azurerm_windows_function_app.this
+      )
+    )
+  ).id
+
+
   dynamic "file" {
     for_each = each.value.files
 
     content {
-      name    = coalesce(file.value.name, file.key)
+      name = coalesce(
+        file.value.name, file.key
+      )
+
       content = file.value.content
     }
   }
@@ -403,15 +393,10 @@ resource "azurerm_function_app_function" "this" {
 
 # linux function app slot
 resource "azurerm_linux_function_app_slot" "this" {
-  for_each = {
-    for key, value in lookup(var.instance, "slots", {}) : key => value
-    if var.instance.type == "linux"
-  }
+  for_each = var.function_app.type == "linux" ? var.function_app.slots : {}
 
   name = coalesce(
-    each.value.name, try(
-      join("-", [var.naming.function_app_slot, each.key]), null
-    ), each.key
+    each.value.name, each.key
   )
 
   function_app_id                                = azurerm_linux_function_app.this["func"].id
@@ -437,16 +422,14 @@ resource "azurerm_linux_function_app_slot" "this" {
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
-  service_plan_id = lookup(
-    each.value, "service_plan_id", null
-  )
+  service_plan_id = each.value.service_plan_id
 
   tags = coalesce(
-    var.instance.tags, var.tags
+    var.function_app.tags, var.tags
   )
 
   dynamic "identity" {
-    for_each = each.value.identity != null ? [each.value.identity] : []
+    for_each = each.value.identity != null ? { "this" = each.value.identity } : {}
 
     content {
       type         = identity.value.type
@@ -455,7 +438,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   }
 
   dynamic "auth_settings_v2" {
-    for_each = each.value.auth_settings_v2 != null ? [each.value.auth_settings_v2] : []
+    for_each = each.value.auth_settings_v2 != null ? { "this" = each.value.auth_settings_v2 } : {}
 
     content {
       auth_enabled                            = auth_settings_v2.value.auth_enabled
@@ -486,7 +469,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "apple_v2" {
-        for_each = auth_settings_v2.value.apple_v2 != null ? [auth_settings_v2.value.apple_v2] : []
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
 
         content {
           client_id                  = apple_v2.value.client_id
@@ -495,7 +478,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "active_directory_v2" {
-        for_each = auth_settings_v2.value.active_directory_v2 != null ? [auth_settings_v2.value.active_directory_v2] : []
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
 
         content {
           client_id                            = active_directory_v2.value.client_id
@@ -514,7 +497,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "azure_static_web_app_v2" {
-        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? [auth_settings_v2.value.azure_static_web_app_v2] : []
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
 
         content {
           client_id = azure_static_web_app_v2.value.client_id
@@ -522,9 +505,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "custom_oidc_v2" {
-        for_each = try(
-          auth_settings_v2.value.custom_oidc_v2, {}
-        )
+        for_each = auth_settings_v2.value.custom_oidc_v2
 
         content {
           name                          = custom_oidc_v2.value.name
@@ -542,7 +523,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "facebook_v2" {
-        for_each = auth_settings_v2.value.facebook_v2 != null ? [auth_settings_v2.value.facebook_v2] : []
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
 
         content {
           app_id                  = facebook_v2.value.app_id
@@ -553,7 +534,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "github_v2" {
-        for_each = auth_settings_v2.value.github_v2 != null ? [auth_settings_v2.value.github_v2] : []
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
 
         content {
           client_id                  = github_v2.value.client_id
@@ -563,7 +544,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "google_v2" {
-        for_each = auth_settings_v2.value.google_v2 != null ? [auth_settings_v2.value.google_v2] : []
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
 
         content {
           client_id                  = google_v2.value.client_id
@@ -574,7 +555,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "microsoft_v2" {
-        for_each = auth_settings_v2.value.microsoft_v2 != null ? [auth_settings_v2.value.microsoft_v2] : []
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
 
         content {
           client_id                  = microsoft_v2.value.client_id
@@ -585,7 +566,7 @@ resource "azurerm_linux_function_app_slot" "this" {
       }
 
       dynamic "twitter_v2" {
-        for_each = auth_settings_v2.value.twitter_v2 != null ? [auth_settings_v2.value.twitter_v2] : []
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
 
         content {
           consumer_key                 = twitter_v2.value.consumer_key
@@ -596,13 +577,11 @@ resource "azurerm_linux_function_app_slot" "this" {
   }
 
   dynamic "storage_account" {
-    for_each = lookup(
-      each.value, "storage_accounts", {}
-    )
+    for_each = each.value.storage_accounts
 
     content {
-      name = lookup(
-        storage_account.value, "name", storage_account.key
+      name = coalesce(
+        storage_account.value.name, storage_account.key
       )
 
       type         = storage_account.value.type
@@ -614,9 +593,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   }
 
   dynamic "connection_string" {
-    for_each = lookup(
-      each.value, "connection_strings", {}
-    )
+    for_each = each.value.connection_strings
 
     content {
       name  = connection_string.value.name
@@ -626,7 +603,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   }
 
   dynamic "backup" {
-    for_each = each.value.backup != null ? [each.value.backup] : []
+    for_each = each.value.backup != null ? { "this" = each.value.backup } : {}
 
     content {
       name                = backup.value.name
@@ -678,9 +655,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     ip_restriction_default_action                 = each.value.site_config.ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = lookup(
-        each.value.site_config, "ip_restrictions", {}
-      )
+      for_each = each.value.site_config.ip_restrictions
 
       content {
         action                    = ip_restriction.value.action
@@ -695,9 +670,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = lookup(
-        each.value.site_config, "scm_ip_restrictions", {}
-      )
+      for_each = each.value.site_config.scm_ip_restrictions
 
       content {
         action                    = scm_ip_restriction.value.action
@@ -712,7 +685,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     }
 
     dynamic "application_stack" {
-      for_each = each.value.site_config.application_stack != null ? [each.value.site_config.application_stack] : []
+      for_each = each.value.site_config.application_stack != null ? { "this" = each.value.site_config.application_stack } : {}
 
       content {
         dotnet_version              = application_stack.value.dotnet_version
@@ -724,9 +697,7 @@ resource "azurerm_linux_function_app_slot" "this" {
         use_custom_runtime          = application_stack.value.use_custom_runtime
 
         dynamic "docker" {
-          for_each = coalesce(
-            application_stack.value.docker, {}
-          )
+          for_each = application_stack.value.docker
 
           content {
             image_name        = docker.value.image_name
@@ -740,7 +711,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     }
 
     dynamic "cors" {
-      for_each = each.value.site_config.cors != null ? [each.value.site_config.cors] : []
+      for_each = each.value.site_config.cors != null ? { "this" = each.value.site_config.cors } : {}
 
       content {
         allowed_origins     = cors.value.allowed_origins
@@ -749,7 +720,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     }
 
     dynamic "app_service_logs" {
-      for_each = each.value.site_config.app_service_logs != null ? [each.value.site_config.app_service_logs] : []
+      for_each = each.value.site_config.app_service_logs != null ? { "this" = each.value.site_config.app_service_logs } : {}
 
       content {
         disk_quota_mb         = app_service_logs.value.disk_quota_mb
@@ -771,50 +742,47 @@ resource "azurerm_linux_function_app_slot" "this" {
 
 # windows function app
 resource "azurerm_windows_function_app" "this" {
-  for_each = var.instance.type == "windows" ? { "func" = true } : {}
+  for_each = var.function_app.type == "windows" ? { "func" = true } : {}
 
   resource_group_name = coalesce(
-    lookup(
-      var.instance, "resource_group_name", null
-    ), var.resource_group_name
+    var.function_app.resource_group_name, var.resource_group_name
   )
 
   location = coalesce(
-    lookup(var.instance, "location", null
-    ), var.location
+    var.function_app.location, var.location
   )
 
-  name                                           = var.instance.name
-  service_plan_id                                = var.instance.service_plan_id
-  storage_account_name                           = var.instance.storage_account_name
-  storage_account_access_key                     = var.instance.storage_account_access_key
-  https_only                                     = var.instance.https_only
-  zip_deploy_file                                = var.instance.zip_deploy_file
-  enabled                                        = var.instance.enabled
-  builtin_logging_enabled                        = var.instance.builtin_logging_enabled
-  client_certificate_mode                        = var.instance.client_certificate_mode
-  daily_memory_time_quota                        = var.instance.daily_memory_time_quota
-  virtual_network_subnet_id                      = var.instance.virtual_network_subnet_id
-  client_certificate_enabled                     = var.instance.client_certificate_enabled
-  functions_extension_version                    = var.instance.functions_extension_version
-  storage_key_vault_secret_id                    = var.instance.storage_key_vault_secret_id
-  content_share_force_disabled                   = var.instance.content_share_force_disabled
-  public_network_access_enabled                  = var.instance.public_network_access_enabled
-  storage_uses_managed_identity                  = var.instance.storage_uses_managed_identity
-  vnet_image_pull_enabled                        = var.instance.vnet_image_pull_enabled
-  key_vault_reference_identity_id                = var.instance.key_vault_reference_identity_id
-  client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
-  ftp_publish_basic_authentication_enabled       = var.instance.ftp_publish_basic_authentication_enabled
-  webdeploy_publish_basic_authentication_enabled = var.instance.webdeploy_publish_basic_authentication_enabled
-  virtual_network_backup_restore_enabled         = var.instance.virtual_network_backup_restore_enabled
-  app_settings                                   = var.instance.app_settings
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_account_name                           = var.function_app.storage_account_name
+  storage_account_access_key                     = var.function_app.storage_account_access_key
+  https_only                                     = var.function_app.https_only
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  enabled                                        = var.function_app.enabled
+  builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  daily_memory_time_quota                        = var.function_app.daily_memory_time_quota
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  functions_extension_version                    = var.function_app.functions_extension_version
+  storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
+  content_share_force_disabled                   = var.function_app.content_share_force_disabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
+  vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
+  key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  ftp_publish_basic_authentication_enabled       = var.function_app.ftp_publish_basic_authentication_enabled
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.function_app.virtual_network_backup_restore_enabled
+  app_settings                                   = var.function_app.app_settings
 
   tags = coalesce(
-    var.instance.tags, var.tags
+    var.function_app.tags, var.tags
   )
 
   dynamic "identity" {
-    for_each = var.instance.identity != null ? [var.instance.identity] : []
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
 
     content {
       type         = identity.value.type
@@ -823,7 +791,7 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   dynamic "auth_settings_v2" {
-    for_each = var.instance.auth_settings_v2 != null ? [var.instance.auth_settings_v2] : []
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
 
     content {
       auth_enabled                            = auth_settings_v2.value.auth_enabled
@@ -854,7 +822,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "apple_v2" {
-        for_each = auth_settings_v2.value.apple_v2 != null ? [auth_settings_v2.value.apple_v2] : []
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
 
         content {
           client_id                  = apple_v2.value.client_id
@@ -864,7 +832,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "active_directory_v2" {
-        for_each = auth_settings_v2.value.active_directory_v2 != null ? [auth_settings_v2.value.active_directory_v2] : []
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
 
         content {
           client_id                            = active_directory_v2.value.client_id
@@ -883,7 +851,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "azure_static_web_app_v2" {
-        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? [auth_settings_v2.value.azure_static_web_app_v2] : []
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
 
         content {
           client_id = azure_static_web_app_v2.value.client_id
@@ -891,7 +859,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "custom_oidc_v2" {
-        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+        for_each = auth_settings_v2.value.custom_oidc_v2
 
         content {
           name                          = custom_oidc_v2.value.name
@@ -909,7 +877,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "facebook_v2" {
-        for_each = auth_settings_v2.value.facebook_v2 != null ? [auth_settings_v2.value.facebook_v2] : []
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
 
         content {
           app_id                  = facebook_v2.value.app_id
@@ -920,7 +888,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "github_v2" {
-        for_each = auth_settings_v2.value.github_v2 != null ? [auth_settings_v2.value.github_v2] : []
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
 
         content {
           client_id                  = github_v2.value.client_id
@@ -930,7 +898,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "google_v2" {
-        for_each = auth_settings_v2.value.google_v2 != null ? [auth_settings_v2.value.google_v2] : []
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
 
         content {
           client_id                  = google_v2.value.client_id
@@ -941,7 +909,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "microsoft_v2" {
-        for_each = auth_settings_v2.value.microsoft_v2 != null ? [auth_settings_v2.value.microsoft_v2] : []
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
 
         content {
           client_id                  = microsoft_v2.value.client_id
@@ -952,7 +920,7 @@ resource "azurerm_windows_function_app" "this" {
       }
 
       dynamic "twitter_v2" {
-        for_each = auth_settings_v2.value.twitter_v2 != null ? [auth_settings_v2.value.twitter_v2] : []
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
 
         content {
           consumer_key                 = twitter_v2.value.consumer_key
@@ -963,13 +931,11 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   dynamic "storage_account" {
-    for_each = lookup(
-      var.instance, "storage_accounts", {}
-    )
+    for_each = var.function_app.storage_accounts
 
     content {
-      name = lookup(
-        storage_account.value, "name", storage_account.key
+      name = coalesce(
+        storage_account.value.name, storage_account.key
       )
 
       type         = storage_account.value.type
@@ -981,40 +947,38 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   site_config {
-    always_on                              = var.instance.site_config.always_on
-    ftps_state                             = var.instance.site_config.ftps_state
-    worker_count                           = var.instance.site_config.worker_count
-    http2_enabled                          = var.instance.site_config.http2_enabled
-    app_scale_limit                        = var.instance.site_config.app_scale_limit
-    app_command_line                       = var.instance.site_config.app_command_line
-    remote_debugging_version               = var.instance.site_config.remote_debugging_version
-    pre_warmed_instance_count              = var.instance.site_config.pre_warmed_instance_count
-    runtime_scale_monitoring_enabled       = var.instance.site_config.runtime_scale_monitoring_enabled
-    scm_use_main_ip_restriction            = var.instance.site_config.scm_use_main_ip_restriction
-    health_check_eviction_time_in_min      = var.instance.site_config.health_check_eviction_time_in_min
-    application_insights_connection_string = var.instance.site_config.application_insights_connection_string
-    minimum_tls_version                    = var.instance.site_config.minimum_tls_version
-    minimum_tls_cipher_suite               = var.instance.site_config.minimum_tls_cipher_suite
-    api_management_api_id                  = var.instance.site_config.api_management_api_id
-    managed_pipeline_mode                  = var.instance.site_config.managed_pipeline_mode
-    vnet_route_all_enabled                 = var.instance.site_config.vnet_route_all_enabled
-    scm_minimum_tls_version                = var.instance.site_config.scm_minimum_tls_version
-    application_insights_key               = var.instance.site_config.application_insights_key
-    elastic_instance_minimum               = var.instance.site_config.elastic_instance_minimum
-    remote_debugging_enabled               = var.instance.site_config.remote_debugging_enabled
-    default_documents                      = var.instance.site_config.default_documents
-    health_check_path                      = var.instance.site_config.health_check_path
-    use_32_bit_worker                      = var.instance.site_config.use_32_bit_worker
-    api_definition_url                     = var.instance.site_config.api_definition_url
-    websockets_enabled                     = var.instance.site_config.websockets_enabled
-    load_balancing_mode                    = var.instance.site_config.load_balancing_mode
-    ip_restriction_default_action          = var.instance.site_config.ip_restriction_default_action
-    scm_ip_restriction_default_action      = var.instance.site_config.scm_ip_restriction_default_action
+    always_on                              = var.function_app.site_config.always_on
+    ftps_state                             = var.function_app.site_config.ftps_state
+    worker_count                           = var.function_app.site_config.worker_count
+    http2_enabled                          = var.function_app.site_config.http2_enabled
+    app_scale_limit                        = var.function_app.site_config.app_scale_limit
+    app_command_line                       = var.function_app.site_config.app_command_line
+    remote_debugging_version               = var.function_app.site_config.remote_debugging_version
+    pre_warmed_instance_count              = var.function_app.site_config.pre_warmed_instance_count
+    runtime_scale_monitoring_enabled       = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_use_main_ip_restriction            = var.function_app.site_config.scm_use_main_ip_restriction
+    health_check_eviction_time_in_min      = var.function_app.site_config.health_check_eviction_time_in_min
+    application_insights_connection_string = var.function_app.site_config.application_insights_connection_string
+    minimum_tls_version                    = var.function_app.site_config.minimum_tls_version
+    minimum_tls_cipher_suite               = var.function_app.site_config.minimum_tls_cipher_suite
+    api_management_api_id                  = var.function_app.site_config.api_management_api_id
+    managed_pipeline_mode                  = var.function_app.site_config.managed_pipeline_mode
+    vnet_route_all_enabled                 = var.function_app.site_config.vnet_route_all_enabled
+    scm_minimum_tls_version                = var.function_app.site_config.scm_minimum_tls_version
+    application_insights_key               = var.function_app.site_config.application_insights_key
+    elastic_instance_minimum               = var.function_app.site_config.elastic_instance_minimum
+    remote_debugging_enabled               = var.function_app.site_config.remote_debugging_enabled
+    default_documents                      = var.function_app.site_config.default_documents
+    health_check_path                      = var.function_app.site_config.health_check_path
+    use_32_bit_worker                      = var.function_app.site_config.use_32_bit_worker
+    api_definition_url                     = var.function_app.site_config.api_definition_url
+    websockets_enabled                     = var.function_app.site_config.websockets_enabled
+    load_balancing_mode                    = var.function_app.site_config.load_balancing_mode
+    ip_restriction_default_action          = var.function_app.site_config.ip_restriction_default_action
+    scm_ip_restriction_default_action      = var.function_app.site_config.scm_ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.ip_restrictions
 
       content {
         action                    = ip_restriction.value.action
@@ -1029,9 +993,7 @@ resource "azurerm_windows_function_app" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "scm_ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.scm_ip_restrictions
 
       content {
         action                    = scm_ip_restriction.value.action
@@ -1046,7 +1008,7 @@ resource "azurerm_windows_function_app" "this" {
     }
 
     dynamic "application_stack" {
-      for_each = var.instance.site_config.application_stack != null ? [var.instance.site_config.application_stack] : []
+      for_each = var.function_app.site_config.application_stack != null ? { "this" = var.function_app.site_config.application_stack } : {}
 
       content {
         dotnet_version              = application_stack.value.dotnet_version
@@ -1059,7 +1021,7 @@ resource "azurerm_windows_function_app" "this" {
     }
 
     dynamic "cors" {
-      for_each = var.instance.site_config.cors != null ? [var.instance.site_config.cors] : []
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
 
       content {
         allowed_origins     = cors.value.allowed_origins
@@ -1068,7 +1030,7 @@ resource "azurerm_windows_function_app" "this" {
     }
 
     dynamic "app_service_logs" {
-      for_each = var.instance.site_config.app_service_logs != null ? [var.instance.site_config.app_service_logs] : []
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
 
       content {
         disk_quota_mb         = app_service_logs.value.disk_quota_mb
@@ -1078,7 +1040,7 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   dynamic "sticky_settings" {
-    for_each = var.instance.sticky_settings != null ? [var.instance.sticky_settings] : []
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
 
     content {
       app_setting_names       = sticky_settings.value.app_setting_names
@@ -1087,7 +1049,7 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   dynamic "backup" {
-    for_each = var.instance.backup != null ? [var.instance.backup] : []
+    for_each = var.function_app.backup != null ? { "this" = var.function_app.backup } : {}
 
     content {
       name                = backup.value.name
@@ -1105,9 +1067,7 @@ resource "azurerm_windows_function_app" "this" {
   }
 
   dynamic "connection_string" {
-    for_each = lookup(
-      var.instance, "connection_strings", {}
-    )
+    for_each = var.function_app.connection_strings
 
     content {
       name  = connection_string.value.name
@@ -1130,15 +1090,10 @@ resource "azurerm_windows_function_app" "this" {
 
 # windows function app slot
 resource "azurerm_windows_function_app_slot" "this" {
-  for_each = {
-    for key, value in lookup(var.instance, "slots", {}) : key => value
-    if var.instance.type == "windows"
-  }
+  for_each = var.function_app.type == "windows" ? var.function_app.slots : {}
 
   name = coalesce(
-    each.value.name, try(
-      join("-", [var.naming.function_app_slot, each.key]), null
-    ), each.key
+    each.value.name, each.key
   )
 
   function_app_id                                = azurerm_windows_function_app.this["func"].id
@@ -1164,16 +1119,14 @@ resource "azurerm_windows_function_app_slot" "this" {
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
-  service_plan_id = lookup(
-    each.value, "service_plan_id", null
-  )
+  service_plan_id = each.value.service_plan_id
 
   tags = coalesce(
-    var.instance.tags, var.tags
+    var.function_app.tags, var.tags
   )
 
   dynamic "identity" {
-    for_each = each.value.identity != null ? [each.value.identity] : []
+    for_each = each.value.identity != null ? { "this" = each.value.identity } : {}
 
     content {
       type         = identity.value.type
@@ -1182,7 +1135,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   }
 
   dynamic "auth_settings_v2" {
-    for_each = each.value.auth_settings_v2 != null ? [each.value.auth_settings_v2] : []
+    for_each = each.value.auth_settings_v2 != null ? { "this" = each.value.auth_settings_v2 } : {}
 
     content {
       auth_enabled                            = auth_settings_v2.value.auth_enabled
@@ -1213,7 +1166,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "apple_v2" {
-        for_each = auth_settings_v2.value.apple_v2 != null ? [auth_settings_v2.value.apple_v2] : []
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
 
         content {
           client_id                  = apple_v2.value.client_id
@@ -1223,7 +1176,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "active_directory_v2" {
-        for_each = auth_settings_v2.value.active_directory_v2 != null ? [auth_settings_v2.value.active_directory_v2] : []
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
 
         content {
           client_id                            = active_directory_v2.value.client_id
@@ -1242,7 +1195,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "azure_static_web_app_v2" {
-        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? [auth_settings_v2.value.azure_static_web_app_v2] : []
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
 
         content {
           client_id = azure_static_web_app_v2.value.client_id
@@ -1250,9 +1203,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "custom_oidc_v2" {
-        for_each = try(
-          auth_settings_v2.value.custom_oidc_v2, {}
-        )
+        for_each = auth_settings_v2.value.custom_oidc_v2
 
         content {
           name                          = custom_oidc_v2.value.name
@@ -1270,7 +1221,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "facebook_v2" {
-        for_each = auth_settings_v2.value.facebook_v2 != null ? [auth_settings_v2.value.facebook_v2] : []
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
 
         content {
           app_id                  = facebook_v2.value.app_id
@@ -1281,7 +1232,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "github_v2" {
-        for_each = auth_settings_v2.value.github_v2 != null ? [auth_settings_v2.value.github_v2] : []
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
 
         content {
           client_id                  = github_v2.value.client_id
@@ -1291,7 +1242,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "google_v2" {
-        for_each = auth_settings_v2.value.google_v2 != null ? [auth_settings_v2.value.google_v2] : []
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
 
         content {
           client_id                  = google_v2.value.client_id
@@ -1302,7 +1253,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "microsoft_v2" {
-        for_each = auth_settings_v2.value.microsoft_v2 != null ? [auth_settings_v2.value.microsoft_v2] : []
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
 
         content {
           client_id                  = microsoft_v2.value.client_id
@@ -1313,7 +1264,7 @@ resource "azurerm_windows_function_app_slot" "this" {
       }
 
       dynamic "twitter_v2" {
-        for_each = auth_settings_v2.value.twitter_v2 != null ? [auth_settings_v2.value.twitter_v2] : []
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
 
         content {
           consumer_key                 = twitter_v2.value.consumer_key
@@ -1324,13 +1275,11 @@ resource "azurerm_windows_function_app_slot" "this" {
   }
 
   dynamic "storage_account" {
-    for_each = lookup(
-      each.value, "storage_accounts", {}
-    )
+    for_each = each.value.storage_accounts
 
     content {
-      name = lookup(
-        storage_account.value, "name", storage_account.key
+      name = coalesce(
+        storage_account.value.name, storage_account.key
       )
 
       type         = storage_account.value.type
@@ -1342,9 +1291,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   }
 
   dynamic "connection_string" {
-    for_each = lookup(
-      each.value, "connection_strings", {}
-    )
+    for_each = each.value.connection_strings
 
     content {
       name  = connection_string.value.name
@@ -1354,7 +1301,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   }
 
   dynamic "backup" {
-    for_each = each.value.backup != null ? [each.value.backup] : []
+    for_each = each.value.backup != null ? { "this" = each.value.backup } : {}
 
     content {
       name                = backup.value.name
@@ -1404,9 +1351,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     scm_ip_restriction_default_action      = each.value.site_config.scm_ip_restriction_default_action
 
     dynamic "ip_restriction" {
-      for_each = lookup(
-        each.value.site_config, "ip_restrictions", {}
-      )
+      for_each = each.value.site_config.ip_restrictions
 
       content {
         action                    = ip_restriction.value.action
@@ -1421,9 +1366,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = lookup(
-        each.value.site_config, "scm_ip_restrictions", {}
-      )
+      for_each = each.value.site_config.scm_ip_restrictions
 
       content {
         action                    = scm_ip_restriction.value.action
@@ -1438,7 +1381,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     }
 
     dynamic "application_stack" {
-      for_each = each.value.site_config.application_stack != null ? [each.value.site_config.application_stack] : []
+      for_each = each.value.site_config.application_stack != null ? { "this" = each.value.site_config.application_stack } : {}
 
       content {
         dotnet_version              = application_stack.value.dotnet_version
@@ -1451,7 +1394,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     }
 
     dynamic "cors" {
-      for_each = each.value.site_config.cors != null ? [each.value.site_config.cors] : []
+      for_each = each.value.site_config.cors != null ? { "this" = each.value.site_config.cors } : {}
 
       content {
         allowed_origins     = cors.value.allowed_origins
@@ -1460,7 +1403,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     }
 
     dynamic "app_service_logs" {
-      for_each = each.value.site_config.app_service_logs != null ? [each.value.site_config.app_service_logs] : []
+      for_each = each.value.site_config.app_service_logs != null ? { "this" = each.value.site_config.app_service_logs } : {}
 
       content {
         disk_quota_mb         = app_service_logs.value.disk_quota_mb
@@ -1481,48 +1424,45 @@ resource "azurerm_windows_function_app_slot" "this" {
 }
 
 resource "azurerm_function_app_flex_consumption" "this" {
-  for_each = var.instance.type == "flex" ? { "func" = true } : {}
+  for_each = var.function_app.type == "flex" ? { "func" = true } : {}
 
   resource_group_name = coalesce(
-    var.instance.resource_group_name, var.resource_group_name
+    var.function_app.resource_group_name, var.resource_group_name
   )
 
   location = coalesce(
-    var.instance.location, var.location
+    var.function_app.location, var.location
   )
 
-  name                                           = var.instance.name
-  service_plan_id                                = var.instance.service_plan_id
-  storage_container_type                         = var.instance.storage_container_type
-  storage_container_endpoint                     = var.instance.storage_container_endpoint
-  storage_authentication_type                    = var.instance.storage_authentication_type
-  storage_access_key                             = var.instance.storage_access_key
-  storage_user_assigned_identity_id              = var.instance.storage_user_assigned_identity_id
-  runtime_name                                   = var.instance.runtime_name
-  runtime_version                                = var.instance.runtime_version
-  maximum_instance_count                         = var.instance.maximum_instance_count
-  instance_memory_in_mb                          = var.instance.instance_memory_in_mb
-  http_concurrency                               = var.instance.http_concurrency
-  https_only                                     = var.instance.https_only
-  enabled                                        = var.instance.enabled
-  public_network_access_enabled                  = var.instance.public_network_access_enabled
-  virtual_network_subnet_id                      = var.instance.virtual_network_subnet_id
-  client_certificate_enabled                     = var.instance.client_certificate_enabled
-  client_certificate_mode                        = var.instance.client_certificate_mode
-  client_certificate_exclusion_paths             = var.instance.client_certificate_exclusion_paths
-  zip_deploy_file                                = var.instance.zip_deploy_file
-  webdeploy_publish_basic_authentication_enabled = var.instance.webdeploy_publish_basic_authentication_enabled
-
-  app_settings = coalesce(
-    var.instance.app_settings, {}
-  )
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_container_type                         = var.function_app.storage_container_type
+  storage_container_endpoint                     = var.function_app.storage_container_endpoint
+  storage_authentication_type                    = var.function_app.storage_authentication_type
+  storage_access_key                             = var.function_app.storage_access_key
+  storage_user_assigned_identity_id              = var.function_app.storage_user_assigned_identity_id
+  runtime_name                                   = var.function_app.runtime_name
+  runtime_version                                = var.function_app.runtime_version
+  maximum_instance_count                         = var.function_app.maximum_instance_count
+  instance_memory_in_mb                          = var.function_app.instance_memory_in_mb
+  http_concurrency                               = var.function_app.http_concurrency
+  https_only                                     = var.function_app.https_only
+  enabled                                        = var.function_app.enabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  app_settings                                   = var.function_app.app_settings
 
   tags = coalesce(
-    var.instance.tags, var.tags
+    var.function_app.tags, var.tags
   )
 
   dynamic "identity" {
-    for_each = var.instance.identity != null ? [var.instance.identity] : []
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
     content {
       type         = identity.value.type
       identity_ids = identity.value.identity_ids
@@ -1531,7 +1471,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
 
 
   dynamic "auth_settings_v2" {
-    for_each = var.instance.auth_settings_v2 != null ? [var.instance.auth_settings_v2] : []
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
 
     content {
       auth_enabled                            = auth_settings_v2.value.auth_enabled
@@ -1562,7 +1502,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "apple_v2" {
-        for_each = auth_settings_v2.value.apple_v2 != null ? [auth_settings_v2.value.apple_v2] : []
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
 
         content {
           client_id                  = apple_v2.value.client_id
@@ -1572,7 +1512,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "active_directory_v2" {
-        for_each = auth_settings_v2.value.active_directory_v2 != null ? [auth_settings_v2.value.active_directory_v2] : []
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
 
         content {
           client_id                            = active_directory_v2.value.client_id
@@ -1591,7 +1531,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "azure_static_web_app_v2" {
-        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? [auth_settings_v2.value.azure_static_web_app_v2] : []
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
 
         content {
           client_id = azure_static_web_app_v2.value.client_id
@@ -1599,7 +1539,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "custom_oidc_v2" {
-        for_each = try(auth_settings_v2.value.custom_oidc_v2, {})
+        for_each = auth_settings_v2.value.custom_oidc_v2
 
         content {
           name                          = custom_oidc_v2.value.name
@@ -1617,7 +1557,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "facebook_v2" {
-        for_each = auth_settings_v2.value.facebook_v2 != null ? [auth_settings_v2.value.facebook_v2] : []
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
 
         content {
           app_id                  = facebook_v2.value.app_id
@@ -1628,7 +1568,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "github_v2" {
-        for_each = auth_settings_v2.value.github_v2 != null ? [auth_settings_v2.value.github_v2] : []
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
 
         content {
           client_id                  = github_v2.value.client_id
@@ -1638,7 +1578,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "google_v2" {
-        for_each = auth_settings_v2.value.google_v2 != null ? [auth_settings_v2.value.google_v2] : []
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
 
         content {
           client_id                  = google_v2.value.client_id
@@ -1649,7 +1589,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "microsoft_v2" {
-        for_each = auth_settings_v2.value.microsoft_v2 != null ? [auth_settings_v2.value.microsoft_v2] : []
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
 
         content {
           client_id                  = microsoft_v2.value.client_id
@@ -1660,7 +1600,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
       }
 
       dynamic "twitter_v2" {
-        for_each = auth_settings_v2.value.twitter_v2 != null ? [auth_settings_v2.value.twitter_v2] : []
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
 
         content {
           consumer_key                 = twitter_v2.value.consumer_key
@@ -1671,9 +1611,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
   }
 
   dynamic "connection_string" {
-    for_each = lookup(
-      var.instance, "connection_strings", {}
-    )
+    for_each = var.function_app.connection_strings
 
     content {
       name  = connection_string.value.name
@@ -1683,7 +1621,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
   }
 
   dynamic "sticky_settings" {
-    for_each = var.instance.sticky_settings != null ? [var.instance.sticky_settings] : []
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
 
     content {
       app_setting_names       = sticky_settings.value.app_setting_names
@@ -1692,7 +1630,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
   }
 
   dynamic "always_ready" {
-    for_each = coalesce(var.instance.always_ready, {})
+    for_each = var.function_app.always_ready
 
     content {
       name           = always_ready.value.name
@@ -1701,37 +1639,35 @@ resource "azurerm_function_app_flex_consumption" "this" {
   }
 
   site_config {
-    application_insights_connection_string        = var.instance.site_config.application_insights_connection_string
-    application_insights_key                      = var.instance.site_config.application_insights_key
-    health_check_path                             = var.instance.site_config.health_check_path
-    health_check_eviction_time_in_min             = var.instance.site_config.health_check_eviction_time_in_min
-    http2_enabled                                 = var.instance.site_config.http2_enabled
-    minimum_tls_version                           = var.instance.site_config.minimum_tls_version
-    websockets_enabled                            = var.instance.site_config.websockets_enabled
-    vnet_route_all_enabled                        = var.instance.site_config.vnet_route_all_enabled
-    worker_count                                  = var.instance.site_config.worker_count
-    api_definition_url                            = var.instance.site_config.api_definition_url
-    api_management_api_id                         = var.instance.site_config.api_management_api_id
-    app_command_line                              = var.instance.site_config.app_command_line
-    container_registry_managed_identity_client_id = var.instance.site_config.container_registry_managed_identity_client_id
-    container_registry_use_managed_identity       = var.instance.site_config.container_registry_use_managed_identity
-    default_documents                             = var.instance.site_config.default_documents
-    elastic_instance_minimum                      = var.instance.site_config.elastic_instance_minimum
-    ip_restriction_default_action                 = var.instance.site_config.ip_restriction_default_action
-    load_balancing_mode                           = var.instance.site_config.load_balancing_mode
-    managed_pipeline_mode                         = var.instance.site_config.managed_pipeline_mode
-    remote_debugging_enabled                      = var.instance.site_config.remote_debugging_enabled
-    remote_debugging_version                      = var.instance.site_config.remote_debugging_version
-    runtime_scale_monitoring_enabled              = var.instance.site_config.runtime_scale_monitoring_enabled
-    scm_ip_restriction_default_action             = var.instance.site_config.scm_ip_restriction_default_action
-    scm_minimum_tls_version                       = var.instance.site_config.scm_minimum_tls_version
-    scm_use_main_ip_restriction                   = var.instance.site_config.scm_use_main_ip_restriction
-    use_32_bit_worker                             = var.instance.site_config.use_32_bit_worker
+    application_insights_connection_string        = var.function_app.site_config.application_insights_connection_string
+    application_insights_key                      = var.function_app.site_config.application_insights_key
+    health_check_path                             = var.function_app.site_config.health_check_path
+    health_check_eviction_time_in_min             = var.function_app.site_config.health_check_eviction_time_in_min
+    http2_enabled                                 = var.function_app.site_config.http2_enabled
+    minimum_tls_version                           = var.function_app.site_config.minimum_tls_version
+    websockets_enabled                            = var.function_app.site_config.websockets_enabled
+    vnet_route_all_enabled                        = var.function_app.site_config.vnet_route_all_enabled
+    worker_count                                  = var.function_app.site_config.worker_count
+    api_definition_url                            = var.function_app.site_config.api_definition_url
+    api_management_api_id                         = var.function_app.site_config.api_management_api_id
+    app_command_line                              = var.function_app.site_config.app_command_line
+    container_registry_managed_identity_client_id = var.function_app.site_config.container_registry_managed_identity_client_id
+    container_registry_use_managed_identity       = var.function_app.site_config.container_registry_use_managed_identity
+    default_documents                             = var.function_app.site_config.default_documents
+    elastic_instance_minimum                      = var.function_app.site_config.elastic_instance_minimum
+    ip_restriction_default_action                 = var.function_app.site_config.ip_restriction_default_action
+    load_balancing_mode                           = var.function_app.site_config.load_balancing_mode
+    managed_pipeline_mode                         = var.function_app.site_config.managed_pipeline_mode
+    remote_debugging_enabled                      = var.function_app.site_config.remote_debugging_enabled
+    remote_debugging_version                      = var.function_app.site_config.remote_debugging_version
+    runtime_scale_monitoring_enabled              = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_ip_restriction_default_action             = var.function_app.site_config.scm_ip_restriction_default_action
+    scm_minimum_tls_version                       = var.function_app.site_config.scm_minimum_tls_version
+    scm_use_main_ip_restriction                   = var.function_app.site_config.scm_use_main_ip_restriction
+    use_32_bit_worker                             = var.function_app.site_config.use_32_bit_worker
 
     dynamic "ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.ip_restrictions
 
       content {
         action                    = ip_restriction.value.action
@@ -1746,9 +1682,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
     }
 
     dynamic "scm_ip_restriction" {
-      for_each = lookup(
-        var.instance.site_config, "scm_ip_restrictions", {}
-      )
+      for_each = var.function_app.site_config.scm_ip_restrictions
 
       content {
         action                    = scm_ip_restriction.value.action
@@ -1763,7 +1697,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
     }
 
     dynamic "cors" {
-      for_each = var.instance.site_config.cors != null ? [var.instance.site_config.cors] : []
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
 
       content {
         allowed_origins     = cors.value.allowed_origins
@@ -1772,7 +1706,7 @@ resource "azurerm_function_app_flex_consumption" "this" {
     }
 
     dynamic "app_service_logs" {
-      for_each = var.instance.site_config.app_service_logs != null ? [var.instance.site_config.app_service_logs] : []
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
 
       content {
         disk_quota_mb         = app_service_logs.value.disk_quota_mb
