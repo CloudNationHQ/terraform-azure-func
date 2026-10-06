@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.3.0...v3.3.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* wrap ip restriction headers in list for provider compatibility
+
 ## [3.3.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.2.0...v3.3.0) (2026-05-26)
 
 
