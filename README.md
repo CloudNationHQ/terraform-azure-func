@@ -35,10 +35,13 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
+- [azurerm_function_app_flex_consumption.ignore_auth](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
 - [azurerm_function_app_flex_consumption.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_flex_consumption) (resource)
 - [azurerm_function_app_function.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app_function) (resource)
+- [azurerm_linux_function_app.ignore_auth](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
 - [azurerm_linux_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) (resource)
 - [azurerm_linux_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app_slot) (resource)
+- [azurerm_windows_function_app.ignore_auth](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
 - [azurerm_windows_function_app.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app) (resource)
 - [azurerm_windows_function_app_slot.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_function_app_slot) (resource)
 
@@ -97,6 +100,9 @@ object({
       type         = string
       identity_ids = optional(list(string))
     }))
+    # azure manages auth_settings_v2 itself once the app is a static web app
+    # backend; set this so terraform does not remove what azure wrote
+    ignore_auth_settings_v2 = optional(bool, false)
     auth_settings_v2 = optional(object({
       auth_enabled                            = optional(bool)
       runtime_version                         = optional(string)
@@ -609,6 +615,15 @@ For more information, please see our testing [guidelines](./TESTING.md)
 ## Notes
 
 The `instance.functions` block is supported for Windows and Linux Function Apps. Flex Consumption apps use package-based deployment and don't support per-function creation through `azurerm_function_app_function`.
+
+Registering the function app as a static web app backend (`azurerm_static_web_app_function_app_registration`) makes Azure manage the app's `auth_settings_v2`: it adds an identity provider that restricts the API to the static web app. Terraform did not create that block, so by default every plan tries to remove it, and applying that plan leaves the API open to anonymous traffic. Set `function_app.ignore_auth_settings_v2 = true` to leave the block to Azure. With the flag on, `function_app.auth_settings_v2` is applied when the app is created and later changes to it are ignored.
+
+The flag selects a separate resource (`azurerm_linux_function_app.ignore_auth`, `azurerm_windows_function_app.ignore_auth` or `azurerm_function_app_flex_consumption.ignore_auth`), because `ignore_changes` cannot be driven by a variable. Changing the flag on an existing app therefore does not alter it in place: terraform destroys the old address and creates the new one, which loses the deployed app and replaces everything that depends on it. Move the state first, for the type you use:
+
+```shell
+terraform state mv 'module.function_app.azurerm_linux_function_app.this["func"]' 'module.function_app.azurerm_linux_function_app.ignore_auth["func"]'
+terraform state mv 'module.function_app.azurerm_function_app_flex_consumption.this["func"]' 'module.function_app.azurerm_function_app_flex_consumption.ignore_auth["func"]'
+```
 
 Using a dedicated module, we've developed a naming convention for resources that's based on specific regular expressions for each type, ensuring correct abbreviations and offering flexibility with multiple prefixes and suffixes.
 

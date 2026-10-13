@@ -44,6 +44,9 @@ variable "function_app" {
       type         = string
       identity_ids = optional(list(string))
     }))
+    # azure manages auth_settings_v2 itself once the app is a static web app
+    # backend; set this so terraform does not remove what azure wrote
+    ignore_auth_settings_v2 = optional(bool, false)
     auth_settings_v2 = optional(object({
       auth_enabled                            = optional(bool)
       runtime_version                         = optional(string)
