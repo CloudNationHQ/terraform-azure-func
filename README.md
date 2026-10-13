@@ -60,6 +60,7 @@ object({
     location                                       = optional(string)
     service_plan_id                                = string
     https_only                                     = optional(bool)
+    end_to_end_tls_encryption_enabled              = optional(bool)
     enabled                                        = optional(bool)
     app_settings                                   = optional(map(string), {})
     tags                                           = optional(map(string))
@@ -337,6 +338,7 @@ object({
       client_certificate_mode                        = optional(string)
       builtin_logging_enabled                        = optional(bool)
       https_only                                     = optional(bool)
+      end_to_end_tls_encryption_enabled              = optional(bool)
       enabled                                        = optional(bool)
       key_vault_reference_identity_id                = optional(string)
       app_settings                                   = optional(map(string), {})
