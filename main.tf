@@ -1,6 +1,6 @@
 #linux function app
 resource "azurerm_linux_function_app" "this" {
-  for_each = var.function_app.type == "linux" ? { "func" = true } : {}
+  for_each = var.function_app.type == "linux" && !var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
 
   resource_group_name = coalesce(
     var.function_app.resource_group_name, var.resource_group_name
@@ -15,6 +15,7 @@ resource "azurerm_linux_function_app" "this" {
   storage_account_name                           = var.function_app.storage_account_name
   storage_account_access_key                     = var.function_app.storage_account_access_key
   https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   zip_deploy_file                                = var.function_app.zip_deploy_file
   enabled                                        = var.function_app.enabled
   builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
@@ -361,6 +362,371 @@ resource "azurerm_linux_function_app" "this" {
   }
 }
 
+# linux function app (auth settings v2 managed by azure)
+resource "azurerm_linux_function_app" "ignore_auth" {
+  for_each = var.function_app.type == "linux" && var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
+
+  resource_group_name = coalesce(
+    var.function_app.resource_group_name, var.resource_group_name
+  )
+
+  location = coalesce(
+    var.function_app.location, var.location
+  )
+
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_account_name                           = var.function_app.storage_account_name
+  storage_account_access_key                     = var.function_app.storage_account_access_key
+  https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  enabled                                        = var.function_app.enabled
+  builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  daily_memory_time_quota                        = var.function_app.daily_memory_time_quota
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  functions_extension_version                    = var.function_app.functions_extension_version
+  storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
+  content_share_force_disabled                   = var.function_app.content_share_force_disabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
+  vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
+  key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  ftp_publish_basic_authentication_enabled       = var.function_app.ftp_publish_basic_authentication_enabled
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.function_app.virtual_network_backup_restore_enabled
+  app_settings                                   = var.function_app.app_settings
+
+  tags = coalesce(
+    var.function_app.tags, var.tags
+  )
+
+  dynamic "identity" {
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
+
+  dynamic "auth_settings_v2" {
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
+
+    content {
+      auth_enabled                            = auth_settings_v2.value.auth_enabled
+      runtime_version                         = auth_settings_v2.value.runtime_version
+      config_file_path                        = auth_settings_v2.value.config_file_path
+      require_authentication                  = auth_settings_v2.value.require_authentication
+      unauthenticated_action                  = auth_settings_v2.value.unauthenticated_action
+      default_provider                        = auth_settings_v2.value.default_provider
+      excluded_paths                          = auth_settings_v2.value.excluded_paths
+      require_https                           = auth_settings_v2.value.require_https
+      http_route_api_prefix                   = auth_settings_v2.value.http_route_api_prefix
+      forward_proxy_convention                = auth_settings_v2.value.forward_proxy_convention
+      forward_proxy_custom_host_header_name   = auth_settings_v2.value.forward_proxy_custom_host_header_name
+      forward_proxy_custom_scheme_header_name = auth_settings_v2.value.forward_proxy_custom_scheme_header_name
+
+      login {
+        token_store_enabled               = auth_settings_v2.value.login.token_store_enabled
+        token_refresh_extension_time      = auth_settings_v2.value.login.token_refresh_extension_time
+        token_store_path                  = auth_settings_v2.value.login.token_store_path
+        token_store_sas_setting_name      = auth_settings_v2.value.login.token_store_sas_setting_name
+        preserve_url_fragments_for_logins = auth_settings_v2.value.login.preserve_url_fragments_for_logins
+        allowed_external_redirect_urls    = auth_settings_v2.value.login.allowed_external_redirect_urls
+        cookie_expiration_convention      = auth_settings_v2.value.login.cookie_expiration_convention
+        cookie_expiration_time            = auth_settings_v2.value.login.cookie_expiration_time
+        validate_nonce                    = auth_settings_v2.value.login.validate_nonce
+        nonce_expiration_time             = auth_settings_v2.value.login.nonce_expiration_time
+        logout_endpoint                   = auth_settings_v2.value.login.logout_endpoint
+      }
+
+      dynamic "apple_v2" {
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = active_directory_v2.value.client_secret_setting_name
+          client_secret_certificate_thumbprint = active_directory_v2.value.client_secret_certificate_thumbprint
+          jwt_allowed_groups                   = active_directory_v2.value.jwt_allowed_groups
+          jwt_allowed_client_applications      = active_directory_v2.value.jwt_allowed_client_applications
+          www_authentication_disabled          = active_directory_v2.value.www_authentication_disabled
+          allowed_audiences                    = active_directory_v2.value.allowed_audiences
+          allowed_groups                       = active_directory_v2.value.allowed_groups
+          allowed_identities                   = active_directory_v2.value.allowed_identities
+          login_parameters                     = active_directory_v2.value.login_parameters
+          allowed_applications                 = active_directory_v2.value.allowed_applications
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = auth_settings_v2.value.custom_oidc_v2
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = custom_oidc_v2.value.name_claim_type
+          scopes                        = custom_oidc_v2.value.scopes
+          client_credential_method      = custom_oidc_v2.value.client_credential_method
+          client_secret_setting_name    = custom_oidc_v2.value.client_secret_setting_name
+          authorisation_endpoint        = custom_oidc_v2.value.authorisation_endpoint
+          token_endpoint                = custom_oidc_v2.value.token_endpoint
+          issuer_endpoint               = custom_oidc_v2.value.issuer_endpoint
+          certification_uri             = custom_oidc_v2.value.certification_uri
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = facebook_v2.value.graph_api_version
+          login_scopes            = facebook_v2.value.login_scopes
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = github_v2.value.login_scopes
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = google_v2.value.allowed_audiences
+          login_scopes               = google_v2.value.login_scopes
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = microsoft_v2.value.allowed_audiences
+          login_scopes               = microsoft_v2.value.login_scopes
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = var.function_app.storage_accounts
+
+    content {
+      name = coalesce(
+        storage_account.value.name, storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = storage_account.value.mount_path
+    }
+  }
+
+  site_config {
+    always_on                                     = var.function_app.site_config.always_on
+    ftps_state                                    = var.function_app.site_config.ftps_state
+    worker_count                                  = var.function_app.site_config.worker_count
+    http2_enabled                                 = var.function_app.site_config.http2_enabled
+    app_scale_limit                               = var.function_app.site_config.app_scale_limit
+    app_command_line                              = var.function_app.site_config.app_command_line
+    remote_debugging_version                      = var.function_app.site_config.remote_debugging_version
+    pre_warmed_instance_count                     = var.function_app.site_config.pre_warmed_instance_count
+    runtime_scale_monitoring_enabled              = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_use_main_ip_restriction                   = var.function_app.site_config.scm_use_main_ip_restriction
+    health_check_eviction_time_in_min             = var.function_app.site_config.health_check_eviction_time_in_min
+    application_insights_connection_string        = var.function_app.site_config.application_insights_connection_string
+    container_registry_use_managed_identity       = var.function_app.site_config.container_registry_use_managed_identity
+    container_registry_managed_identity_client_id = var.function_app.site_config.container_registry_managed_identity_client_id
+    minimum_tls_version                           = var.function_app.site_config.minimum_tls_version
+    minimum_tls_cipher_suite                      = var.function_app.site_config.minimum_tls_cipher_suite
+    api_management_api_id                         = var.function_app.site_config.api_management_api_id
+    managed_pipeline_mode                         = var.function_app.site_config.managed_pipeline_mode
+    vnet_route_all_enabled                        = var.function_app.site_config.vnet_route_all_enabled
+    scm_minimum_tls_version                       = var.function_app.site_config.scm_minimum_tls_version
+    application_insights_key                      = var.function_app.site_config.application_insights_key
+    elastic_instance_minimum                      = var.function_app.site_config.elastic_instance_minimum
+    remote_debugging_enabled                      = var.function_app.site_config.remote_debugging_enabled
+    default_documents                             = var.function_app.site_config.default_documents
+    health_check_path                             = var.function_app.site_config.health_check_path
+    use_32_bit_worker                             = var.function_app.site_config.use_32_bit_worker
+    api_definition_url                            = var.function_app.site_config.api_definition_url
+    websockets_enabled                            = var.function_app.site_config.websockets_enabled
+    load_balancing_mode                           = var.function_app.site_config.load_balancing_mode
+    ip_restriction_default_action                 = var.function_app.site_config.ip_restriction_default_action
+    scm_ip_restriction_default_action             = var.function_app.site_config.scm_ip_restriction_default_action
+
+    dynamic "ip_restriction" {
+      for_each = var.function_app.site_config.ip_restrictions
+
+      content {
+        action                    = ip_restriction.value.action
+        ip_address                = ip_restriction.value.ip_address
+        name                      = ip_restriction.value.name
+        priority                  = ip_restriction.value.priority
+        service_tag               = ip_restriction.value.service_tag
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+        description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = var.function_app.site_config.scm_ip_restrictions
+
+      content {
+        action                    = scm_ip_restriction.value.action
+        ip_address                = scm_ip_restriction.value.ip_address
+        name                      = scm_ip_restriction.value.name
+        priority                  = scm_ip_restriction.value.priority
+        service_tag               = scm_ip_restriction.value.service_tag
+        virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
+        headers                   = scm_ip_restriction.value.headers
+        description               = scm_ip_restriction.value.description
+      }
+    }
+
+    dynamic "application_stack" {
+      for_each = var.function_app.site_config.application_stack != null ? { "this" = var.function_app.site_config.application_stack } : {}
+
+      content {
+        dotnet_version              = application_stack.value.dotnet_version
+        use_dotnet_isolated_runtime = application_stack.value.use_dotnet_isolated_runtime
+        java_version                = application_stack.value.java_version
+        node_version                = application_stack.value.node_version
+        python_version              = application_stack.value.python_version
+        powershell_core_version     = application_stack.value.powershell_core_version
+        use_custom_runtime          = application_stack.value.use_custom_runtime
+
+        dynamic "docker" {
+          for_each = application_stack.value.docker
+
+          content {
+            image_name        = docker.value.image_name
+            image_tag         = docker.value.image_tag
+            registry_url      = docker.value.registry_url
+            registry_username = docker.value.registry_username
+            registry_password = docker.value.registry_password
+          }
+        }
+      }
+    }
+
+    dynamic "cors" {
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
+
+      content {
+        allowed_origins     = cors.value.allowed_origins
+        support_credentials = cors.value.support_credentials
+      }
+    }
+
+    dynamic "app_service_logs" {
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
+
+      content {
+        disk_quota_mb         = app_service_logs.value.disk_quota_mb
+        retention_period_days = app_service_logs.value.retention_period_days
+      }
+    }
+  }
+
+  dynamic "sticky_settings" {
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
+
+
+    content {
+      app_setting_names       = sticky_settings.value.app_setting_names
+      connection_string_names = sticky_settings.value.connection_string_names
+    }
+  }
+
+  dynamic "backup" {
+    for_each = var.function_app.backup != null ? { "this" = var.function_app.backup } : {}
+
+    content {
+      name                = backup.value.name
+      enabled             = backup.value.enabled
+      storage_account_url = backup.value.storage_account_url
+
+      schedule {
+        frequency_unit           = backup.value.schedule.frequency_unit
+        frequency_interval       = backup.value.schedule.frequency_interval
+        retention_period_days    = backup.value.schedule.retention_period_days
+        start_time               = backup.value.schedule.start_time
+        keep_at_least_one_backup = backup.value.schedule.keep_at_least_one_backup
+      }
+    }
+  }
+
+  dynamic "connection_string" {
+    for_each = var.function_app.connection_strings
+
+    content {
+      name  = connection_string.value.name
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      auth_settings_v2, # written by azure when the app is a static web app backend (#105)
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
+    ]
+  }
+}
+
 resource "azurerm_function_app_function" "this" {
   for_each = var.function_app.functions
 
@@ -372,7 +738,9 @@ resource "azurerm_function_app_function" "this" {
 
   function_app_id = one(
     values(
-      merge(azurerm_linux_function_app.this, azurerm_windows_function_app.this
+      merge(
+        azurerm_linux_function_app.this, azurerm_linux_function_app.ignore_auth,
+        azurerm_windows_function_app.this, azurerm_windows_function_app.ignore_auth
       )
     )
   ).id
@@ -399,7 +767,7 @@ resource "azurerm_linux_function_app_slot" "this" {
     each.value.name, each.key
   )
 
-  function_app_id                                = azurerm_linux_function_app.this["func"].id
+  function_app_id                                = one(values(merge(azurerm_linux_function_app.this, azurerm_linux_function_app.ignore_auth))).id
   storage_account_name                           = each.value.storage_account_name
   storage_account_access_key                     = each.value.storage_account_access_key
   webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
@@ -419,6 +787,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   client_certificate_mode                        = each.value.client_certificate_mode
   builtin_logging_enabled                        = each.value.builtin_logging_enabled
   https_only                                     = each.value.https_only
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
@@ -742,7 +1111,7 @@ resource "azurerm_linux_function_app_slot" "this" {
 
 # windows function app
 resource "azurerm_windows_function_app" "this" {
-  for_each = var.function_app.type == "windows" ? { "func" = true } : {}
+  for_each = var.function_app.type == "windows" && !var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
 
   resource_group_name = coalesce(
     var.function_app.resource_group_name, var.resource_group_name
@@ -757,6 +1126,7 @@ resource "azurerm_windows_function_app" "this" {
   storage_account_name                           = var.function_app.storage_account_name
   storage_account_access_key                     = var.function_app.storage_account_access_key
   https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   zip_deploy_file                                = var.function_app.zip_deploy_file
   enabled                                        = var.function_app.enabled
   builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
@@ -1088,6 +1458,356 @@ resource "azurerm_windows_function_app" "this" {
   }
 }
 
+# windows function app (auth settings v2 managed by azure)
+resource "azurerm_windows_function_app" "ignore_auth" {
+  for_each = var.function_app.type == "windows" && var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
+
+  resource_group_name = coalesce(
+    var.function_app.resource_group_name, var.resource_group_name
+  )
+
+  location = coalesce(
+    var.function_app.location, var.location
+  )
+
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_account_name                           = var.function_app.storage_account_name
+  storage_account_access_key                     = var.function_app.storage_account_access_key
+  https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  enabled                                        = var.function_app.enabled
+  builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  daily_memory_time_quota                        = var.function_app.daily_memory_time_quota
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  functions_extension_version                    = var.function_app.functions_extension_version
+  storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
+  content_share_force_disabled                   = var.function_app.content_share_force_disabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
+  vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
+  key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  ftp_publish_basic_authentication_enabled       = var.function_app.ftp_publish_basic_authentication_enabled
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  virtual_network_backup_restore_enabled         = var.function_app.virtual_network_backup_restore_enabled
+  app_settings                                   = var.function_app.app_settings
+
+  tags = coalesce(
+    var.function_app.tags, var.tags
+  )
+
+  dynamic "identity" {
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
+
+  dynamic "auth_settings_v2" {
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
+
+    content {
+      auth_enabled                            = auth_settings_v2.value.auth_enabled
+      runtime_version                         = auth_settings_v2.value.runtime_version
+      config_file_path                        = auth_settings_v2.value.config_file_path
+      require_authentication                  = auth_settings_v2.value.require_authentication
+      unauthenticated_action                  = auth_settings_v2.value.unauthenticated_action
+      default_provider                        = auth_settings_v2.value.default_provider
+      excluded_paths                          = auth_settings_v2.value.excluded_paths
+      require_https                           = auth_settings_v2.value.require_https
+      http_route_api_prefix                   = auth_settings_v2.value.http_route_api_prefix
+      forward_proxy_convention                = auth_settings_v2.value.forward_proxy_convention
+      forward_proxy_custom_host_header_name   = auth_settings_v2.value.forward_proxy_custom_host_header_name
+      forward_proxy_custom_scheme_header_name = auth_settings_v2.value.forward_proxy_custom_scheme_header_name
+
+      login {
+        token_store_enabled               = auth_settings_v2.value.login.token_store_enabled
+        token_refresh_extension_time      = auth_settings_v2.value.login.token_refresh_extension_time
+        token_store_path                  = auth_settings_v2.value.login.token_store_path
+        token_store_sas_setting_name      = auth_settings_v2.value.login.token_store_sas_setting_name
+        preserve_url_fragments_for_logins = auth_settings_v2.value.login.preserve_url_fragments_for_logins
+        allowed_external_redirect_urls    = auth_settings_v2.value.login.allowed_external_redirect_urls
+        cookie_expiration_convention      = auth_settings_v2.value.login.cookie_expiration_convention
+        cookie_expiration_time            = auth_settings_v2.value.login.cookie_expiration_time
+        validate_nonce                    = auth_settings_v2.value.login.validate_nonce
+        nonce_expiration_time             = auth_settings_v2.value.login.nonce_expiration_time
+        logout_endpoint                   = auth_settings_v2.value.login.logout_endpoint
+      }
+
+      dynamic "apple_v2" {
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = apple_v2.value.login_scopes
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = active_directory_v2.value.client_secret_setting_name
+          client_secret_certificate_thumbprint = active_directory_v2.value.client_secret_certificate_thumbprint
+          jwt_allowed_groups                   = active_directory_v2.value.jwt_allowed_groups
+          jwt_allowed_client_applications      = active_directory_v2.value.jwt_allowed_client_applications
+          www_authentication_disabled          = active_directory_v2.value.www_authentication_disabled
+          allowed_audiences                    = active_directory_v2.value.allowed_audiences
+          allowed_groups                       = active_directory_v2.value.allowed_groups
+          allowed_identities                   = active_directory_v2.value.allowed_identities
+          login_parameters                     = active_directory_v2.value.login_parameters
+          allowed_applications                 = active_directory_v2.value.allowed_applications
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = auth_settings_v2.value.custom_oidc_v2
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = custom_oidc_v2.value.name_claim_type
+          scopes                        = custom_oidc_v2.value.scopes
+          client_credential_method      = custom_oidc_v2.value.client_credential_method
+          client_secret_setting_name    = custom_oidc_v2.value.client_secret_setting_name
+          authorisation_endpoint        = custom_oidc_v2.value.authorisation_endpoint
+          token_endpoint                = custom_oidc_v2.value.token_endpoint
+          issuer_endpoint               = custom_oidc_v2.value.issuer_endpoint
+          certification_uri             = custom_oidc_v2.value.certification_uri
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = facebook_v2.value.graph_api_version
+          login_scopes            = facebook_v2.value.login_scopes
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = github_v2.value.login_scopes
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = google_v2.value.allowed_audiences
+          login_scopes               = google_v2.value.login_scopes
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = microsoft_v2.value.allowed_audiences
+          login_scopes               = microsoft_v2.value.login_scopes
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "storage_account" {
+    for_each = var.function_app.storage_accounts
+
+    content {
+      name = coalesce(
+        storage_account.value.name, storage_account.key
+      )
+
+      type         = storage_account.value.type
+      share_name   = storage_account.value.share_name
+      access_key   = storage_account.value.access_key
+      account_name = storage_account.value.account_name
+      mount_path   = storage_account.value.mount_path
+    }
+  }
+
+  site_config {
+    always_on                              = var.function_app.site_config.always_on
+    ftps_state                             = var.function_app.site_config.ftps_state
+    worker_count                           = var.function_app.site_config.worker_count
+    http2_enabled                          = var.function_app.site_config.http2_enabled
+    app_scale_limit                        = var.function_app.site_config.app_scale_limit
+    app_command_line                       = var.function_app.site_config.app_command_line
+    remote_debugging_version               = var.function_app.site_config.remote_debugging_version
+    pre_warmed_instance_count              = var.function_app.site_config.pre_warmed_instance_count
+    runtime_scale_monitoring_enabled       = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_use_main_ip_restriction            = var.function_app.site_config.scm_use_main_ip_restriction
+    health_check_eviction_time_in_min      = var.function_app.site_config.health_check_eviction_time_in_min
+    application_insights_connection_string = var.function_app.site_config.application_insights_connection_string
+    minimum_tls_version                    = var.function_app.site_config.minimum_tls_version
+    minimum_tls_cipher_suite               = var.function_app.site_config.minimum_tls_cipher_suite
+    api_management_api_id                  = var.function_app.site_config.api_management_api_id
+    managed_pipeline_mode                  = var.function_app.site_config.managed_pipeline_mode
+    vnet_route_all_enabled                 = var.function_app.site_config.vnet_route_all_enabled
+    scm_minimum_tls_version                = var.function_app.site_config.scm_minimum_tls_version
+    application_insights_key               = var.function_app.site_config.application_insights_key
+    elastic_instance_minimum               = var.function_app.site_config.elastic_instance_minimum
+    remote_debugging_enabled               = var.function_app.site_config.remote_debugging_enabled
+    default_documents                      = var.function_app.site_config.default_documents
+    health_check_path                      = var.function_app.site_config.health_check_path
+    use_32_bit_worker                      = var.function_app.site_config.use_32_bit_worker
+    api_definition_url                     = var.function_app.site_config.api_definition_url
+    websockets_enabled                     = var.function_app.site_config.websockets_enabled
+    load_balancing_mode                    = var.function_app.site_config.load_balancing_mode
+    ip_restriction_default_action          = var.function_app.site_config.ip_restriction_default_action
+    scm_ip_restriction_default_action      = var.function_app.site_config.scm_ip_restriction_default_action
+
+    dynamic "ip_restriction" {
+      for_each = var.function_app.site_config.ip_restrictions
+
+      content {
+        action                    = ip_restriction.value.action
+        ip_address                = ip_restriction.value.ip_address
+        name                      = ip_restriction.value.name
+        priority                  = ip_restriction.value.priority
+        service_tag               = ip_restriction.value.service_tag
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+        description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = var.function_app.site_config.scm_ip_restrictions
+
+      content {
+        action                    = scm_ip_restriction.value.action
+        ip_address                = scm_ip_restriction.value.ip_address
+        name                      = scm_ip_restriction.value.name
+        priority                  = scm_ip_restriction.value.priority
+        service_tag               = scm_ip_restriction.value.service_tag
+        virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
+        headers                   = scm_ip_restriction.value.headers
+        description               = scm_ip_restriction.value.description
+      }
+    }
+
+    dynamic "application_stack" {
+      for_each = var.function_app.site_config.application_stack != null ? { "this" = var.function_app.site_config.application_stack } : {}
+
+      content {
+        dotnet_version              = application_stack.value.dotnet_version
+        use_dotnet_isolated_runtime = application_stack.value.use_dotnet_isolated_runtime
+        java_version                = application_stack.value.java_version
+        node_version                = application_stack.value.node_version
+        powershell_core_version     = application_stack.value.powershell_core_version
+        use_custom_runtime          = application_stack.value.use_custom_runtime
+      }
+    }
+
+    dynamic "cors" {
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
+
+      content {
+        allowed_origins     = cors.value.allowed_origins
+        support_credentials = cors.value.support_credentials
+      }
+    }
+
+    dynamic "app_service_logs" {
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
+
+      content {
+        disk_quota_mb         = app_service_logs.value.disk_quota_mb
+        retention_period_days = app_service_logs.value.retention_period_days
+      }
+    }
+  }
+
+  dynamic "sticky_settings" {
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
+
+    content {
+      app_setting_names       = sticky_settings.value.app_setting_names
+      connection_string_names = sticky_settings.value.connection_string_names
+    }
+  }
+
+  dynamic "backup" {
+    for_each = var.function_app.backup != null ? { "this" = var.function_app.backup } : {}
+
+    content {
+      name                = backup.value.name
+      enabled             = backup.value.enabled
+      storage_account_url = backup.value.storage_account_url
+
+      schedule {
+        frequency_unit           = backup.value.schedule.frequency_unit
+        frequency_interval       = backup.value.schedule.frequency_interval
+        retention_period_days    = backup.value.schedule.retention_period_days
+        start_time               = backup.value.schedule.start_time
+        keep_at_least_one_backup = backup.value.schedule.keep_at_least_one_backup
+      }
+    }
+  }
+
+  dynamic "connection_string" {
+    for_each = var.function_app.connection_strings
+
+    content {
+      name  = connection_string.value.name
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      auth_settings_v2, # written by azure when the app is a static web app backend (#105)
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
+    ]
+  }
+}
+
 # windows function app slot
 resource "azurerm_windows_function_app_slot" "this" {
   for_each = var.function_app.type == "windows" ? var.function_app.slots : {}
@@ -1096,7 +1816,7 @@ resource "azurerm_windows_function_app_slot" "this" {
     each.value.name, each.key
   )
 
-  function_app_id                                = azurerm_windows_function_app.this["func"].id
+  function_app_id                                = one(values(merge(azurerm_windows_function_app.this, azurerm_windows_function_app.ignore_auth))).id
   storage_account_name                           = each.value.storage_account_name
   storage_account_access_key                     = each.value.storage_account_access_key
   webdeploy_publish_basic_authentication_enabled = each.value.webdeploy_publish_basic_authentication_enabled
@@ -1115,6 +1835,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   client_certificate_mode                        = each.value.client_certificate_mode
   builtin_logging_enabled                        = each.value.builtin_logging_enabled
   https_only                                     = each.value.https_only
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   enabled                                        = each.value.enabled
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
@@ -1423,8 +2144,9 @@ resource "azurerm_windows_function_app_slot" "this" {
   }
 }
 
+# flex consumption function app
 resource "azurerm_function_app_flex_consumption" "this" {
-  for_each = var.function_app.type == "flex" ? { "func" = true } : {}
+  for_each = var.function_app.type == "flex" && !var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
 
   resource_group_name = coalesce(
     var.function_app.resource_group_name, var.resource_group_name
@@ -1718,6 +2440,312 @@ resource "azurerm_function_app_flex_consumption" "this" {
   lifecycle {
     ignore_changes = [
       auth_settings,
+      app_settings["WEBSITE_RUN_FROM_PACKAGE"],
+      app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
+      tags["hidden-link: /app-insights-instrumentation-key"],
+      tags["hidden-link: /app-insights-resource-id"],
+      tags["hidden-link: /app-insights-conn-string"],
+    ]
+  }
+}
+
+# flex consumption function app (auth settings v2 managed by azure)
+resource "azurerm_function_app_flex_consumption" "ignore_auth" {
+  for_each = var.function_app.type == "flex" && var.function_app.ignore_auth_settings_v2 ? { "func" = true } : {}
+
+  resource_group_name = coalesce(
+    var.function_app.resource_group_name, var.resource_group_name
+  )
+
+  location = coalesce(
+    var.function_app.location, var.location
+  )
+
+  name                                           = var.function_app.name
+  service_plan_id                                = var.function_app.service_plan_id
+  storage_container_type                         = var.function_app.storage_container_type
+  storage_container_endpoint                     = var.function_app.storage_container_endpoint
+  storage_authentication_type                    = var.function_app.storage_authentication_type
+  storage_access_key                             = var.function_app.storage_access_key
+  storage_user_assigned_identity_id              = var.function_app.storage_user_assigned_identity_id
+  runtime_name                                   = var.function_app.runtime_name
+  runtime_version                                = var.function_app.runtime_version
+  maximum_instance_count                         = var.function_app.maximum_instance_count
+  instance_memory_in_mb                          = var.function_app.instance_memory_in_mb
+  http_concurrency                               = var.function_app.http_concurrency
+  https_only                                     = var.function_app.https_only
+  enabled                                        = var.function_app.enabled
+  public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  virtual_network_subnet_id                      = var.function_app.virtual_network_subnet_id
+  client_certificate_enabled                     = var.function_app.client_certificate_enabled
+  client_certificate_mode                        = var.function_app.client_certificate_mode
+  client_certificate_exclusion_paths             = var.function_app.client_certificate_exclusion_paths
+  zip_deploy_file                                = var.function_app.zip_deploy_file
+  webdeploy_publish_basic_authentication_enabled = var.function_app.webdeploy_publish_basic_authentication_enabled
+  app_settings                                   = var.function_app.app_settings
+
+  tags = coalesce(
+    var.function_app.tags, var.tags
+  )
+
+  dynamic "identity" {
+    for_each = var.function_app.identity != null ? { "this" = var.function_app.identity } : {}
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.identity_ids
+    }
+  }
+
+
+  dynamic "auth_settings_v2" {
+    for_each = var.function_app.auth_settings_v2 != null ? { "this" = var.function_app.auth_settings_v2 } : {}
+
+    content {
+      auth_enabled                            = auth_settings_v2.value.auth_enabled
+      runtime_version                         = auth_settings_v2.value.runtime_version
+      config_file_path                        = auth_settings_v2.value.config_file_path
+      require_authentication                  = auth_settings_v2.value.require_authentication
+      unauthenticated_action                  = auth_settings_v2.value.unauthenticated_action
+      default_provider                        = auth_settings_v2.value.default_provider
+      excluded_paths                          = auth_settings_v2.value.excluded_paths
+      require_https                           = auth_settings_v2.value.require_https
+      http_route_api_prefix                   = auth_settings_v2.value.http_route_api_prefix
+      forward_proxy_convention                = auth_settings_v2.value.forward_proxy_convention
+      forward_proxy_custom_host_header_name   = auth_settings_v2.value.forward_proxy_custom_host_header_name
+      forward_proxy_custom_scheme_header_name = auth_settings_v2.value.forward_proxy_custom_scheme_header_name
+
+      login {
+        token_store_enabled               = auth_settings_v2.value.login.token_store_enabled
+        token_refresh_extension_time      = auth_settings_v2.value.login.token_refresh_extension_time
+        token_store_path                  = auth_settings_v2.value.login.token_store_path
+        token_store_sas_setting_name      = auth_settings_v2.value.login.token_store_sas_setting_name
+        preserve_url_fragments_for_logins = auth_settings_v2.value.login.preserve_url_fragments_for_logins
+        allowed_external_redirect_urls    = auth_settings_v2.value.login.allowed_external_redirect_urls
+        cookie_expiration_convention      = auth_settings_v2.value.login.cookie_expiration_convention
+        cookie_expiration_time            = auth_settings_v2.value.login.cookie_expiration_time
+        validate_nonce                    = auth_settings_v2.value.login.validate_nonce
+        nonce_expiration_time             = auth_settings_v2.value.login.nonce_expiration_time
+        logout_endpoint                   = auth_settings_v2.value.login.logout_endpoint
+      }
+
+      dynamic "apple_v2" {
+        for_each = auth_settings_v2.value.apple_v2 != null ? { "this" = auth_settings_v2.value.apple_v2 } : {}
+
+        content {
+          client_id                  = apple_v2.value.client_id
+          client_secret_setting_name = apple_v2.value.client_secret_setting_name
+          login_scopes               = apple_v2.value.login_scopes
+        }
+      }
+
+      dynamic "active_directory_v2" {
+        for_each = auth_settings_v2.value.active_directory_v2 != null ? { "this" = auth_settings_v2.value.active_directory_v2 } : {}
+
+        content {
+          client_id                            = active_directory_v2.value.client_id
+          tenant_auth_endpoint                 = active_directory_v2.value.tenant_auth_endpoint
+          client_secret_setting_name           = active_directory_v2.value.client_secret_setting_name
+          client_secret_certificate_thumbprint = active_directory_v2.value.client_secret_certificate_thumbprint
+          jwt_allowed_groups                   = active_directory_v2.value.jwt_allowed_groups
+          jwt_allowed_client_applications      = active_directory_v2.value.jwt_allowed_client_applications
+          www_authentication_disabled          = active_directory_v2.value.www_authentication_disabled
+          allowed_audiences                    = active_directory_v2.value.allowed_audiences
+          allowed_groups                       = active_directory_v2.value.allowed_groups
+          allowed_identities                   = active_directory_v2.value.allowed_identities
+          login_parameters                     = active_directory_v2.value.login_parameters
+          allowed_applications                 = active_directory_v2.value.allowed_applications
+        }
+      }
+
+      dynamic "azure_static_web_app_v2" {
+        for_each = auth_settings_v2.value.azure_static_web_app_v2 != null ? { "this" = auth_settings_v2.value.azure_static_web_app_v2 } : {}
+
+        content {
+          client_id = azure_static_web_app_v2.value.client_id
+        }
+      }
+
+      dynamic "custom_oidc_v2" {
+        for_each = auth_settings_v2.value.custom_oidc_v2
+
+        content {
+          name                          = custom_oidc_v2.value.name
+          client_id                     = custom_oidc_v2.value.client_id
+          openid_configuration_endpoint = custom_oidc_v2.value.openid_configuration_endpoint
+          name_claim_type               = custom_oidc_v2.value.name_claim_type
+          scopes                        = custom_oidc_v2.value.scopes
+          client_credential_method      = custom_oidc_v2.value.client_credential_method
+          client_secret_setting_name    = custom_oidc_v2.value.client_secret_setting_name
+          authorisation_endpoint        = custom_oidc_v2.value.authorisation_endpoint
+          token_endpoint                = custom_oidc_v2.value.token_endpoint
+          issuer_endpoint               = custom_oidc_v2.value.issuer_endpoint
+          certification_uri             = custom_oidc_v2.value.certification_uri
+        }
+      }
+
+      dynamic "facebook_v2" {
+        for_each = auth_settings_v2.value.facebook_v2 != null ? { "this" = auth_settings_v2.value.facebook_v2 } : {}
+
+        content {
+          app_id                  = facebook_v2.value.app_id
+          app_secret_setting_name = facebook_v2.value.app_secret_setting_name
+          graph_api_version       = facebook_v2.value.graph_api_version
+          login_scopes            = facebook_v2.value.login_scopes
+        }
+      }
+
+      dynamic "github_v2" {
+        for_each = auth_settings_v2.value.github_v2 != null ? { "this" = auth_settings_v2.value.github_v2 } : {}
+
+        content {
+          client_id                  = github_v2.value.client_id
+          client_secret_setting_name = github_v2.value.client_secret_setting_name
+          login_scopes               = github_v2.value.login_scopes
+        }
+      }
+
+      dynamic "google_v2" {
+        for_each = auth_settings_v2.value.google_v2 != null ? { "this" = auth_settings_v2.value.google_v2 } : {}
+
+        content {
+          client_id                  = google_v2.value.client_id
+          client_secret_setting_name = google_v2.value.client_secret_setting_name
+          allowed_audiences          = google_v2.value.allowed_audiences
+          login_scopes               = google_v2.value.login_scopes
+        }
+      }
+
+      dynamic "microsoft_v2" {
+        for_each = auth_settings_v2.value.microsoft_v2 != null ? { "this" = auth_settings_v2.value.microsoft_v2 } : {}
+
+        content {
+          client_id                  = microsoft_v2.value.client_id
+          client_secret_setting_name = microsoft_v2.value.client_secret_setting_name
+          allowed_audiences          = microsoft_v2.value.allowed_audiences
+          login_scopes               = microsoft_v2.value.login_scopes
+        }
+      }
+
+      dynamic "twitter_v2" {
+        for_each = auth_settings_v2.value.twitter_v2 != null ? { "this" = auth_settings_v2.value.twitter_v2 } : {}
+
+        content {
+          consumer_key                 = twitter_v2.value.consumer_key
+          consumer_secret_setting_name = twitter_v2.value.consumer_secret_setting_name
+        }
+      }
+    }
+  }
+
+  dynamic "connection_string" {
+    for_each = var.function_app.connection_strings
+
+    content {
+      name  = connection_string.value.name
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  dynamic "sticky_settings" {
+    for_each = var.function_app.sticky_settings != null ? { "this" = var.function_app.sticky_settings } : {}
+
+    content {
+      app_setting_names       = sticky_settings.value.app_setting_names
+      connection_string_names = sticky_settings.value.connection_string_names
+    }
+  }
+
+  dynamic "always_ready" {
+    for_each = var.function_app.always_ready
+
+    content {
+      name           = always_ready.value.name
+      instance_count = always_ready.value.instance_count
+    }
+  }
+
+  site_config {
+    application_insights_connection_string        = var.function_app.site_config.application_insights_connection_string
+    application_insights_key                      = var.function_app.site_config.application_insights_key
+    health_check_path                             = var.function_app.site_config.health_check_path
+    health_check_eviction_time_in_min             = var.function_app.site_config.health_check_eviction_time_in_min
+    http2_enabled                                 = var.function_app.site_config.http2_enabled
+    minimum_tls_version                           = var.function_app.site_config.minimum_tls_version
+    websockets_enabled                            = var.function_app.site_config.websockets_enabled
+    vnet_route_all_enabled                        = var.function_app.site_config.vnet_route_all_enabled
+    worker_count                                  = var.function_app.site_config.worker_count
+    api_definition_url                            = var.function_app.site_config.api_definition_url
+    api_management_api_id                         = var.function_app.site_config.api_management_api_id
+    app_command_line                              = var.function_app.site_config.app_command_line
+    container_registry_managed_identity_client_id = var.function_app.site_config.container_registry_managed_identity_client_id
+    container_registry_use_managed_identity       = var.function_app.site_config.container_registry_use_managed_identity
+    default_documents                             = var.function_app.site_config.default_documents
+    elastic_instance_minimum                      = var.function_app.site_config.elastic_instance_minimum
+    ip_restriction_default_action                 = var.function_app.site_config.ip_restriction_default_action
+    load_balancing_mode                           = var.function_app.site_config.load_balancing_mode
+    managed_pipeline_mode                         = var.function_app.site_config.managed_pipeline_mode
+    remote_debugging_enabled                      = var.function_app.site_config.remote_debugging_enabled
+    remote_debugging_version                      = var.function_app.site_config.remote_debugging_version
+    runtime_scale_monitoring_enabled              = var.function_app.site_config.runtime_scale_monitoring_enabled
+    scm_ip_restriction_default_action             = var.function_app.site_config.scm_ip_restriction_default_action
+    scm_minimum_tls_version                       = var.function_app.site_config.scm_minimum_tls_version
+    scm_use_main_ip_restriction                   = var.function_app.site_config.scm_use_main_ip_restriction
+    use_32_bit_worker                             = var.function_app.site_config.use_32_bit_worker
+
+    dynamic "ip_restriction" {
+      for_each = var.function_app.site_config.ip_restrictions
+
+      content {
+        action                    = ip_restriction.value.action
+        ip_address                = ip_restriction.value.ip_address
+        name                      = ip_restriction.value.name
+        priority                  = ip_restriction.value.priority
+        service_tag               = ip_restriction.value.service_tag
+        virtual_network_subnet_id = ip_restriction.value.virtual_network_subnet_id
+        description               = ip_restriction.value.description
+        headers                   = ip_restriction.value.headers
+      }
+    }
+
+    dynamic "scm_ip_restriction" {
+      for_each = var.function_app.site_config.scm_ip_restrictions
+
+      content {
+        action                    = scm_ip_restriction.value.action
+        ip_address                = scm_ip_restriction.value.ip_address
+        name                      = scm_ip_restriction.value.name
+        priority                  = scm_ip_restriction.value.priority
+        service_tag               = scm_ip_restriction.value.service_tag
+        virtual_network_subnet_id = scm_ip_restriction.value.virtual_network_subnet_id
+        headers                   = scm_ip_restriction.value.headers
+        description               = scm_ip_restriction.value.description
+      }
+    }
+
+    dynamic "cors" {
+      for_each = var.function_app.site_config.cors != null ? { "this" = var.function_app.site_config.cors } : {}
+
+      content {
+        allowed_origins     = cors.value.allowed_origins
+        support_credentials = cors.value.support_credentials
+      }
+    }
+
+    dynamic "app_service_logs" {
+      for_each = var.function_app.site_config.app_service_logs != null ? { "this" = var.function_app.site_config.app_service_logs } : {}
+
+      content {
+        disk_quota_mb         = app_service_logs.value.disk_quota_mb
+        retention_period_days = app_service_logs.value.retention_period_days
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      auth_settings,
+      auth_settings_v2, # written by azure when the app is a static web app backend (#105)
       app_settings["WEBSITE_RUN_FROM_PACKAGE"],
       app_settings["WEBSITE_ENABLE_SYNC_UPDATE_SITE"],
       tags["hidden-link: /app-insights-instrumentation-key"],
