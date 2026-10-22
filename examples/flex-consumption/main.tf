@@ -89,6 +89,22 @@ module "flex_function" {
       minimum_tls_version                    = "1.2"
       websockets_enabled                     = false
       vnet_route_all_enabled                 = false
+      ip_restriction_default_action          = "Deny"
+      ip_restrictions = {
+        office = {
+          name       = "allow-office"
+          ip_address = "203.0.113.0/24"
+          priority   = 100
+        }
+        frontdoor = {
+          name        = "allow-frontdoor"
+          service_tag = "AzureFrontDoor.Backend"
+          priority    = 200
+          headers = {
+            x_azure_fdid = ["00000000-0000-0000-0000-000000000000"]
+          }
+        }
+      }
     }
   }
 }
