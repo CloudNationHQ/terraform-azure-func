@@ -1,9 +1,10 @@
 locals {
   slots = {
     dev = {
-      name                       = "development"
-      storage_account_name       = module.storage.account.name
-      storage_account_access_key = module.storage.account.primary_access_key
+      name                              = "development"
+      storage_account_name              = module.storage.account.name
+      storage_account_access_key        = module.storage.account.primary_access_key
+      end_to_end_tls_encryption_enabled = true
       site_config = {
         always_on                        = false
         http2_enabled                    = true

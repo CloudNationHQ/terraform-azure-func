@@ -15,6 +15,7 @@ resource "azurerm_linux_function_app" "this" {
   storage_account_name                           = var.function_app.storage_account_name
   storage_account_access_key                     = var.function_app.storage_account_access_key
   https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   zip_deploy_file                                = var.function_app.zip_deploy_file
   enabled                                        = var.function_app.enabled
   builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
@@ -419,6 +420,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   client_certificate_mode                        = each.value.client_certificate_mode
   builtin_logging_enabled                        = each.value.builtin_logging_enabled
   https_only                                     = each.value.https_only
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
 
@@ -757,6 +759,7 @@ resource "azurerm_windows_function_app" "this" {
   storage_account_name                           = var.function_app.storage_account_name
   storage_account_access_key                     = var.function_app.storage_account_access_key
   https_only                                     = var.function_app.https_only
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   zip_deploy_file                                = var.function_app.zip_deploy_file
   enabled                                        = var.function_app.enabled
   builtin_logging_enabled                        = var.function_app.builtin_logging_enabled
@@ -1115,6 +1118,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   client_certificate_mode                        = each.value.client_certificate_mode
   builtin_logging_enabled                        = each.value.builtin_logging_enabled
   https_only                                     = each.value.https_only
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   enabled                                        = each.value.enabled
   virtual_network_backup_restore_enabled         = each.value.virtual_network_backup_restore_enabled
   app_settings                                   = each.value.app_settings
