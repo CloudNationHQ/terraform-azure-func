@@ -2,6 +2,16 @@
 
 Ensure Go and Terraform are installed.
 
+### Unit Testing
+
+Run the native terraform tests. They use a mocked provider, so they need no Azure credentials and create nothing:
+
+`make test-unit`
+
+Run a single file
+
+`make test-unit file=ignore_auth_settings_v2.tftest.hcl`
+
 ### Individual Module Testing
 
 Test specific examples from the `examples/` directory:

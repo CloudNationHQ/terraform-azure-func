@@ -49,14 +49,15 @@ module "function_app" {
   version = "~> 4.0"
 
   function_app = {
-    type                       = "linux"
-    name                       = module.naming.function_app.name_unique
-    resource_group_name        = module.rg.groups.demo.name
-    location                   = module.rg.groups.demo.location
-    storage_account_name       = module.storage.account.name
-    storage_account_access_key = module.storage.account.primary_access_key
-    service_plan_id            = module.service_plan.plans.plan1.id
-    slots                      = local.slots
+    type                              = "linux"
+    name                              = module.naming.function_app.name_unique
+    resource_group_name               = module.rg.groups.demo.name
+    location                          = module.rg.groups.demo.location
+    storage_account_name              = module.storage.account.name
+    storage_account_access_key        = module.storage.account.primary_access_key
+    service_plan_id                   = module.service_plan.plans.plan1.id
+    end_to_end_tls_encryption_enabled = true
+    slots                             = local.slots
     app_settings = {
       NODE_ENV = "production"
     }
