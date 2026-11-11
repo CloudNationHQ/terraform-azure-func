@@ -26,6 +26,7 @@ resource "azurerm_linux_function_app" "this" {
   storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
   content_share_force_disabled                   = var.function_app.content_share_force_disabled
   public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
   vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
   key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
@@ -411,6 +412,7 @@ resource "azurerm_linux_function_app_slot" "this" {
   storage_uses_managed_identity                  = each.value.storage_uses_managed_identity
   enabled                                        = each.value.enabled
   public_network_access_enabled                  = each.value.public_network_access_enabled
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   storage_key_vault_secret_id                    = each.value.storage_key_vault_secret_id
   functions_extension_version                    = each.value.functions_extension_version
   client_certificate_enabled                     = each.value.client_certificate_enabled
@@ -768,6 +770,7 @@ resource "azurerm_windows_function_app" "this" {
   storage_key_vault_secret_id                    = var.function_app.storage_key_vault_secret_id
   content_share_force_disabled                   = var.function_app.content_share_force_disabled
   public_network_access_enabled                  = var.function_app.public_network_access_enabled
+  end_to_end_tls_encryption_enabled              = var.function_app.end_to_end_tls_encryption_enabled
   storage_uses_managed_identity                  = var.function_app.storage_uses_managed_identity
   vnet_image_pull_enabled                        = var.function_app.vnet_image_pull_enabled
   key_vault_reference_identity_id                = var.function_app.key_vault_reference_identity_id
@@ -1103,6 +1106,7 @@ resource "azurerm_windows_function_app_slot" "this" {
   ftp_publish_basic_authentication_enabled       = each.value.ftp_publish_basic_authentication_enabled
   storage_uses_managed_identity                  = each.value.storage_uses_managed_identity
   public_network_access_enabled                  = each.value.public_network_access_enabled
+  end_to_end_tls_encryption_enabled              = each.value.end_to_end_tls_encryption_enabled
   content_share_force_disabled                   = each.value.content_share_force_disabled
   storage_key_vault_secret_id                    = each.value.storage_key_vault_secret_id
   functions_extension_version                    = each.value.functions_extension_version
