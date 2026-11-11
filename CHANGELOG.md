@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v4.0.0...v4.1.0) (2026-11-11)
+
+
+### Features
+
+* add end_to_end_tls_encryption_enabled to function apps and slots ([#106](https://github.com/CloudNationHQ/terraform-azure-func/issues/106)) ([e44f161](https://github.com/CloudNationHQ/terraform-azure-func/commit/e44f161a18ab34503fc25b612c98a784bf161e9a)), closes [#102](https://github.com/CloudNationHQ/terraform-azure-func/issues/102)
+* **deps:** bump github.com/klauspost/compress in /tests ([#108](https://github.com/CloudNationHQ/terraform-azure-func/issues/108)) ([4c98c08](https://github.com/CloudNationHQ/terraform-azure-func/commit/4c98c0831a02fe878614f6e37f13843a894fe005))
+
 ## [4.0.0](https://github.com/CloudNationHQ/terraform-azure-func/compare/v3.3.0...v4.0.0) (2026-09-10)
 
 
